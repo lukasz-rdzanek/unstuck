@@ -27,7 +27,7 @@ Unstuck unifies a video lesson and the conversation about that lesson on one sur
 
 | ID   | Change ID                    | Outcome (user can …)                                                          | Prerequisites | PRD refs              | Status   |
 | ---- | ---------------------------- | ----------------------------------------------------------------------------- | ------------- | --------------------- | -------- |
-| F-01 | `lesson-chat-data-model`     | (foundation) lesson/course/message schema with lesson-scoping, operator-seed flag, and RLS | —             | NFR (privacy), FR-006 | in-progress (1/4 phases) |
+| F-01 | `lesson-chat-data-model`     | (foundation) lesson/course/message schema with lesson-scoping, operator-seed flag, and RLS | —             | NFR (privacy), FR-006 | in-progress (2/4 phases) |
 | S-01 | `lesson-workspace-shell`     | browse the single-course catalog and open a lesson to watch video + read markdown | F-01          | FR-003, FR-004        | proposed |
 | S-02 | `lesson-scoped-chat`         | post in a lesson's chat and read prior messages (operator seeds pinned on top, peer messages chronological below), live | S-01, F-01    | FR-004, FR-005, FR-006, US-01 | proposed |
 | S-03 | `operator-message-moderation`| (operator) delete any message in any lesson chat                              | F-01, S-02    | FR-007                | proposed |
@@ -56,7 +56,7 @@ What's already in place in the codebase as of 2026-05-27 (auto-researched + user
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Sequenced first because every user-facing chat slice consumes this schema; getting the lesson-scoping + operator-seed-flag + RLS shape right once avoids reworking three slices. The realtime transport itself (Supabase Realtime per `infrastructure.md`) is intentionally NOT part of this foundation — it is implementation detail of S-02, planned there.
-- **Status:** in-progress — Phase 1 done (commits `ad8301d` + `c13e16f`, 2026-05-28); Phase 2 (RLS policies + `rls_matrix.sql`) → Phase 3 (seed + types) → Phase 4 (deploy to production Supabase) remain.
+- **Status:** in-progress — Phase 1 (schema + deny-all) done at `ad8301d`; Phase 2 (RLS policies + `rls_matrix.sql`) done at `c9e25df`; Phase 3 (seed + types) → Phase 4 (deploy to production Supabase) remain. All updates: 2026-05-28.
 
 ## Slices
 

@@ -430,17 +430,17 @@ cache it within a statement.
 
 #### Automated
 
-- [ ] 2.1 Migration applies cleanly: `npx supabase db reset`
-- [ ] 2.2 SQL lints clean: `npx supabase db lint`
-- [ ] 2.3 Expected policy set present (and no others) in `pg_policies`
-- [ ] 2.4 RLS matrix passes: `psql <local-db-url> -f supabase/tests/rls_matrix.sql` exits 0
+- [x] 2.1 Migration applies cleanly: `npx supabase db reset` — c9e25df
+- [x] 2.2 SQL lints clean: `npx supabase db lint` — c9e25df
+- [x] 2.3 Expected policy set present (and no others) in `pg_policies` — c9e25df
+- [x] 2.4 RLS matrix passes: `psql <local-db-url> -f supabase/tests/rls_matrix.sql` exits 0 — c9e25df
 
 #### Manual
 
-- [ ] 2.5 As anon: courses readable; lessons + messages return nothing
-- [ ] 2.6 As authenticated on a free course: lessons + messages readable
-- [ ] 2.7 Peer own non-seed insert succeeds; `is_seeded=true` or foreign `author_id` rejected
-- [ ] 2.8 service_role can insert a seeded message and delete any message
+- [x] 2.5 As anon: courses readable; lessons + messages return nothing — covered by rls_matrix `[anon]` cell, c9e25df
+- [x] 2.6 As authenticated on a free course: lessons + messages readable — covered by rls_matrix `[auth-free]` cell, c9e25df
+- [x] 2.7 Peer own non-seed insert succeeds; `is_seeded=true` or foreign `author_id` rejected — covered by rls_matrix `[auth-free]` INSERT cells, c9e25df
+- [x] 2.8 service_role can insert a seeded message and delete any message — covered by rls_matrix `[service_role]` cell, c9e25df
 
 ### Phase 3: Seed Fixture & Types
 

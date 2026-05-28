@@ -4,7 +4,7 @@ title: Lesson & chat data model (schema + RLS + seed flag)
 status: in_progress
 created: 2026-05-28
 updated: 2026-05-28
-phase: 2  # phase 1 done at ad8301d (1.1-1.7); phase 2 next (RLS policies + rls_matrix.sql)
+phase: 3  # phase 1 done at ad8301d (1.1-1.7); phase 2 done at c9e25df (2.1-2.8); phase 3 next (seed + types)
 roadmap_ref: F-01
 prd_refs:
   - NFR (privacy)
