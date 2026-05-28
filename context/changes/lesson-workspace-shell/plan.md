@@ -778,24 +778,24 @@ out-of-scope and a follow-up candidate.
 
 #### Automated
 
-- [x] 1.1 `npm run lint` exits 0
-- [x] 1.2 `npm run build` exits 0
-- [x] 1.3 `npx astro check` exits 0
+- [x] 1.1 `npm run lint` exits 0 — 442a6cf
+- [x] 1.2 `npm run build` exits 0 — 442a6cf
+- [x] 1.3 `npx astro check` exits 0 — 442a6cf
 
 #### Manual
 
-- [x] 1.4 `/` renders the Unstuck landing (wordmark, tagline, CTA → `/courses`)
-- [x] 1.5 Browser tab title on `/` reads "Unstuck"
-- [x] 1.6 `/auth/signin`, `/auth/signup`, `/dashboard` render unchanged from pre-phase
-- [x] 1.7 Landing headline uses the new `text-cosmic-gradient` utility (DOM-inspected)
+- [x] 1.4 `/` renders the Unstuck landing (wordmark, tagline, CTA → `/courses`) — 442a6cf
+- [x] 1.5 Browser tab title on `/` reads "Unstuck" — 442a6cf
+- [x] 1.6 `/auth/signin`, `/auth/signup`, `/dashboard` render unchanged from pre-phase — 442a6cf
+- [x] 1.7 Landing headline uses the new `text-cosmic-gradient` utility (DOM-inspected) — 442a6cf
 
 ### Phase 2: AppLayout primitive + AppTopbar + courses service
 
 #### Automated
 
-- [ ] 2.1 `npm run lint` exits 0
-- [ ] 2.2 `npm run build` exits 0
-- [ ] 2.3 `npx astro check` exits 0
+- [x] 2.1 `npm run lint` exits 0
+- [x] 2.2 `npm run build` exits 0
+- [x] 2.3 `npx astro check` exits 0
 
 #### Manual
 
