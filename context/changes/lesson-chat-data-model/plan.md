@@ -415,16 +415,16 @@ cache it within a statement.
 
 #### Automated
 
-- [ ] 1.1 Pre-flight: `npx supabase status` reports API + DB running (Docker daemon up; `supabase start` if needed)
-- [ ] 1.2 Migration applies cleanly: `npx supabase db reset`
-- [ ] 1.3 SQL lints clean: `npx supabase db lint`
-- [ ] 1.4 All five tables exist with RLS enabled
+- [x] 1.1 Pre-flight: `npx supabase status` reports API + DB running (Docker daemon up; `supabase start` if needed) — ad8301d
+- [x] 1.2 Migration applies cleanly: `npx supabase db reset` — ad8301d
+- [x] 1.3 SQL lints clean: `npx supabase db lint` — ad8301d
+- [x] 1.4 All five tables exist with RLS enabled — ad8301d
 
 #### Manual
 
-- [ ] 1.5 FK graph matches contract (cascade on lesson/course, set-null on message author)
-- [ ] 1.6 Deny-all confirmed — authenticated query on lessons/messages returns zero rows
-- [ ] 1.7 `messages` present in `supabase_realtime` publication
+- [x] 1.5 FK graph matches contract (cascade on lesson/course, set-null on message author) — ad8301d
+- [x] 1.6 Deny-all confirmed — authenticated query on lessons/messages returns zero rows — ad8301d
+- [x] 1.7 `messages` present in `supabase_realtime` publication — ad8301d
 
 ### Phase 2: RLS Policies
 
