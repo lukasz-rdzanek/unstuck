@@ -793,9 +793,9 @@ out-of-scope and a follow-up candidate.
 
 #### Automated
 
-- [x] 2.1 `npm run lint` exits 0
-- [x] 2.2 `npm run build` exits 0
-- [x] 2.3 `npx astro check` exits 0
+- [x] 2.1 `npm run lint` exits 0 — c287271
+- [x] 2.2 `npm run build` exits 0 — c287271
+- [x] 2.3 `npx astro check` exits 0 — c287271
 
 #### Manual
 
@@ -807,9 +807,9 @@ out-of-scope and a follow-up candidate.
 
 #### Automated
 
-- [ ] 3.1 `npm run lint` exits 0
-- [ ] 3.2 `npm run build` exits 0
-- [ ] 3.3 `npx astro check` exits 0
+- [x] 3.1 `npm run lint` exits 0
+- [x] 3.2 `npm run build` exits 0
+- [x] 3.3 `npx astro check` exits 0
 
 #### Manual
 

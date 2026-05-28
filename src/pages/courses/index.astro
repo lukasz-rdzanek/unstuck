@@ -1,0 +1,44 @@
+---
+import AppLayout from "@/layouts/AppLayout.astro";
+import { createClient } from "@/lib/supabase";
+import { listCourses } from "@/lib/services/courses";
+
+const supabase = createClient(Astro.request.headers, Astro.cookies);
+const courses = supabase ? await listCourses(supabase) : [];
+---
+
+<AppLayout title="Courses — Unstuck">
+  <div class="mx-auto max-w-5xl px-4 py-12">
+    <header class="mb-10">
+      <h1 class="text-cosmic-gradient mb-3 text-4xl font-bold tracking-tight sm:text-5xl">Courses</h1>
+      <p class="text-muted-foreground text-lg">One lesson, one chat, no leaving the page.</p>
+    </header>
+
+    {
+      courses.length === 0 ? (
+        <div class="bg-card/40 border-border rounded-2xl border p-8 text-center backdrop-blur-xl">
+          <p class="text-muted-foreground">No courses available yet. Check back soon.</p>
+        </div>
+      ) : (
+        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {courses.map((course) => (
+            <a
+              href={`/courses/${course.slug}`}
+              class="bg-card/40 border-border hover:bg-card/60 group block rounded-2xl border p-6 backdrop-blur-xl transition-colors"
+            >
+              <h2 class="text-cosmic-gradient mb-3 text-xl font-bold tracking-tight">{course.title}</h2>
+              {course.description && (
+                <p class="text-muted-foreground mb-4 text-sm leading-relaxed">
+                  {course.description.length > 140 ? course.description.slice(0, 137) + "…" : course.description}
+                </p>
+              )}
+              <span class="text-primary inline-block text-sm font-medium transition-opacity group-hover:opacity-80">
+                Open course →
+              </span>
+            </a>
+          ))}
+        </div>
+      )
+    }
+  </div>
+</AppLayout>
