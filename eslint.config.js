@@ -70,6 +70,14 @@ const astroConfig = tseslint.config({
 
 export default tseslint.config(
   includeIgnoreFile(gitignorePath),
+  // Auto-generated files: ignore project-wide. database.types.ts is regenerated
+  // by `npx supabase gen types typescript --local` and follows the Supabase CLI's
+  // own formatting, which conflicts with the project's prettier + typescript-eslint
+  // rules. Linting the generated file would either churn on every regen or force
+  // us to fork the generator's style.
+  {
+    ignores: ["src/lib/db/database.types.ts"],
+  },
   baseConfig,
   reactConfig,
   eslintPluginAstro.configs["flat/recommended"],

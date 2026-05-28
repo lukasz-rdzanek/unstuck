@@ -1,0 +1,4 @@
+# Auto-generated database types from `npx supabase gen types typescript --local`.
+# Follows the Supabase CLI's own formatting; reformatting would churn on every regen.
+# Also ignored in eslint.config.js (eslint-plugin-prettier respects this file).
+src/lib/db/database.types.ts
