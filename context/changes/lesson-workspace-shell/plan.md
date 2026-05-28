@@ -823,10 +823,10 @@ out-of-scope and a follow-up candidate.
 
 #### Automated
 
-- [x] 4.1 `npm run lint` exits 0
-- [x] 4.2 `npm run build` exits 0
-- [x] 4.3 `npx astro check` exits 0
-- [x] 4.4 `npx supabase db reset` applies cleanly with updated seed
+- [x] 4.1 `npm run lint` exits 0 — ad4b29f
+- [x] 4.2 `npm run build` exits 0 — ad4b29f
+- [x] 4.3 `npx astro check` exits 0 — ad4b29f
+- [x] 4.4 `npx supabase db reset` applies cleanly with updated seed — ad4b29f
 
 #### Manual
 
@@ -839,9 +839,9 @@ out-of-scope and a follow-up candidate.
 
 #### Automated
 
-- [ ] 5.1 `npm run lint` exits 0
-- [ ] 5.2 `npm run build` exits 0
-- [ ] 5.3 `npx astro check` exits 0
+- [x] 5.1 `npm run lint` exits 0
+- [x] 5.2 `npm run build` exits 0
+- [x] 5.3 `npx astro check` exits 0
 
 #### Manual
 

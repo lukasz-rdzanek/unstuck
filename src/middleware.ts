@@ -1,7 +1,13 @@
 import { defineMiddleware } from "astro:middleware";
 import { createClient } from "@/lib/supabase";
 
-const PROTECTED_ROUTES = ["/dashboard"];
+const LESSON_ROUTE_RE = /^\/courses\/[^/]+\/lessons\//;
+
+function isProtectedRoute(pathname: string): boolean {
+  if (pathname.startsWith("/dashboard")) return true;
+  if (LESSON_ROUTE_RE.test(pathname)) return true;
+  return false;
+}
 
 export const onRequest = defineMiddleware(async (context, next) => {
   const supabase = createClient(context.request.headers, context.cookies);
@@ -15,9 +21,10 @@ export const onRequest = defineMiddleware(async (context, next) => {
     context.locals.user = null;
   }
 
-  if (PROTECTED_ROUTES.some((route) => context.url.pathname.startsWith(route))) {
+  if (isProtectedRoute(context.url.pathname)) {
     if (!context.locals.user) {
-      return context.redirect("/auth/signin");
+      const nextParam = encodeURIComponent(context.url.pathname + context.url.search);
+      return context.redirect(`/auth/signin?next=${nextParam}`);
     }
   }
 
