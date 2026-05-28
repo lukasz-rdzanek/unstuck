@@ -76,7 +76,7 @@ insert into public.lessons (id, course_id, slug, title, position, video_url, con
     'server-components-streaming',
     'Server Components and the Streaming Model',
     1,
-    'https://example.com/courses/react-architecture/server-components-streaming',
+    'https://www.youtube.com/watch?v=TQQPAU21ZUw',
     E'## What you will build\n\nA streaming-aware page where one component blocks on slow data while the rest of the tree renders eagerly. By the end you will be able to explain when Suspense boundaries help vs hurt.\n\n## Prerequisites\n\n- Familiarity with React 18 Suspense\n- Comfortable with a server framework (Next.js, Astro, or Remix)\n\n## Common blocker\n\nLearners often see the streaming behave like a regular SSR fallback — that usually means a parent component is awaiting too high in the tree. Watch the section at 14:20 if you hit this.'
   )
 on conflict (id) do nothing;

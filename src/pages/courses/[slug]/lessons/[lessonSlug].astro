@@ -1,0 +1,84 @@
+---
+import AppLayout from "@/layouts/AppLayout.astro";
+import { createClient } from "@/lib/supabase";
+import { getLessonBySlugs } from "@/lib/services/courses";
+import { renderMarkdown } from "@/lib/markdown";
+import { parseVideoUrl } from "@/lib/video-embed";
+
+const { slug, lessonSlug } = Astro.params;
+const supabase = createClient(Astro.request.headers, Astro.cookies);
+const result = supabase && slug && lessonSlug ? await getLessonBySlugs(supabase, slug, lessonSlug) : null;
+
+if (!result) {
+  Astro.response.status = 404;
+}
+
+const lesson = result?.lesson;
+const course = result?.course;
+const html = lesson ? renderMarkdown(lesson.content_md) : "";
+const video = lesson ? parseVideoUrl(lesson.video_url) : null;
+const pageTitle = lesson ? `${lesson.title} — Unstuck` : "Lesson not found — Unstuck";
+---
+
+<AppLayout title={pageTitle}>
+  <div class="mx-auto max-w-6xl px-4 py-8">
+    {
+      lesson && course ? (
+        <>
+          <a
+            href={`/courses/${course.slug}`}
+            class="text-primary mb-6 inline-block text-sm transition-opacity hover:opacity-80"
+          >
+            ← {course.title}
+          </a>
+          <div class="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_360px]">
+            <div class="min-w-0">
+              <div class="bg-card/40 border-border relative mb-6 aspect-video w-full overflow-hidden rounded-2xl border backdrop-blur-xl">
+                {video?.embedSrc ? (
+                  <iframe
+                    src={video.embedSrc}
+                    class="absolute inset-0 h-full w-full"
+                    allowfullscreen
+                    referrerpolicy="strict-origin"
+                    loading="lazy"
+                    title={lesson.title}
+                  />
+                ) : (
+                  <div class="text-muted-foreground absolute inset-0 flex items-center justify-center p-8 text-center text-sm">
+                    Video preview unavailable for this URL.
+                  </div>
+                )}
+              </div>
+
+              <h1 class="text-cosmic-gradient mb-6 text-3xl font-bold tracking-tight sm:text-4xl">{lesson.title}</h1>
+
+              {/* eslint-disable-next-line astro/no-set-html-directive --
+                  Operator-trusted markdown: lessons.INSERT/UPDATE reserved to
+                  service_role by F-01 RLS. Trust boundary documented in
+                  src/lib/markdown.ts. */}
+              <article class="prose prose-invert max-w-none" set:html={html} />
+            </div>
+
+            <aside class="lg:sticky lg:top-8 lg:self-start">
+              <div class="shadow-cosmic-glow bg-card/40 border-border rounded-2xl border p-6 backdrop-blur-xl">
+                <h2 class="text-foreground mb-3 text-lg font-semibold">Live peer chat</h2>
+                <p class="text-muted-foreground text-sm leading-relaxed">
+                  Coming in S-02. The chat panel will live here on every lesson — operator-seeded solutions pinned on
+                  top, peer messages chronological below.
+                </p>
+              </div>
+            </aside>
+          </div>
+        </>
+      ) : (
+        <div class="bg-card/40 border-border mx-auto max-w-3xl rounded-2xl border p-12 text-center backdrop-blur-xl">
+          <h1 class="text-cosmic-gradient mb-4 text-3xl font-bold tracking-tight">Lesson not found</h1>
+          <p class="text-muted-foreground mb-6">The lesson you're looking for doesn't exist or has been removed.</p>
+          <a href="/courses" class="text-primary inline-block text-sm font-medium transition-opacity hover:opacity-80">
+            ← Back to courses
+          </a>
+        </div>
+      )
+    }
+  </div>
+</AppLayout>
