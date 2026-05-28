@@ -4,25 +4,30 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
+  /* Neutral light palette — bare HSL channel triples (shadcn convention) so
+     `@theme inline` can map tokens via `hsl(var(--token))` consistently
+     between light (this block) and dark (cosmic, below). Values are HSL
+     equivalents of the starter's previous OKLCH neutral palette. */
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --background: 0 0% 100%;
+  --foreground: 0 0% 9%;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 9%;
+  --primary: 0 0% 15%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 0 0% 96%;
+  --secondary-foreground: 0 0% 15%;
+  --muted: 0 0% 96%;
+  --muted-foreground: 0 0% 45%;
+  --accent: 0 0% 96%;
+  --accent-foreground: 0 0% 15%;
+  --destructive: 0 75% 50%;
+  --border: 0 0% 92%;
+  --input: 0 0% 92%;
+  --ring: 0 0% 64%;
+  /* chart-* and sidebar-* unused by this slice — leave at starter OKLCH. */
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -39,24 +44,27 @@
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  /* Cosmic palette — bare HSL channel triples so utilities can compose via
+     hsl(var(--token)) and hsl(var(--token) / alpha) per shadcn convention. */
+  --background: 224 47% 4%;
+  --foreground: 220 30% 96%;
+  --card: 226 38% 9%;
+  --card-foreground: 220 30% 96%;
+  --popover: 226 38% 9%;
+  --popover-foreground: 220 30% 96%;
+  --primary: 263 78% 62%;
+  --primary-foreground: 220 30% 96%;
+  --secondary: 226 30% 14%;
+  --secondary-foreground: 220 30% 96%;
+  --muted: 226 30% 14%;
+  --muted-foreground: 222 20% 70%;
+  --accent: 224 90% 64%;
+  --accent-foreground: 220 30% 96%;
+  --destructive: 0 75% 60%;
+  --border: 230 35% 24%;
+  --input: 230 35% 24%;
+  --ring: 263 78% 70%;
+  /* chart-* and sidebar-* unused by this slice — leave at starter OKLCH. */
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
@@ -77,24 +85,26 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  /* chart-* and sidebar-* tokens stay raw — still expressed in OKLCH in
+     :root and .dark, not used by this slice. */
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
@@ -110,8 +120,36 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+/* bg-cosmic uses literal hex endpoints (matching cosmic --background ≈ #06080F)
+   so it renders consistently on existing auth + dashboard pages that don't
+   activate the .dark scope. Reference: `--background: 224 47% 4%` in .dark. */
 @utility bg-cosmic {
-  background-image: linear-gradient(to bottom, #0a0e1a, #0f1529, #0a0e1a);
+  background-image: linear-gradient(to bottom, #06080f, #0f1529, #06080f);
+}
+
+/* Headline gradient — primary → accent, both cosmic tokens.
+   Only meaningful inside .dark scope (where --primary is magenta/violet and
+   --accent is cobalt). Outside .dark resolves to neutral gray-to-gray. */
+@utility text-cosmic-gradient {
+  background-image: linear-gradient(to right, hsl(var(--primary)), hsl(var(--accent)));
+  background-clip: text;
+  color: transparent;
+}
+
+/* Single tasteful glow on CTAs (memory: "use sparingly"). */
+@utility shadow-cosmic-glow {
+  box-shadow: 0 0 32px hsl(var(--primary) / 0.35);
+}
+
+/* Low-density three-layer star field. Lifted from Welcome.astro's inline
+   radial-gradient pattern so the lesson page + AppLayout can reuse it. */
+@utility bg-cosmic-starfield {
+  background-image:
+    radial-gradient(circle, rgba(255, 255, 255, 0.15) 1px, transparent 1px),
+    radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+    radial-gradient(circle, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+  background-size: 200px 200px, 150px 150px, 100px 100px;
+  background-position: 0 0, 40px 60px, 80px 30px;
 }
 
 @layer base {
