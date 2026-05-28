@@ -446,16 +446,16 @@ cache it within a statement.
 
 #### Automated
 
-- [ ] 3.1 Seed applies on clean reset: `npx supabase db reset`
-- [ ] 3.2 Generated types in sync (re-run `gen types` produces no diff)
-- [ ] 3.3 Type-check passes: `npx astro check`
-- [ ] 3.4 Lint passes: `npm run lint`
-- [ ] 3.5 Build passes: `npm run build`
+- [x] 3.1 Seed applies on clean reset: `npx supabase db reset` — 9b4960e
+- [x] 3.2 Generated types in sync (re-run `gen types` produces no diff) — 9b4960e (CLI 2.98.2 quirk: strip "Connecting to db" stdout line via `grep -v` before writing)
+- [x] 3.3 Type-check passes: `npx astro check` — 9b4960e (0 errors, 0 warnings)
+- [x] 3.4 Lint passes: `npm run lint` — 9b4960e (database.types.ts ignored in eslint.config.js + .prettierignore)
+- [x] 3.5 Build passes: `npm run build` — 9b4960e
 
 #### Manual
 
-- [ ] 3.6 Seeded lesson messages ordered `is_seeded desc, created_at asc` → operator first, peer second
-- [ ] 3.7 `Message` / `NewMessage` from `src/types.ts` type-check against a sample query
+- [x] 3.6 Seeded lesson messages ordered `is_seeded desc, created_at asc` → operator first, peer second — 9b4960e (SQL probe confirmed via docker exec psql)
+- [x] 3.7 `Message` / `NewMessage` from `src/types.ts` type-check against a sample query — 9b4960e (scratch file with Message/NewMessage/LessonChatMessage shapes passed `astro check`)
 
 ### Phase 4: Deploy to Production Supabase
 

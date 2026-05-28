@@ -4,7 +4,7 @@ title: Lesson & chat data model (schema + RLS + seed flag)
 status: in_progress
 created: 2026-05-28
 updated: 2026-05-28
-phase: 3  # phase 1 done at ad8301d (1.1-1.7); phase 2 done at c9e25df (2.1-2.8); phase 3 next (seed + types)
+phase: 4  # phase 1 done at ad8301d (1.1-1.7); phase 2 done at c9e25df (2.1-2.8); phase 3 done at 9b4960e (3.1-3.7); phase 4 next (deploy to production Supabase)
 roadmap_ref: F-01
 prd_refs:
   - NFR (privacy)
