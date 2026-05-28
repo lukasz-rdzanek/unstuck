@@ -102,12 +102,14 @@ What's already in place in the codebase as of 2026-05-27 (auto-researched + user
 
 ## Backlog Handoff
 
-| Roadmap ID | Change ID                     | Suggested issue title                                  | Ready for `/10x-plan` | Notes |
-| ---------- | ----------------------------- | ------------------------------------------------------ | --------------------- | ----- |
-| F-01       | `lesson-chat-data-model`      | Lesson & chat data model (schema + RLS + seed flag)    | yes                   | Run `/10x-plan lesson-chat-data-model` — the only `ready` item; unblocks everything. |
-| S-01       | `lesson-workspace-shell`      | Lesson workspace shell (catalog + video + markdown)    | no                    | Needs F-01. Cross-device floor (OQ 2) is a non-blocking unknown — ship desktop-first. |
-| S-02       | `lesson-scoped-chat`          | Lesson-scoped chat — post, read, live (NORTH STAR)     | no                    | Needs S-01 + F-01. The validation milestone. |
-| S-03       | `operator-message-moderation` | Operator message moderation (out-of-band delete)       | no                    | Needs F-01 + S-02. |
+> **Mirrored to Linear** (2026-05-28): [Unstuck — MVP Roadmap](https://linear.app/unstack-ai/project/unstuck-mvp-roadmap-b74a3f5bda9a) (team `UNS`). Each item below is a Linear issue with native blocked-by relations (F-01 → S-01 → S-02 → S-03) and `foundation` / `slice` / `north-star` labels. Linear is the canonical, shareable backlog; this table is the local index.
+
+| Roadmap ID | Change ID                     | Linear | Suggested issue title                                  | Ready for `/10x-plan` | Notes |
+| ---------- | ----------------------------- | ------ | ------------------------------------------------------ | --------------------- | ----- |
+| F-01       | `lesson-chat-data-model`      | [UNS-5](https://linear.app/unstack-ai/issue/UNS-5) | Lesson & chat data model (schema + RLS + seed flag)    | yes                   | Run `/10x-plan lesson-chat-data-model` — the only `ready` item; unblocks everything. |
+| S-01       | `lesson-workspace-shell`      | [UNS-6](https://linear.app/unstack-ai/issue/UNS-6) | Lesson workspace shell (catalog + video + markdown)    | no                    | Needs F-01. Cross-device floor (OQ 2) is a non-blocking unknown — ship desktop-first. |
+| S-02       | `lesson-scoped-chat`          | [UNS-7](https://linear.app/unstack-ai/issue/UNS-7) | Lesson-scoped chat — post, read, live (NORTH STAR)     | no                    | Needs S-01 + F-01. The validation milestone. |
+| S-03       | `operator-message-moderation` | [UNS-8](https://linear.app/unstack-ai/issue/UNS-8) | Operator message moderation (out-of-band delete)       | no                    | Needs F-01 + S-02. |
 
 ## Open Roadmap Questions
 
