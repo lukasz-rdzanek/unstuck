@@ -461,11 +461,11 @@ cache it within a statement.
 
 #### Automated
 
-- [ ] 4.1 `npx supabase db push` exits 0 (or "Remote database is up to date")
-- [ ] 4.2 `npx supabase gen types typescript --linked` matches local `database.types.ts` (no drift)
+- [x] 4.1 `npx supabase db push` exits 0 — applied 20260528122957_lesson_chat_schema + 20260528140054_lesson_chat_rls to prod; local↔remote in sync
+- [x] 4.2 `npx supabase gen types typescript --linked` matches local `database.types.ts` (no drift) — only diff is `__InternalSupabase.PostgrestVersion: "14.5"` metadata block emitted by prod-side newer PostgREST; zero schema drift (no tables/columns/functions differ)
 
 #### Manual
 
-- [ ] 4.3 Prod Studio (rhcioqeawpbuylbmkxnr): all 5 tables exist with RLS enabled
-- [ ] 4.4 As service_role on prod: lessons/messages/enrollments empty; profiles has 2 rows (test@/prod-test@ from backfill)
-- [ ] 4.5 Deployed Worker `/auth/signup` still returns 200 (auth.users untouched)
+- [x] 4.3 Prod Studio (rhcioqeawpbuylbmkxnr): all 5 tables exist with RLS enabled+forced; exactly 7 policies present matching Phase 2 set; `has_course_access` (STABLE SECURITY DEFINER) + `handle_new_user` (VOLATILE SECURITY DEFINER) both present
+- [x] 4.4 Prod as service_role: lessons/messages/enrollments/courses all 0 rows; profiles has 2 rows matching auth.users count (backfill confirmed)
+- [x] 4.5 Deployed Worker `/auth/signup` returns 200 (10.6KB HTML signup page renders; ~660ms; auth.users untouched by migrations)
