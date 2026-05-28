@@ -1,20 +1,38 @@
 import type { APIRoute } from "astro";
+import { z } from "zod";
 import { createClient } from "@/lib/supabase";
 
+export const prerender = false;
+
 /**
- * Same-origin path guard for `?next=`: accepts a single leading `/` and
- * rejects `//`-prefixed values (protocol-relative URLs that would land
- * the browser on a foreign origin after sign-in).
+ * Same-origin path guard for `?next=`: accepts a single leading `/`
+ * followed by neither `/` nor `\`. Rejecting `\` matters because browsers
+ * normalize backslash → forward-slash in Location, so `/\evil.com` would
+ * otherwise survive a `startsWith("//")` check and resolve to
+ * `https://evil.com/`. See: `new URL("/\\evil.com", "https://x").origin`.
  */
 function isSafeNext(next: unknown): next is string {
-  return typeof next === "string" && next.startsWith("/") && !next.startsWith("//");
+  return typeof next === "string" && /^\/(?![/\\])/.test(next);
 }
+
+const signinSchema = z.object({
+  email: z.email("Enter a valid email address"),
+  password: z.string().min(1, "Password is required"),
+});
 
 export const POST: APIRoute = async (context) => {
   const form = await context.request.formData();
-  const email = form.get("email") as string;
-  const password = form.get("password") as string;
   const next = form.get("next");
+
+  const parsed = signinSchema.safeParse({
+    email: form.get("email") ?? "",
+    password: form.get("password") ?? "",
+  });
+  if (!parsed.success) {
+    const params = new URLSearchParams({ error: parsed.error.issues[0].message });
+    if (isSafeNext(next)) params.set("next", next);
+    return context.redirect(`/auth/signin?${params.toString()}`);
+  }
 
   const supabase = createClient(context.request.headers, context.cookies);
   if (!supabase) {
@@ -22,8 +40,8 @@ export const POST: APIRoute = async (context) => {
     if (isSafeNext(next)) params.set("next", next);
     return context.redirect(`/auth/signin?${params.toString()}`);
   }
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
 
+  const { error } = await supabase.auth.signInWithPassword(parsed.data);
   if (error) {
     const params = new URLSearchParams({ error: error.message });
     if (isSafeNext(next)) params.set("next", next);

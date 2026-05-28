@@ -1,7 +1,7 @@
 ---
 change_id: lesson-workspace-shell
 title: Lesson workspace shell — first slice with space/cosmic visual direction
-status: implementing
+status: impl_reviewed
 created: 2026-05-28
 updated: 2026-05-28
 archived_at: null

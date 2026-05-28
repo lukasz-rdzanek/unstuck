@@ -73,6 +73,13 @@ create policy "lessons_select_gated"
   using (public.has_course_access(course_id));
 
 -- Course/lesson content management is service_role only.
+--
+-- TRUST BOUNDARY (annotated S-01, 2026-05-28): lessons.content_md is rendered
+-- as trusted HTML by src/lib/markdown.ts via Astro's `set:html` directive.
+-- The trust holds because this policy keeps INSERT/UPDATE out of authenticated
+-- hands — only service_role writes lesson content. Relaxing this without
+-- wiring a sanitizer into renderMarkdown would create an XSS surface on every
+-- lesson page render.
 
 
 -- ----------------------------------------------------------------------------

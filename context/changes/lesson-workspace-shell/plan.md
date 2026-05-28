@@ -839,9 +839,9 @@ out-of-scope and a follow-up candidate.
 
 #### Automated
 
-- [x] 5.1 `npm run lint` exits 0
-- [x] 5.2 `npm run build` exits 0
-- [x] 5.3 `npx astro check` exits 0
+- [x] 5.1 `npm run lint` exits 0 — 4228222
+- [x] 5.2 `npm run build` exits 0 — 4228222
+- [x] 5.3 `npx astro check` exits 0 — 4228222
 
 #### Manual
 

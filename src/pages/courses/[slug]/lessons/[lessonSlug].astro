@@ -41,6 +41,8 @@ const pageTitle = lesson ? `${lesson.title} — Unstuck` : "Lesson not found —
                     allowfullscreen
                     referrerpolicy="strict-origin"
                     loading="lazy"
+                    sandbox="allow-scripts allow-same-origin allow-presentation"
+                    allow="autoplay; fullscreen; picture-in-picture"
                     title={lesson.title}
                   />
                 ) : (
