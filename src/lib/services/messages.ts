@@ -87,17 +87,27 @@ export interface InsertMessageResult {
   error: { message: string; code?: string } | null;
 }
 
-export async function insertMessage(supabase: ChatSupabaseClient, msg: NewMessage): Promise<InsertMessageResult> {
-  // author_id is NOT in the request: RLS INSERT policy enforces
-  // `author_id = auth.uid()` server-side via WITH CHECK; we let the
-  // database fill it from the session.
+export async function insertMessage(
+  supabase: ChatSupabaseClient,
+  msg: NewMessage,
+  authorId: string,
+): Promise<InsertMessageResult> {
+  // author_id MUST be set explicitly. RLS policy `messages_insert_peer_
+  // own_non_seed` validates via WITH CHECK that `author_id = auth.uid()`,
+  // but does NOT auto-inject from the session — the schema has no DEFAULT
+  // on author_id, so omitting the column yields NULL which fails the
+  // policy predicate (Phase 3 caught this during manual verification).
+  // Caller passes the authenticated user's id explicitly; the browser
+  // client's session carries the JWT so auth.uid() matches and RLS
+  // accepts the insert.
   const { data, error } = await supabase
     .from("messages")
-    .insert({ lesson_id: msg.lesson_id, body: msg.body })
+    .insert({ lesson_id: msg.lesson_id, body: msg.body, author_id: authorId })
     .select(EMBED_AUTHOR)
     .single();
 
   if (error) {
+    console.error("[messages] insertMessage failed:", error.message, error.code);
     return { data: null, error: { message: error.message, code: error.code } };
   }
   return { data: data as unknown as LessonChatMessage, error: null };

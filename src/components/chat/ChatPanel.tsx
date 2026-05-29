@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import MessageBubble from "./MessageBubble";
+import Composer from "./Composer";
 import { useChatMessages } from "./useChatMessages";
 
 interface Props {
@@ -16,10 +17,22 @@ const SCROLL_BOTTOM_THRESHOLD = 50;
  * pagination + auto-scroll discipline). Phase 2 wires Realtime; Phase 3
  * wires the Composer.
  */
-export default function ChatPanel({ lessonId, userId, userDisplayName: _userDisplayName }: Props) {
-  const { messages, isLoading, error, hasOlder, isLoadingOlder, loadOlder, isReconnecting } = useChatMessages({
+export default function ChatPanel({ lessonId, userId, userDisplayName }: Props) {
+  const {
+    messages,
+    isLoading,
+    error,
+    hasOlder,
+    isLoadingOlder,
+    loadOlder,
+    isReconnecting,
+    postMessage,
+    retryMessage,
+    discardMessage,
+  } = useChatMessages({
     lessonId,
     userId,
+    userDisplayName,
   });
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
@@ -86,7 +99,7 @@ export default function ChatPanel({ lessonId, userId, userDisplayName: _userDisp
         <div
           ref={scrollRef}
           onScroll={handleScroll}
-          className="flex h-[60vh] flex-col gap-3 overflow-y-auto lg:h-[calc(100vh-16rem)]"
+          className="chat-scroll flex h-[60vh] flex-col gap-3 overflow-y-auto lg:h-[calc(100vh-16rem)]"
         >
           {error ? (
             <p className="text-muted-foreground p-4 text-center text-sm">{error}</p>
@@ -110,9 +123,25 @@ export default function ChatPanel({ lessonId, userId, userDisplayName: _userDisp
                   {isLoadingOlder ? "Loading…" : "Load older messages"}
                 </button>
               )}
-              {messages.map((message) => (
-                <MessageBubble key={message.id} message={message} isOwn={message.author?.id === userId} now={now} />
-              ))}
+              {messages.map((message) => {
+                const tempId = message.tempId;
+                return (
+                  <MessageBubble
+                    key={message.tempId ?? message.id}
+                    message={message}
+                    isOwn={message.author?.id === userId}
+                    now={now}
+                    onRetry={tempId ? () => void retryMessage(tempId) : undefined}
+                    onDiscard={
+                      tempId
+                        ? () => {
+                            discardMessage(tempId);
+                          }
+                        : undefined
+                    }
+                  />
+                );
+              })}
             </>
           )}
         </div>
@@ -130,9 +159,12 @@ export default function ChatPanel({ lessonId, userId, userDisplayName: _userDisp
         )}
       </div>
 
-      <div className="border-border text-muted-foreground mt-3 border-t pt-3 text-center text-xs" data-composer-slot>
-        Composer lands in Phase 3
-      </div>
+      <Composer
+        onSubmit={(body) => {
+          void postMessage(body);
+        }}
+        disabled={userId === null}
+      />
     </div>
   );
 }

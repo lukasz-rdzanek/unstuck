@@ -942,30 +942,30 @@ as out-of-scope; would be a separate change.
 
 #### Automated
 
-- [x] 2.1 `npm run lint` exits 0
-- [x] 2.2 `npm run build` exits 0
-- [x] 2.3 `npx astro check` exits 0
+- [x] 2.1 `npm run lint` exits 0 — c65d0b5
+- [x] 2.2 `npm run build` exits 0 — c65d0b5
+- [x] 2.3 `npx astro check` exits 0 — c65d0b5
 
 #### Manual
 
-- [x] 2.4 INSERT via Studio appears in both open lesson windows within 2 s
-- [x] 2.5 Offline 30 s + insert in other window + restore network → "Reconnected — catching up" toast briefly + missed message present
+- [x] 2.4 INSERT via Studio appears in both open lesson windows within 2 s — c65d0b5
+- [x] 2.5 Offline 30 s + insert in other window + restore network → "Reconnected — catching up" toast briefly + missed message present — c65d0b5
 
 ### Phase 3: Composer + optimistic post + error UX
 
 #### Automated
 
-- [ ] 3.1 `npm run lint` exits 0
-- [ ] 3.2 `npm run build` exits 0
-- [ ] 3.3 `npx astro check` exits 0
+- [x] 3.1 `npm run lint` exits 0
+- [x] 3.2 `npm run build` exits 0
+- [x] 3.3 `npx astro check` exits 0
 
 #### Manual
 
-- [ ] 3.4 Post message: bubble appears instantly with own styling (bg-primary/20 right)
-- [ ] 3.5 Posted message appears in second window within 2 s
-- [ ] 3.6 Shift+Enter inserts newline; body preserves linebreaks (whitespace-pre-wrap)
-- [ ] 3.7 Char counter appears at 3000+ chars
-- [ ] 3.8 Offline → post → bubble shows "Failed · Retry · Discard"; Retry → succeeds; Discard → bubble removed
+- [x] 3.4 Post message: bubble appears instantly with own styling (bg-primary/20 right)
+- [x] 3.5 Posted message appears in second window within 2 s
+- [x] 3.6 Shift+Enter inserts newline; body preserves linebreaks (whitespace-pre-wrap)
+- [x] 3.7 Char counter appears at 3000+ chars
+- [x] 3.8 Offline → post → bubble shows "Failed · Retry · Discard"; Retry → succeeds; Discard → bubble removed
 
 ### Phase 4: Minimal mobile bottom-drawer
 
