@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase";
 import { getLessonBySlugs } from "@/lib/services/courses";
 import { renderMarkdown } from "@/lib/markdown";
 import { parseVideoUrl } from "@/lib/video-embed";
+import ChatPanel from "@/components/chat/ChatPanel";
 
 const { slug, lessonSlug } = Astro.params;
 const supabase = createClient(Astro.request.headers, Astro.cookies);
@@ -62,13 +63,12 @@ const pageTitle = lesson ? `${lesson.title} — Unstuck` : "Lesson not found —
             </div>
 
             <aside class="lg:sticky lg:top-8 lg:self-start">
-              <div class="shadow-cosmic-glow bg-card/40 border-border rounded-2xl border p-6 backdrop-blur-xl">
-                <h2 class="text-foreground mb-3 text-lg font-semibold">Live peer chat</h2>
-                <p class="text-muted-foreground text-sm leading-relaxed">
-                  Coming in S-02. The chat panel will live here on every lesson — operator-seeded solutions pinned on
-                  top, peer messages chronological below.
-                </p>
-              </div>
+              <ChatPanel
+                client:load
+                lessonId={lesson.id}
+                userId={Astro.locals.user?.id ?? null}
+                userDisplayName={Astro.locals.user?.email?.split("@")[0] ?? null}
+              />
             </aside>
           </div>
         </>

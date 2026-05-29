@@ -16,8 +16,12 @@ export default defineConfig({
   adapter: cloudflare(),
   env: {
     schema: {
-      SUPABASE_URL: envField.string({ context: "server", access: "secret", optional: true }),
-      SUPABASE_KEY: envField.string({ context: "server", access: "secret", optional: true }),
+      // Supabase URL + anon key are exposed to both server (SSR client) and
+      // client (Realtime WebSocket). The anon key is gated by RLS, which is
+      // the standard Supabase pattern. `context: "client"` makes them
+      // accessible from astro:env/client AND astro:env/server.
+      SUPABASE_URL: envField.string({ context: "client", access: "public", optional: true }),
+      SUPABASE_KEY: envField.string({ context: "client", access: "public", optional: true }),
     },
   },
 });

@@ -1,4 +1,4 @@
-import { SUPABASE_URL, SUPABASE_KEY } from "astro:env/server";
+import { SUPABASE_URL, SUPABASE_KEY } from "astro:env/client";
 
 export interface ConfigStatus {
   name: string;
