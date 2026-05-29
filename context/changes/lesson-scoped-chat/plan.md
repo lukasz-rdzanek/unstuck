@@ -925,31 +925,31 @@ as out-of-scope; would be a separate change.
 
 #### Automated
 
-- [x] 1.1 `npm run lint` exits 0
-- [x] 1.2 `npm run build` exits 0
-- [x] 1.3 `npx astro check` exits 0
+- [x] 1.1 `npm run lint` exits 0 — f0baa1d
+- [x] 1.2 `npm run build` exits 0 — f0baa1d
+- [x] 1.3 `npx astro check` exits 0 — f0baa1d
 
 #### Manual
 
-- [x] 1.4 Lesson chat renders seeded message at top + peer message below (from F-01 seed)
-- [x] 1.5 Seeded and peer messages format identically (per FR-006 AC)
-- [x] 1.6 Relative time shows "X min ago" or "Xh ago"
-- [x] 1.7 Empty chat shows "No messages yet — be the first to post"
-- [x] 1.8 Refresh page: chat reloads, scroll lands at bottom
-- [x] 1.9 Composer placeholder visible below messages
+- [x] 1.4 Lesson chat renders seeded message at top + peer message below (from F-01 seed) — f0baa1d
+- [x] 1.5 Seeded and peer messages format identically (per FR-006 AC) — f0baa1d
+- [x] 1.6 Relative time shows "X min ago" or "Xh ago" — f0baa1d
+- [x] 1.7 Empty chat shows "No messages yet — be the first to post" — f0baa1d
+- [x] 1.8 Refresh page: chat reloads, scroll lands at bottom — f0baa1d
+- [x] 1.9 Composer placeholder visible below messages — f0baa1d
 
 ### Phase 2: Realtime subscription + reconnect handling
 
 #### Automated
 
-- [ ] 2.1 `npm run lint` exits 0
-- [ ] 2.2 `npm run build` exits 0
-- [ ] 2.3 `npx astro check` exits 0
+- [x] 2.1 `npm run lint` exits 0
+- [x] 2.2 `npm run build` exits 0
+- [x] 2.3 `npx astro check` exits 0
 
 #### Manual
 
-- [ ] 2.4 INSERT via Studio appears in both open lesson windows within 2 s
-- [ ] 2.5 Offline 30 s + insert in other window + restore network → "Reconnected — catching up" toast briefly + missed message present
+- [x] 2.4 INSERT via Studio appears in both open lesson windows within 2 s
+- [x] 2.5 Offline 30 s + insert in other window + restore network → "Reconnected — catching up" toast briefly + missed message present
 
 ### Phase 3: Composer + optimistic post + error UX
 

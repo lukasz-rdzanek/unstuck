@@ -17,7 +17,7 @@ const SCROLL_BOTTOM_THRESHOLD = 50;
  * wires the Composer.
  */
 export default function ChatPanel({ lessonId, userId, userDisplayName: _userDisplayName }: Props) {
-  const { messages, isLoading, error, hasOlder, isLoadingOlder, loadOlder } = useChatMessages({
+  const { messages, isLoading, error, hasOlder, isLoadingOlder, loadOlder, isReconnecting } = useChatMessages({
     lessonId,
     userId,
   });
@@ -78,6 +78,11 @@ export default function ChatPanel({ lessonId, userId, userDisplayName: _userDisp
       </header>
 
       <div className="relative">
+        {isReconnecting && (
+          <div className="bg-card border-border text-foreground absolute top-2 left-1/2 z-10 -translate-x-1/2 rounded-full border px-3 py-1 text-xs shadow-md">
+            Reconnected — catching up
+          </div>
+        )}
         <div
           ref={scrollRef}
           onScroll={handleScroll}
