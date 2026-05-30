@@ -42,19 +42,6 @@ export async function getCourseBySlug(supabase: SupabaseClient, slug: string): P
   return data;
 }
 
-export async function listLessonsForCourse(supabase: SupabaseClient, courseId: string): Promise<Lesson[]> {
-  const { data, error } = await supabase
-    .from("lessons")
-    .select("*")
-    .eq("course_id", courseId)
-    .order("position", { ascending: true });
-  if (error) {
-    console.error("[courses] listLessonsForCourse failed:", error.message);
-    return [];
-  }
-  return data;
-}
-
 /**
  * Course-detail view (S-05): chapters in course order, each carrying its
  * lessons in chapter-local position order. One PostgREST embed query.

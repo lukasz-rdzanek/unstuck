@@ -189,6 +189,24 @@ catastrophically and we need to fall back to the flat
 "one course → many lessons" shape. **Loses chapter metadata**;
 lesson content is preserved.
 
+> ⚠️ **Pre-flight check (do this BEFORE the SQL below).** If any course
+> has lessons across multiple chapters with overlapping positions
+> (e.g., chapter A position 1 + chapter B position 1 in the same
+> course), the `ADD CONSTRAINT lessons_course_id_position_key` step
+> below will fail because two rows now share `(course_id, position)`.
+> The BEGIN/COMMIT wrap catches the failure so no data is corrupted —
+> but you'll need to `UPDATE lessons SET position = ...` to make
+> positions unique per-course first. Find collisions with:
+> ```sql
+> SELECT course_id, position, COUNT(*) AS dup
+> FROM public.lessons
+> GROUP BY course_id, position
+> HAVING COUNT(*) > 1;
+> ```
+> Resolve each collision (typically by reassigning the higher-numbered
+> chapter's lessons to positions that don't clash), then run the
+> revert below.
+
 ```sql
 BEGIN;
 
