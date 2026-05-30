@@ -65,7 +65,11 @@ export function useChatMessages({ lessonId, userId, userDisplayName }: UseChatMe
   const [isLoadingOlder, setIsLoadingOlder] = useState(false);
   const [isReconnecting, setIsReconnecting] = useState(false);
 
-  const supabaseRef = useRef(createClientBrowser());
+  // Lazy ref init — calling createClientBrowser() inline in useRef()
+  // would run the factory twice under React 19 Strict Mode (impl-review
+  // F2) and leak the second client. The subscription effect populates
+  // this on first run.
+  const supabaseRef = useRef<ReturnType<typeof createClientBrowser>>(null);
   // Refs the post helpers read at call time so async callbacks see fresh
   // identity without forcing the subscription effect to tear down. Synced
   // via useEffect (mutating refs during render trips react-hooks rules).
@@ -75,8 +79,14 @@ export function useChatMessages({ lessonId, userId, userDisplayName }: UseChatMe
     userIdRef.current = userId;
     userDisplayNameRef.current = userDisplayName;
   }, [userId, userDisplayName]);
+  // Pending optimistic-post fallback timers — declared above submitInsert
+  // (declare-before-use) and cleared inside the subscription effect's
+  // cleanup so a lessonId change cancels in-flight timers, not just
+  // unmount (per impl-review F1).
+  const pendingTimeoutsRef = useRef<Set<number>>(new Set());
 
   useEffect(() => {
+    supabaseRef.current ??= createClientBrowser();
     const supabase = supabaseRef.current;
     if (!supabase) {
       setError("Chat unavailable — Supabase not configured");
@@ -199,6 +209,12 @@ export function useChatMessages({ lessonId, userId, userDisplayName }: UseChatMe
       window.removeEventListener("offline", handleOffline);
       window.removeEventListener("online", handleOnline);
       void supabase.removeChannel(channel);
+      // Cancel any optimistic-post fallback timers from THIS lesson —
+      // they reference tempIds that won't match anything in the next
+      // lesson's state. Clearing here (not in a separate []-deps
+      // effect) means a lesson-switch cancels in-flight timers too.
+      for (const id of pendingTimeoutsRef.current) window.clearTimeout(id);
+      pendingTimeoutsRef.current.clear();
     };
   }, [lessonId]);
 
@@ -266,15 +282,6 @@ export function useChatMessages({ lessonId, userId, userDisplayName }: UseChatMe
     },
     [lessonId],
   );
-
-  // Track scheduled fallback timeouts so we can clear them on unmount.
-  const pendingTimeoutsRef = useRef<Set<number>>(new Set());
-  useEffect(() => {
-    return () => {
-      for (const id of pendingTimeoutsRef.current) window.clearTimeout(id);
-      pendingTimeoutsRef.current.clear();
-    };
-  }, []);
 
   const postMessage = useCallback(
     async (body: string) => {

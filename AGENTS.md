@@ -10,7 +10,7 @@ Guidance for AI Agents working in this repository. Project-specific conventions,
 - **Astro vs React components**: use a React component when it holds state, attaches event listeners, or re-renders in response to user input (form state, live chat, drag-and-drop, real-time updates). Use an Astro component for layout, navigation, content blocks, and any markup that renders once and never updates client-side. The bright line is "is there state or an event handler?" — checkable in a diff.
 - **Tailwind class merging**: use `cn()` from `@/lib/utils` (clsx + tailwind-merge). Never concatenate class strings manually.
 - **shadcn/ui**: components live in `src/components/ui/` (using the "new-york" style variant). Install new ones with `npx shadcn@latest add [name]`.
-- **React hooks**: extract to `src/components/hooks/`.
+- **React hooks**: cross-cutting hooks live in `src/components/hooks/`. **Single-consumer, feature-scoped hooks** may co-locate with their feature folder (e.g. `src/components/chat/useChatMessages.ts` ships with the chat island and has no other consumer). The bright line: if more than one feature would import the hook, hoist it to `src/components/hooks/`.
 - **Services and helpers**: `src/lib/` (with `src/lib/services/` for extracted business logic).
 - **Shared types** (entities, DTOs): `src/types.ts`.
 - **Supabase migrations**: live in `supabase/migrations/`, named `YYYYMMDDHHmmss_short_description.sql`.

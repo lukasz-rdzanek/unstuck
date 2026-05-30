@@ -19,6 +19,18 @@ const course = result?.course;
 const html = lesson ? renderMarkdown(lesson.content_md) : "";
 const video = lesson ? parseVideoUrl(lesson.video_url) : null;
 const pageTitle = lesson ? `${lesson.title} — Unstuck` : "Lesson not found — Unstuck";
+
+// Resolve the signed-in user's display_name from profiles (per impl-review
+// F3). Falls back to email-local-part only if no profile row exists, then
+// to "Learner" — but the signup trigger guarantees a profile row, so the
+// fallback rarely fires in practice. Surfacing the email prefix to all
+// chat viewers would be a privacy regression.
+let userDisplayName: string | null = null;
+const userId = Astro.locals.user?.id ?? null;
+if (supabase && userId) {
+  const { data: profile } = await supabase.from("profiles").select("display_name").eq("id", userId).single();
+  userDisplayName = profile?.display_name ?? Astro.locals.user?.email?.split("@")[0] ?? null;
+}
 ---
 
 <AppLayout title={pageTitle}>
@@ -63,12 +75,7 @@ const pageTitle = lesson ? `${lesson.title} — Unstuck` : "Lesson not found —
             </div>
 
             <aside class="lg:sticky lg:top-8 lg:self-start">
-              <ChatPanel
-                client:load
-                lessonId={lesson.id}
-                userId={Astro.locals.user?.id ?? null}
-                userDisplayName={Astro.locals.user?.email?.split("@")[0] ?? null}
-              />
+              <ChatPanel client:load lessonId={lesson.id} userId={userId} userDisplayName={userDisplayName} />
             </aside>
           </div>
         </>
