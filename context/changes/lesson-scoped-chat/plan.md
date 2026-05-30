@@ -988,15 +988,15 @@ as out-of-scope; would be a separate change.
 
 #### Automated
 
-- [x] 5.1 `npm run lint` exits 0
-- [x] 5.2 `npm run build` exits 0
-- [x] 5.3 `npx astro check` exits 0
-- [x] 5.4 `npx supabase db reset` applies cleanly with expanded seed
+- [x] 5.1 `npm run lint` exits 0 — fd5daec
+- [x] 5.2 `npm run build` exits 0 — fd5daec
+- [x] 5.3 `npx astro check` exits 0 — fd5daec
+- [x] 5.4 `npx supabase db reset` applies cleanly with expanded seed — fd5daec
 
 #### Manual
 
-- [x] 5.5 `docs/operator/seeding.md` renders cleanly
-- [x] 5.6 After db reset, lesson chat shows ~4 seeded + 1 peer message
-- [x] 5.7 Full end-to-end demo: anon → catalog → course → sign-in → lesson → chat populated → post → live → narrow viewport drawer works
-- [x] 5.8 AGENTS.md has the client-env exposure paragraph
-- [ ] 5.9 `change.md.status: implemented` after epilogue commit
+- [x] 5.5 `docs/operator/seeding.md` renders cleanly — fd5daec
+- [x] 5.6 After db reset, lesson chat shows ~4 seeded + 1 peer message — fd5daec
+- [x] 5.7 Full end-to-end demo: anon → catalog → course → sign-in → lesson → chat populated → post → live → narrow viewport drawer works — fd5daec
+- [x] 5.8 AGENTS.md has the client-env exposure paragraph — fd5daec
+- [x] 5.9 `change.md.status: implemented` after epilogue commit
