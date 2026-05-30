@@ -96,6 +96,17 @@ insert into public.messages (id, lesson_id, author_id, body, is_seeded) values
    '11111111-1111-1111-1111-111111111111',
    'Peer question — below seeds', false);
 
+-- S-06: one completion per user in the free-course lesson — own-only RLS
+-- regression target. Peer (11111111) completed the free lesson; operator
+-- (22222222) also completed it. Cell 6 asserts the peer sees only their
+-- own row, cannot insert with foreign user_id, and cannot delete the
+-- operator's row.
+insert into public.lesson_completions (user_id, lesson_id) values
+  ('11111111-1111-1111-1111-111111111111',
+   'cccccccc-cccc-cccc-cccc-cccccccccccc'),
+  ('22222222-2222-2222-2222-222222222222',
+   'cccccccc-cccc-cccc-cccc-cccccccccccc');
+
 -- Re-enable RLS for the assertion phase.
 set local row_security = on;
 
@@ -347,8 +358,59 @@ end $$;
 reset role;
 
 -- ----------------------------------------------------------------------------
+-- Cell 6: authenticated, lesson_completions own-only RLS (S-06).
+-- Peer (11111111) must see only their own completion row, must not be able
+-- to INSERT a row with a foreign user_id, and must not be able to DELETE
+-- another user's completion row.
+-- ----------------------------------------------------------------------------
+reset role;
+set local role authenticated;
+set local request.jwt.claims to '{"sub":"11111111-1111-1111-1111-111111111111","role":"authenticated"}';
+
+do $$
+declare
+  cnt int;
+  affected int;
+  insert_blocked boolean := false;
+begin
+  -- Peer sees only their own completion row (1, not 2).
+  select count(*) into cnt from public.lesson_completions;
+  if cnt != 1 then
+    raise exception '[auth-completions-own] expected 1 own completion visible, got %', cnt;
+  end if;
+
+  -- Peer cannot INSERT a row with operator's user_id (RLS WITH CHECK denial).
+  begin
+    insert into public.lesson_completions (user_id, lesson_id)
+    values ('22222222-2222-2222-2222-222222222222',
+            'cccccccc-cccc-cccc-cccc-cccccccccccc');
+    raise exception '[auth-completions-own] INSERT with foreign user_id should have been rejected by RLS';
+  exception when insufficient_privilege or check_violation then
+    insert_blocked := true;
+  end;
+  if not insert_blocked then
+    raise exception '[auth-completions-own] INSERT with foreign user_id was not blocked';
+  end if;
+
+  -- Peer attempts to DELETE operator's completion row → silent RLS denial
+  -- (row_count = 0, no error). The peer's own row is intentionally NOT
+  -- touched in this test — we only verify the cross-user case.
+  delete from public.lesson_completions
+   where user_id = '22222222-2222-2222-2222-222222222222'
+     and lesson_id = 'cccccccc-cccc-cccc-cccc-cccccccccccc';
+  get diagnostics affected = row_count;
+  if affected != 0 then
+    raise exception '[auth-completions-own] expected DELETE of foreign completion to affect 0 rows, got %', affected;
+  end if;
+
+  raise notice '[auth-completions-own] ok: completions own-only — SELECT/INSERT/DELETE all enforce user_id = auth.uid()';
+end $$;
+
+reset role;
+
+-- ----------------------------------------------------------------------------
 -- All assertions passed. Roll back the fixture so the DB is unchanged.
 -- ----------------------------------------------------------------------------
-do $$ begin raise notice '[rls_matrix] PASS — all 5 role cells assert green'; end $$;
+do $$ begin raise notice '[rls_matrix] PASS — all 6 role cells assert green'; end $$;
 
 rollback;
