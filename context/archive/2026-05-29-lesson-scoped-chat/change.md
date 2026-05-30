@@ -1,10 +1,10 @@
 ---
 change_id: lesson-scoped-chat
 title: Lesson-scoped chat — post, read, live (NORTH STAR)
-status: implemented
+status: archived
 created: 2026-05-29
 updated: 2026-05-30
-archived_at: null
+archived_at: 2026-05-30T10:58:07Z
 ---
 
 ## Notes
