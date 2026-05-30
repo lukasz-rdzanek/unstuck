@@ -578,26 +578,26 @@ revert" note.
 
 #### Automated
 
-- [x] 1.1 `npx supabase db reset` exits 0 after new migration
-- [x] 1.2 `npx supabase db lint` reports no new warnings
-- [x] 1.3 RLS matrix probe passes — completions cell prints PASS
-- [x] 1.4 Re-running `npx supabase gen types typescript --local` produces no diff against committed `database.types.ts`
-- [x] 1.5 `npx astro check` exits 0
-- [x] 1.6 `npm run lint` exits 0
-- [x] 1.7 `npm run build` exits 0
+- [x] 1.1 `npx supabase db reset` exits 0 after new migration — efd7a43
+- [x] 1.2 `npx supabase db lint` reports no new warnings — efd7a43
+- [x] 1.3 RLS matrix probe passes — completions cell prints PASS — efd7a43
+- [x] 1.4 Re-running `npx supabase gen types typescript --local` produces no diff against committed `database.types.ts` — efd7a43
+- [x] 1.5 `npx astro check` exits 0 — efd7a43
+- [x] 1.6 `npm run lint` exits 0 — efd7a43
+- [x] 1.7 `npm run build` exits 0 — efd7a43
 
 #### Manual
 
-- [ ] 1.8 Studio SQL confirms `lesson_completions` table exists and is queryable
-- [ ] 1.9 Scratch test of `getCompletedLessonIdsForCourse` returns a `Set` (empty in seed)
+- [x] 1.8 Studio SQL confirms `lesson_completions` table exists and is queryable — efd7a43
+- [x] 1.9 Scratch test of `getCompletedLessonIdsForCourse` returns a `Set` (empty in seed) — efd7a43
 
 ### Phase 2: API + UI — Mark Complete React island + course detail visual state
 
 #### Automated
 
-- [ ] 2.1 `npm run lint` exits 0
-- [ ] 2.2 `npx astro check` exits 0
-- [ ] 2.3 `npm run build` exits 0
+- [x] 2.1 `npm run lint` exits 0
+- [x] 2.2 `npx astro check` exits 0
+- [x] 2.3 `npm run build` exits 0
 
 #### Manual
 

@@ -2,9 +2,11 @@
 import AppLayout from "@/layouts/AppLayout.astro";
 import { createClient } from "@/lib/supabase";
 import { getLessonBySlugs } from "@/lib/services/courses";
+import { isLessonCompletedByUser } from "@/lib/services/completions";
 import { renderMarkdown } from "@/lib/markdown";
 import { parseVideoUrl } from "@/lib/video-embed";
 import ChatPanel from "@/components/chat/ChatPanel";
+import MarkCompleteButton from "@/components/lesson/MarkCompleteButton";
 
 const { slug, lessonSlug } = Astro.params;
 const supabase = createClient(Astro.request.headers, Astro.cookies);
@@ -31,6 +33,11 @@ if (supabase && userId) {
   const { data: profile } = await supabase.from("profiles").select("display_name").eq("id", userId).single();
   userDisplayName = profile?.display_name ?? Astro.locals.user?.email?.split("@")[0] ?? null;
 }
+
+// Seed the MarkCompleteButton island with the persisted completion state
+// so the initial render reflects truth (no flash of "Mark as complete"
+// on a refresh of an already-completed lesson).
+const isCompleted = supabase && userId && lesson ? await isLessonCompletedByUser(supabase, lesson.id, userId) : false;
 ---
 
 <AppLayout title={pageTitle}>
@@ -91,6 +98,12 @@ if (supabase && userId) {
                   service_role by F-01 RLS. Trust boundary documented in
                   src/lib/markdown.ts. */}
               <article class="prose prose-invert max-w-none" set:html={html} />
+
+              {userId && (
+                <div class="mt-8 border-t border-white/10 pt-6">
+                  <MarkCompleteButton client:load lessonId={lesson.id} initialCompleted={isCompleted} />
+                </div>
+              )}
             </div>
 
             <aside class="lg:sticky lg:top-8 lg:self-start">

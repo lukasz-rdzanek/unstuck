@@ -2,6 +2,7 @@
 import AppLayout from "@/layouts/AppLayout.astro";
 import { createClient } from "@/lib/supabase";
 import { getCourseBySlug, listChaptersWithLessonsForCourse } from "@/lib/services/courses";
+import { getCompletedLessonIdsForCourse } from "@/lib/services/completions";
 
 const { slug } = Astro.params;
 const supabase = createClient(Astro.request.headers, Astro.cookies);
@@ -12,7 +13,12 @@ if (!course) {
 }
 
 const chapters = course && supabase ? await listChaptersWithLessonsForCourse(supabase, course.id) : [];
-const isSignedIn = Astro.locals.user !== null;
+const userId = Astro.locals.user?.id ?? null;
+const isSignedIn = userId !== null;
+const completedLessonIds =
+  isSignedIn && supabase && course && userId
+    ? await getCompletedLessonIdsForCourse(supabase, course.id, userId)
+    : new Set<string>();
 const pageTitle = course ? `${course.title} — Unstuck` : "Course not found — Unstuck";
 ---
 
@@ -50,24 +56,48 @@ const pageTitle = course ? `${course.title} — Unstuck` : "Course not found —
                       </p>
                     ) : (
                       <ol class="space-y-3">
-                        {chapter.lessons.map((lesson) => (
-                          <li>
-                            <a
-                              href={`/courses/${course.slug}/lessons/${lesson.slug}`}
-                              class="bg-card/40 border-border hover:bg-card/60 flex items-center gap-4 rounded-xl border p-4 backdrop-blur-xl transition-colors"
-                            >
-                              <span class="text-muted-foreground font-mono text-sm">
-                                {String(lesson.position).padStart(2, "0")}
-                              </span>
-                              <span class="text-foreground font-medium">{lesson.title}</span>
-                              {lesson.video_url === null ? (
-                                <span class="text-muted-foreground ml-auto text-xs tracking-wide uppercase">
-                                  Reading
+                        {chapter.lessons.map((lesson) => {
+                          const done = completedLessonIds.has(lesson.id);
+                          return (
+                            <li>
+                              <a
+                                href={`/courses/${course.slug}/lessons/${lesson.slug}`}
+                                class="bg-card/40 border-border hover:bg-card/60 flex items-center gap-4 rounded-xl border p-4 backdrop-blur-xl transition-colors"
+                              >
+                                {done ? (
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    class="size-4 text-green-400"
+                                    aria-label="Completed"
+                                  >
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                    <path d="m9 11 3 3L22 4" />
+                                  </svg>
+                                ) : (
+                                  <span class="text-muted-foreground font-mono text-sm">
+                                    {String(lesson.position).padStart(2, "0")}
+                                  </span>
+                                )}
+                                <span
+                                  class:list={done ? "text-foreground/60 font-medium" : "text-foreground font-medium"}
+                                >
+                                  {lesson.title}
                                 </span>
-                              ) : null}
-                            </a>
-                          </li>
-                        ))}
+                                {lesson.video_url === null ? (
+                                  <span class="text-muted-foreground ml-auto text-xs tracking-wide uppercase">
+                                    Reading
+                                  </span>
+                                ) : null}
+                              </a>
+                            </li>
+                          );
+                        })}
                       </ol>
                     )
                   ) : null}
