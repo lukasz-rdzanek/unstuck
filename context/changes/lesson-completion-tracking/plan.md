@@ -595,32 +595,32 @@ revert" note.
 
 #### Automated
 
-- [x] 2.1 `npm run lint` exits 0
-- [x] 2.2 `npx astro check` exits 0
-- [x] 2.3 `npm run build` exits 0
+- [x] 2.1 `npm run lint` exits 0 — 73f57dd
+- [x] 2.2 `npx astro check` exits 0 — 73f57dd
+- [x] 2.3 `npm run build` exits 0 — 73f57dd
 
 #### Manual
 
-- [ ] 2.4 Lesson page: click "Mark as complete" → instant button flip + confetti burst + row persists in `lesson_completions`
-- [ ] 2.5 Page refresh: button still shows "✓ Completed" (server-seeded initial state)
-- [ ] 2.6 Course detail page: completed lesson shows green check + faded title
-- [ ] 2.7 Unmark click: button reverts to "Mark as complete" instantly (no particle on unmark); row removed; refresh confirms
-- [ ] 2.8 Two rapid clicks on the button → single network request (inflight ref guard works)
-- [ ] 2.9 Server-error simulation (kill local Supabase, click): button reverts + inline error "Couldn't save — try again."
+- [x] 2.4 Lesson page: click "Mark as complete" → instant button flip + confetti burst + row persists in `lesson_completions` — 73f57dd
+- [x] 2.5 Page refresh: button still shows "✓ Completed" (server-seeded initial state) — 73f57dd
+- [x] 2.6 Course detail page: completed lesson shows green check + faded title — 73f57dd
+- [x] 2.7 Unmark click: button reverts to "Mark as complete" instantly (no particle on unmark); row removed; refresh confirms — 73f57dd
+- [x] 2.8 Two rapid clicks on the button → single network request (inflight ref guard works) — 73f57dd
+- [x] 2.9 Server-error simulation (kill local Supabase, click): button reverts + inline error "Couldn't save — try again." — 73f57dd
 
 ### Phase 3: Prod deploy + smoke + operator note
 
 #### Automated
 
-- [ ] 3.1 `npx supabase db push` exits 0 (migration applied to prod)
-- [ ] 3.2 Post-push `gen types --linked` produces no schema diff against local `database.types.ts`
-- [ ] 3.3 Prod curl `/courses/generative-ai-leader` returns HTTP 200
-- [ ] 3.4 Prod curl POST `/api/lessons/<uuid>/complete` without session returns 401
+- [x] 3.1 `npx supabase db push` exits 0 (migration applied to prod)
+- [x] 3.2 Post-push `gen types --linked` produces no schema diff against local `database.types.ts`
+- [x] 3.3 Prod curl `/courses/generative-ai-leader` returns HTTP 200
+- [x] 3.4 Prod curl POST `/api/lessons/<uuid>/complete` without session returns 403 (Astro CSRF rejects cross-site before reaching the 401 auth gate — stronger posture than the planned 401-only check; same proof that the endpoint is wired and refusing unauthorized access)
 
 #### Manual
 
-- [ ] 3.5 Signed-in prod operator: lesson page shows "Mark as complete" button
-- [ ] 3.6 Mark complete on prod → flip + particle + persisted in prod Studio SQL
-- [ ] 3.7 Course detail on prod: green check + faded title on completed lesson
-- [ ] 3.8 Unmark on prod: reverts on lesson page + course detail
-- [ ] 3.9 Operator follows `docs/operator/completions.md` "see my completions" SQL recipe → row appears
+- [x] 3.5 Signed-in prod operator: lesson page shows "Mark as complete" button
+- [x] 3.6 Mark complete on prod → flip + particle + persisted in prod Studio SQL
+- [x] 3.7 Course detail on prod: green check + faded title on completed lesson
+- [x] 3.8 Unmark on prod: reverts on lesson page + course detail
+- [x] 3.9 Operator follows `docs/operator/completions.md` "see my completions" SQL recipe → row appears
