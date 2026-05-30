@@ -1,7 +1,7 @@
 ---
 change_id: lesson-chapters-and-types
 title: Course chapters and text-only lesson type
-status: implementing
+status: implemented
 created: 2026-05-30
 updated: 2026-05-30
 archived_at: null

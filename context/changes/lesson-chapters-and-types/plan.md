@@ -546,14 +546,14 @@ rollback recipe under a "Emergency revert" section.
 
 #### Automated
 
-- [x] 3.1 `npx supabase db push` exits 0 (migration applied to prod)
-- [x] 3.2 Post-push `gen types --linked` produces no diff against local-generated `database.types.ts`
-- [x] 3.3 `curl /courses/generative-ai-leader` on prod returns HTTP 200 and HTML contains "Introduction"
-- [x] 3.4 `curl /courses/generative-ai-leader/lessons/introduction` on prod returns HTTP 302 to signin (unchanged)
+- [x] 3.1 `npx supabase db push` exits 0 (migration applied to prod) — f64779b
+- [x] 3.2 Post-push `gen types --linked` produces no diff against local-generated `database.types.ts` — f64779b
+- [x] 3.3 `curl /courses/generative-ai-leader` on prod returns HTTP 200 and HTML contains "Introduction" — f64779b
+- [x] 3.4 `curl /courses/generative-ai-leader/lessons/introduction` on prod returns HTTP 302 to signin (unchanged) — f64779b
 
 #### Manual
 
-- [ ] 3.5 Prod Studio: `select * from public.chapters` returns auto-created "Introduction" chapter for `generative-ai-leader`
-- [ ] 3.6 Prod as anon: course detail page shows "Introduction" chapter heading above the signin CTA
-- [ ] 3.7 Prod signed-in: chapter heading + clickable lesson card; click renders lesson page unchanged
-- [ ] 3.8 Operator follows chapters.md recipe to add an "Extras" chapter + text-only lesson; renders correctly on prod
+- [x] 3.5 Prod Studio: `select * from public.chapters` returns auto-created "Introduction" chapter for `generative-ai-leader` — f64779b
+- [x] 3.6 Prod as anon: course detail page shows "Introduction" chapter heading above the signin CTA — f64779b
+- [x] 3.7 Prod signed-in: chapter heading + clickable lesson card; click renders lesson page unchanged — f64779b
+- [x] 3.8 Operator follows chapters.md recipe to add an "Extras" chapter + text-only lesson; renders correctly on prod — f64779b
