@@ -955,34 +955,34 @@ as out-of-scope; would be a separate change.
 
 #### Automated
 
-- [x] 3.1 `npm run lint` exits 0
-- [x] 3.2 `npm run build` exits 0
-- [x] 3.3 `npx astro check` exits 0
+- [x] 3.1 `npm run lint` exits 0 — d2ae86f
+- [x] 3.2 `npm run build` exits 0 — d2ae86f
+- [x] 3.3 `npx astro check` exits 0 — d2ae86f
 
 #### Manual
 
-- [x] 3.4 Post message: bubble appears instantly with own styling (bg-primary/20 right)
-- [x] 3.5 Posted message appears in second window within 2 s
-- [x] 3.6 Shift+Enter inserts newline; body preserves linebreaks (whitespace-pre-wrap)
-- [x] 3.7 Char counter appears at 3000+ chars
-- [x] 3.8 Offline → post → bubble shows "Failed · Retry · Discard"; Retry → succeeds; Discard → bubble removed
+- [x] 3.4 Post message: bubble appears instantly with own styling (bg-primary/20 right) — d2ae86f
+- [x] 3.5 Posted message appears in second window within 2 s — d2ae86f
+- [x] 3.6 Shift+Enter inserts newline; body preserves linebreaks (whitespace-pre-wrap) — d2ae86f
+- [x] 3.7 Char counter appears at 3000+ chars — d2ae86f
+- [x] 3.8 Offline → post → bubble shows "Failed · Retry · Discard"; Retry → succeeds; Discard → bubble removed — d2ae86f
 
 ### Phase 4: Minimal mobile bottom-drawer
 
 #### Automated
 
-- [ ] 4.1 `npm run lint` exits 0
-- [ ] 4.2 `npm run build` exits 0
-- [ ] 4.3 `npx astro check` exits 0
+- [x] 4.1 `npm run lint` exits 0
+- [x] 4.2 `npm run build` exits 0
+- [x] 4.3 `npx astro check` exits 0
 
 #### Manual
 
-- [ ] 4.4 Narrow viewport (< 1024 px): chat collapses to fixed bottom bar
-- [ ] 4.5 Tap bar → expands to 70 vh overlay with body scroll locked
-- [ ] 4.6 Tap close (X) → collapses back to bar
-- [ ] 4.7 New message while collapsed → pulse dot on bar; clears on expand
-- [ ] 4.8 Lesson body has bottom padding; last paragraph visible above collapsed bar
-- [ ] 4.9 Resize ≥ 1024 px: chat returns to desktop aside layout
+- [x] 4.4 Narrow viewport (< 1024 px): chat collapses to fixed bottom bar
+- [x] 4.5 Tap bar → expands to 70 vh overlay with body scroll locked
+- [x] 4.6 Tap close (X) → collapses back to bar
+- [x] 4.7 New message while collapsed → pulse dot on bar; clears on expand
+- [x] 4.8 Lesson body has bottom padding; last paragraph visible above collapsed bar
+- [x] 4.9 Resize ≥ 1024 px: chat returns to desktop aside layout
 
 ### Phase 5: Operator seeding docs + final verification + close-out
 
