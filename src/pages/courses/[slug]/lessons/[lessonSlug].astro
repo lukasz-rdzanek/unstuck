@@ -46,24 +46,43 @@ if (supabase && userId) {
           </a>
           <div class="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_360px]">
             <div class="min-w-0">
-              <div class="bg-card/40 border-border relative mb-6 aspect-video w-full overflow-hidden rounded-2xl border backdrop-blur-xl">
-                {video?.embedSrc ? (
-                  <iframe
-                    src={video.embedSrc}
-                    class="absolute inset-0 h-full w-full"
-                    allowfullscreen
-                    referrerpolicy="strict-origin"
-                    loading="lazy"
-                    sandbox="allow-scripts allow-same-origin allow-presentation"
-                    allow="autoplay; fullscreen; picture-in-picture"
-                    title={lesson.title}
-                  />
-                ) : (
-                  <div class="text-muted-foreground absolute inset-0 flex items-center justify-center p-8 text-center text-sm">
-                    Video preview unavailable for this URL.
-                  </div>
-                )}
-              </div>
+              {lesson.video_url !== null ? (
+                <div class="bg-card/40 border-border relative mb-6 aspect-video w-full overflow-hidden rounded-2xl border backdrop-blur-xl">
+                  {video?.embedSrc ? (
+                    <iframe
+                      src={video.embedSrc}
+                      class="absolute inset-0 h-full w-full"
+                      allowfullscreen
+                      referrerpolicy="strict-origin"
+                      loading="lazy"
+                      sandbox="allow-scripts allow-same-origin allow-presentation"
+                      allow="autoplay; fullscreen; picture-in-picture"
+                      title={lesson.title}
+                    />
+                  ) : (
+                    <div class="text-muted-foreground absolute inset-0 flex items-center justify-center p-8 text-center text-sm">
+                      Video preview unavailable for this URL.
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div class="mb-6 inline-flex items-center gap-2 rounded-full border border-purple-400/30 bg-purple-400/10 px-3 py-1 text-xs font-medium tracking-wide text-purple-200 uppercase">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="size-3"
+                  >
+                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                  </svg>
+                  Reading
+                </div>
+              )}
 
               <h1 class="text-cosmic-gradient mb-6 text-3xl font-bold tracking-tight sm:text-4xl">{lesson.title}</h1>
 

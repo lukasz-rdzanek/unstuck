@@ -512,27 +512,27 @@ rollback recipe under a "Emergency revert" section.
 
 #### Automated
 
-- [x] 1.1 `npx supabase db reset` exits 0 after new migration
-- [x] 1.2 `npx supabase db lint` reports no new warnings
-- [x] 1.3 RLS matrix probe passes — chapters cell prints PASS
-- [x] 1.4 Re-running `npx supabase gen types typescript --local` produces no diff against committed `database.types.ts`
-- [x] 1.5 `npx astro check` exits 0
-- [x] 1.6 `npm run lint` exits 0
-- [x] 1.7 `npm run build` exits 0
+- [x] 1.1 `npx supabase db reset` exits 0 after new migration — b724b36
+- [x] 1.2 `npx supabase db lint` reports no new warnings — b724b36
+- [x] 1.3 RLS matrix probe passes — chapters cell prints PASS — b724b36
+- [x] 1.4 Re-running `npx supabase gen types typescript --local` produces no diff against committed `database.types.ts` — b724b36
+- [x] 1.5 `npx astro check` exits 0 — b724b36
+- [x] 1.6 `npm run lint` exits 0 — b724b36
+- [x] 1.7 `npm run build` exits 0 — b724b36
 
 #### Manual
 
-- [ ] 1.8 Studio SQL confirms auto-created "Introduction" chapter exists per existing course
-- [ ] 1.9 Every existing lesson has a non-null `chapter_id` after migration; `video_url` preserved
-- [ ] 1.10 Scratch test of `listChaptersWithLessonsForCourse` returns one chapter with one lesson nested
+- [x] 1.8 Studio SQL confirms auto-created "Introduction" chapter exists per existing course — b724b36
+- [x] 1.9 Every existing lesson has a non-null `chapter_id` after migration; `video_url` preserved — b724b36
+- [x] 1.10 Scratch test of `listChaptersWithLessonsForCourse` returns one chapter with one lesson nested — b724b36
 
 ### Phase 2: UI — course detail hierarchy + lesson page text-only branch
 
 #### Automated
 
-- [ ] 2.1 `npm run lint` exits 0
-- [ ] 2.2 `npx astro check` exits 0
-- [ ] 2.3 `npm run build` exits 0
+- [x] 2.1 `npm run lint` exits 0
+- [x] 2.2 `npx astro check` exits 0
+- [x] 2.3 `npm run build` exits 0
 
 #### Manual
 

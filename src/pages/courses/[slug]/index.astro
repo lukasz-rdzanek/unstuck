@@ -1,7 +1,7 @@
 ---
 import AppLayout from "@/layouts/AppLayout.astro";
 import { createClient } from "@/lib/supabase";
-import { getCourseBySlug, listLessonsForCourse } from "@/lib/services/courses";
+import { getCourseBySlug, listChaptersWithLessonsForCourse } from "@/lib/services/courses";
 
 const { slug } = Astro.params;
 const supabase = createClient(Astro.request.headers, Astro.cookies);
@@ -11,8 +11,8 @@ if (!course) {
   Astro.response.status = 404;
 }
 
-const lessons = course && supabase ? await listLessonsForCourse(supabase, course.id) : [];
-const showLessons = Astro.locals.user !== null && lessons.length > 0;
+const chapters = course && supabase ? await listChaptersWithLessonsForCourse(supabase, course.id) : [];
+const isSignedIn = Astro.locals.user !== null;
 const pageTitle = course ? `${course.title} — Unstuck` : "Course not found — Unstuck";
 ---
 
@@ -29,34 +29,62 @@ const pageTitle = course ? `${course.title} — Unstuck` : "Course not found —
             {course.description && <p class="text-muted-foreground text-lg leading-relaxed">{course.description}</p>}
           </header>
 
-          {showLessons ? (
-            <section>
-              <h2 class="text-foreground mb-4 text-lg font-semibold">Lessons</h2>
-              <ol class="space-y-3">
-                {lessons.map((lesson) => (
-                  <li>
-                    <a
-                      href={`/courses/${course.slug}/lessons/${lesson.slug}`}
-                      class="bg-card/40 border-border hover:bg-card/60 flex items-center gap-4 rounded-xl border p-4 backdrop-blur-xl transition-colors"
-                    >
-                      <span class="text-muted-foreground font-mono text-sm">
-                        {String(lesson.position).padStart(2, "0")}
-                      </span>
-                      <span class="text-foreground font-medium">{lesson.title}</span>
-                    </a>
-                  </li>
-                ))}
-              </ol>
-            </section>
-          ) : (
+          {chapters.length === 0 ? (
             <div class="bg-card/40 border-border rounded-2xl border p-8 text-center backdrop-blur-xl">
-              <p class="text-muted-foreground mb-6">Sign in to view the lessons in this course.</p>
-              <a
-                href={`/auth/signin?next=/courses/${course.slug}`}
-                class="shadow-cosmic-glow bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center justify-center rounded-lg px-6 py-3 text-base font-medium transition-colors"
-              >
-                Sign in to view lessons
-              </a>
+              <p class="text-muted-foreground">No chapters in this course yet.</p>
+            </div>
+          ) : (
+            <div class="space-y-8">
+              {chapters.map((chapter) => (
+                <section>
+                  <h2 class="text-foreground mb-4 text-lg font-semibold">
+                    <span class="text-muted-foreground mr-2 font-mono text-sm">
+                      {String(chapter.position).padStart(2, "0")}
+                    </span>
+                    {chapter.title}
+                  </h2>
+                  {isSignedIn ? (
+                    chapter.lessons.length === 0 ? (
+                      <p class="text-muted-foreground bg-card/40 border-border rounded-xl border p-4 text-sm backdrop-blur-xl">
+                        No lessons in this chapter yet.
+                      </p>
+                    ) : (
+                      <ol class="space-y-3">
+                        {chapter.lessons.map((lesson) => (
+                          <li>
+                            <a
+                              href={`/courses/${course.slug}/lessons/${lesson.slug}`}
+                              class="bg-card/40 border-border hover:bg-card/60 flex items-center gap-4 rounded-xl border p-4 backdrop-blur-xl transition-colors"
+                            >
+                              <span class="text-muted-foreground font-mono text-sm">
+                                {String(lesson.position).padStart(2, "0")}
+                              </span>
+                              <span class="text-foreground font-medium">{lesson.title}</span>
+                              {lesson.video_url === null ? (
+                                <span class="text-muted-foreground ml-auto text-xs tracking-wide uppercase">
+                                  Reading
+                                </span>
+                              ) : null}
+                            </a>
+                          </li>
+                        ))}
+                      </ol>
+                    )
+                  ) : null}
+                </section>
+              ))}
+
+              {!isSignedIn ? (
+                <div class="bg-card/40 border-border rounded-2xl border p-8 text-center backdrop-blur-xl">
+                  <p class="text-muted-foreground mb-6">Sign in to view the lessons in this course.</p>
+                  <a
+                    href={`/auth/signin?next=/courses/${course.slug}`}
+                    class="shadow-cosmic-glow bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center justify-center rounded-lg px-6 py-3 text-base font-medium transition-colors"
+                  >
+                    Sign in to view lessons
+                  </a>
+                </div>
+              ) : null}
             </div>
           )}
         </>
