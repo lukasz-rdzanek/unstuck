@@ -27,6 +27,8 @@
 --                         | INSERT with foreign author_id is rejected.
 --   authenticated, none   | does NOT see paid-course lesson (no enrollment)
 --   service_role          | INSERT seeded message succeeds; DELETE any message succeeds
+--   authenticated, delete | DELETE of own message rejected (row_count = 0);
+--   denial (FR-007)       | DELETE of operator-seeded message rejected (row_count = 0).
 -- ============================================================================
 
 begin;
@@ -270,8 +272,44 @@ end $$;
 reset role;
 
 -- ----------------------------------------------------------------------------
+-- Cell 5: authenticated, DELETE denial (FR-007 invariant — only the operator
+-- can delete; signed-in learners cannot remove ANY message via the app)
+-- ----------------------------------------------------------------------------
+-- F-01's `messages` RLS has no DELETE policy for the `authenticated` role —
+-- combined with FORCE row-level security, this means peers cannot remove
+-- their own or operator-seeded content via the supabase-js client. S-03
+-- regression-proofs that posture: a future migration that accidentally adds
+-- a peer-DELETE policy would fail this assertion at `db reset`.
+reset role;
+set local role authenticated;
+set local request.jwt.claims to '{"sub":"11111111-1111-1111-1111-111111111111","role":"authenticated"}';
+
+do $$
+declare
+  affected int;
+begin
+  -- Peer attempts to DELETE own message → row_count = 0 (silent RLS denial)
+  delete from public.messages where id = 'ffffffff-ffff-ffff-ffff-ffffffffffff';
+  get diagnostics affected = row_count;
+  if affected != 0 then
+    raise exception '[auth-delete-denial] expected DELETE of own message to affect 0 rows (FR-007), got %', affected;
+  end if;
+
+  -- Peer attempts to DELETE operator-seeded message → row_count = 0
+  delete from public.messages where id = 'eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee';
+  get diagnostics affected = row_count;
+  if affected != 0 then
+    raise exception '[auth-delete-denial] expected DELETE of seeded message to affect 0 rows (FR-007), got %', affected;
+  end if;
+
+  raise notice '[auth-delete-denial] ok: authenticated cannot DELETE own or seeded messages (FR-007)';
+end $$;
+
+reset role;
+
+-- ----------------------------------------------------------------------------
 -- All assertions passed. Roll back the fixture so the DB is unchanged.
 -- ----------------------------------------------------------------------------
-do $$ begin raise notice '[rls_matrix] PASS — all 4 role cells assert green'; end $$;
+do $$ begin raise notice '[rls_matrix] PASS — all 5 role cells assert green'; end $$;
 
 rollback;
