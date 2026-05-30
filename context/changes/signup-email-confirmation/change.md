@@ -1,7 +1,7 @@
 ---
 change_id: signup-email-confirmation
 title: Signup email confirmation
-status: implementing
+status: implemented
 created: 2026-05-30
 updated: 2026-05-30
 archived_at: null

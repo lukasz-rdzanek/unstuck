@@ -685,18 +685,18 @@ those signals.
 
 #### Automated
 
-- [x] 3.1 `npx supabase db reset` exits 0 after `supabase/config.toml` template change
-- [x] 3.2 `npm run lint` exits 0
-- [x] 3.3 `npx astro check` exits 0
-- [x] 3.4 `npm run build` exits 0
+- [x] 3.1 `npx supabase db reset` exits 0 after `supabase/config.toml` template change — 10fb1be
+- [x] 3.2 `npm run lint` exits 0 — 10fb1be
+- [x] 3.3 `npx astro check` exits 0 — 10fb1be
+- [x] 3.4 `npm run build` exits 0 — 10fb1be
 
 #### Manual
 
-- [x] 3.5 Local signup → `/auth/confirm-email?email=...` renders form with email pre-filled (read-only) + empty code field
-- [x] 3.6 Local inbucket email contains prominent 6-digit code AND NO clickable confirmation URL anywhere in body
-- [x] 3.7 Local: type correct code → POST /api/auth/verify-otp → redirect to `/`; user signed in (cookie set)
-- [x] 3.8 Local: wrong code → redirect back to `/auth/confirm-email?email=...&error=invalid_otp` with inline alert; form ready to retry
-- [x] 3.9 Local: click resend link on confirm page → new email arrives in inbucket
-- [x] 3.10 Local: SignInForm yellow box (unconfirmed signin) shows new "Enter code →" link in addition to "Send confirmation again"
-- [x] 3.11 Prod redeploy + same end-to-end with real email (Proton alias): signup → confirm page → check inbox → enter 6-digit code → redirect to `/` signed in. Proton scanner cannot consume the code; lockout-then-confirm flow works end-to-end.
-- [x] 3.12 Prod: user signs up but doesn't enter code, then tries signin → yellow box from Phase 2 appears (confirms `email_not_confirmed` is now actually reachable for Proton users)
+- [x] 3.5 Local signup → `/auth/confirm-email?email=...` renders form with email pre-filled (read-only) + empty code field — 10fb1be
+- [x] 3.6 Local inbucket email contains prominent 6-digit code AND NO clickable confirmation URL anywhere in body — 10fb1be
+- [x] 3.7 Local: type correct code → POST /api/auth/verify-otp → redirect to `/`; user signed in (cookie set) — 10fb1be
+- [x] 3.8 Local: wrong code → redirect back to `/auth/confirm-email?email=...&error=invalid_otp` with inline alert; form ready to retry — 10fb1be
+- [x] 3.9 Local: click resend link on confirm page → new email arrives in inbucket — 10fb1be
+- [x] 3.10 Local: SignInForm yellow box (unconfirmed signin) shows new "Enter code →" link in addition to "Send confirmation again" — 10fb1be
+- [x] 3.11 Prod redeploy + same end-to-end with real email (Proton alias): signup → confirm page → check inbox → enter 6-digit code → redirect to `/` signed in. Proton scanner cannot consume the code; lockout-then-confirm flow works end-to-end. — 10fb1be
+- [x] 3.12 Prod: user signs up but doesn't enter code, then tries signin → yellow box from Phase 2 appears (confirms `email_not_confirmed` is now actually reachable for Proton users) — 10fb1be
