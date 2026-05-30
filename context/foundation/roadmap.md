@@ -3,7 +3,7 @@ project: "Unstuck"
 version: 1
 status: draft
 created: 2026-05-27
-updated: 2026-05-27
+updated: 2026-05-30
 prd_version: 1
 main_goal: market-feedback
 top_blocker: time
@@ -131,4 +131,4 @@ What's already in place in the codebase as of 2026-05-27 (auto-researched + user
 
 ## Done
 
-(Empty on first generation. `/10x-archive` appends entries here when a change whose Change ID matches a roadmap item is archived.)
+- **F-01: (foundation) a persistent schema exists for courses, lessons, and lesson-scoped messages, with an operator-seed flag distinguishing curated threads from peer posts, and row-level security enforcing that chat content is reachable only by signed-in, enrolled/free-tier learners.** — Archived 2026-05-30 → `context/archive/2026-05-28-lesson-chat-data-model/`. Lesson: —.

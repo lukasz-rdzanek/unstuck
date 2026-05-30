@@ -1,9 +1,10 @@
 ---
 id: lesson-chat-data-model
 title: Lesson & chat data model (schema + RLS + seed flag)
-status: done
+status: archived
 created: 2026-05-28
-updated: 2026-05-28
+updated: 2026-05-30
+archived_at: 2026-05-30T10:58:07Z
 phase: complete  # phase 1 done at ad8301d (1.1-1.7); phase 2 done at c9e25df (2.1-2.8); phase 3 done at 9b4960e (3.1-3.7); phase 4 done (4.1-4.5) — prod schema deployed via supabase db push, all 4 verification probes green
 roadmap_ref: F-01
 prd_refs:
