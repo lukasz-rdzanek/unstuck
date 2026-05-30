@@ -127,6 +127,7 @@ What's already in place in the codebase as of 2026-05-27 (auto-researched + user
 - **In-product moderation interface (flag/report UI, admin dashboard)** — Why parked: PRD Non-Goals; moderation is out-of-band (S-03).
 - **Search / sort / threading / pinning of peer messages** — Why parked: PRD Non-Goals; only operator-seeded-vs-peer prioritization in v1; the rest lands when a lesson chat exceeds ~50 messages.
 - **Automated context-matching / AI recommendation engine** — Why parked: PRD Non-Goals + `shape-notes.md` `## Forward: product-roadmap`. The v2 evolution (auto-match a learner's question to the highest-rated historical solution) builds on the v1 curation-based rule; no LLM dependency in v1.
+- **Replay 18 deferred S-01 manual verification rows** — Why parked: `ship-over-polish` operating preference at MVP-complete. Source: [`context/changes/lesson-workspace-shell/reviews/impl-review.md`](../changes/lesson-workspace-shell/reviews/impl-review.md) "Manual / Deferred" section. Revisit after first-user observation; decide which still matter before walking them mechanically — many may be invalidated or already-confirmed by real usage.
 
 ## Done
 

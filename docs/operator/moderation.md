@@ -39,10 +39,16 @@ FROM public.messages m
 JOIN public.lessons l ON l.id = m.lesson_id
 JOIN public.courses c ON c.id = l.course_id
 LEFT JOIN auth.users u ON u.id = m.author_id
-WHERE m.body ILIKE '%FRAGMENT_HERE%'
+WHERE m.body ILIKE $$%FRAGMENT_HERE%$$
 ORDER BY m.created_at DESC
 LIMIT 20;
 ```
+
+`$$ … $$` (dollar-quoted) is used instead of `'…'` so apostrophes
+inside your fragment (`don't`, `isn't`) don't break the literal — same
+convention as [seeding.md](./seeding.md#step-2--add-the-seeded-messages).
+If your fragment itself contains `$$`, swap to a tagged form like
+`$body$…$body$`.
 
 **By lesson + recency** (you want to scan the latest activity on a
 specific lesson):
@@ -79,18 +85,31 @@ Recommended copy-to-scratch fields:
 
 ## Step 3 — Delete the message
 
+Wrap the DELETE in an explicit transaction so the `RETURNING` echo is an
+inspection step, not a fait accompli:
+
 ```sql
+BEGIN;
+
 DELETE FROM public.messages
 WHERE id = 'MESSAGE_UUID_HERE'
 RETURNING id, body, lesson_id;
+
+-- Inspect the RETURNING output above:
+--   • body and lesson_id match the row you intended to delete  → COMMIT;
+--   • anything looks wrong (wrong row, wrong lesson, no rows)  → ROLLBACK;
+
+COMMIT;  -- or ROLLBACK;
 ```
 
-The `RETURNING` confirms the row that just vanished and gives you a last
-look at the body. If you forgot Step 2, this is your only chance to see
-the content before it's gone.
+The `RETURNING` confirms the row that just (provisionally) vanished and
+gives you a last look at the body. The transaction wrap means the row is
+only actually gone after `COMMIT` — `ROLLBACK` restores it. If you
+forgot Step 2, the `RETURNING` echo is your only chance to capture the
+content before committing.
 
 If the query returns 0 rows, the UUID is wrong (or someone deleted it
-already). Re-run Step 1.
+already) — `ROLLBACK;` and re-run Step 1.
 
 ## Step 4 — Append to the moderation log
 
@@ -164,11 +183,14 @@ Before opening the platform to learners on launch day, confirm:
   disappearance is a post-MVP follow-up.
 - **Re-running the RLS regression assertion outside `db reset`**:
   ```
-  docker exec supabase_db_10x-astro-starter \
-    psql -U postgres -d postgres -f /dev/stdin < supabase/tests/rls_matrix.sql
+  docker exec -i supabase_db_10x-astro-starter \
+    psql -U postgres -d postgres -1 < supabase/tests/rls_matrix.sql
   ```
-  (Project container name depends on your local stack — check
-  `docker ps`.)
+  The `-i` flag wires stdin into the container so `psql` can read from
+  `/dev/stdin`; without it the command silently hangs. `-1` wraps the
+  whole file in a single transaction, matching the `begin; … rollback;`
+  framing inside `rls_matrix.sql`. Project container name depends on
+  your local stack — check `docker ps`.
 - **Audit integrity depends on you**. If you forget to log a deletion
   in moderation-log.md, there is no technical trace beyond the gap in
   message IDs. Add the log row immediately after committing the DELETE

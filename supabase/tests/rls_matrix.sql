@@ -287,7 +287,19 @@ set local request.jwt.claims to '{"sub":"11111111-1111-1111-1111-111111111111","
 do $$
 declare
   affected int;
+  fixture_cnt int;
 begin
+  -- Fixture-drift guard: confirm both target rows are visible to this peer
+  -- BEFORE attempting DELETE. Without this, a missing row would let DELETE
+  -- silently return row_count = 0 and the RLS assertion would falsely pass.
+  select count(*) into fixture_cnt
+    from public.messages
+   where id in ('ffffffff-ffff-ffff-ffff-ffffffffffff',
+                'eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee');
+  if fixture_cnt != 2 then
+    raise exception '[auth-delete-denial] fixture drift: expected 2 target messages visible to peer before DELETE attempts, got %', fixture_cnt;
+  end if;
+
   -- Peer attempts to DELETE own message → row_count = 0 (silent RLS denial)
   delete from public.messages where id = 'ffffffff-ffff-ffff-ffff-ffffffffffff';
   get diagnostics affected = row_count;
