@@ -103,5 +103,30 @@ insert into public.messages (id, lesson_id, author_id, body, is_seeded) values
     'c0000000-0000-0000-0000-000000000002',
     E'Tried this and the Suspense fallback flashes for a beat even on fast data — is that expected? Or am I missing a transition wrap somewhere?',
     false
+  ),
+  -- Three additional seeded messages (S-02 Phase 5) — fuller demo of
+  -- operator-seeded threads pinned on top. All authored by seed-operator
+  -- (c0000000-...-001), all is_seeded=true so they sort above the peer
+  -- message in the FR-006 read pattern.
+  (
+    'd0000000-0000-0000-0000-000000000003',
+    'b0000000-0000-0000-0000-000000000001',
+    'c0000000-0000-0000-0000-000000000001',
+    E'When in doubt about whether to wrap a component in <Suspense>, ask: "does this component own a slow data fetch that the surrounding tree can wait around for?" If yes, wrap it. If the fetch is the WHOLE page, lift Suspense to the route boundary instead — that is what enables progressive streaming through the document.',
+    true
+  ),
+  (
+    'd0000000-0000-0000-0000-000000000004',
+    'b0000000-0000-0000-0000-000000000001',
+    'c0000000-0000-0000-0000-000000000001',
+    E'Streaming + parallel data fetching: fire all your awaits at the top of the Server Component (without awaiting yet — just hold the promises), then pass each promise to a different child wrapped in <Suspense>. Each child resolves and streams as its own promise settles. Sequential awaits in one component force one-after-the-other timing and kill the streaming benefit.',
+    true
+  ),
+  (
+    'd0000000-0000-0000-0000-000000000005',
+    'b0000000-0000-0000-0000-000000000001',
+    'c0000000-0000-0000-0000-000000000001',
+    E'If you see "use client" everywhere, you have probably collapsed Server Components into Client Components by accident. Common cause: importing a Client Component from a parent that should have been a Server Component, then adding "use client" to silence a hook-in-server-component error. Walk back to the original location — usually the right move is to extract the interactive bit into a small leaf Client Component and keep the parent on the server.',
+    true
   )
 on conflict (id) do nothing;

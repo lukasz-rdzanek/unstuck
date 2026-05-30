@@ -971,32 +971,32 @@ as out-of-scope; would be a separate change.
 
 #### Automated
 
-- [x] 4.1 `npm run lint` exits 0
-- [x] 4.2 `npm run build` exits 0
-- [x] 4.3 `npx astro check` exits 0
+- [x] 4.1 `npm run lint` exits 0 — 99bf572
+- [x] 4.2 `npm run build` exits 0 — 99bf572
+- [x] 4.3 `npx astro check` exits 0 — 99bf572
 
 #### Manual
 
-- [x] 4.4 Narrow viewport (< 1024 px): chat collapses to fixed bottom bar
-- [x] 4.5 Tap bar → expands to 70 vh overlay with body scroll locked
-- [x] 4.6 Tap close (X) → collapses back to bar
-- [x] 4.7 New message while collapsed → pulse dot on bar; clears on expand
-- [x] 4.8 Lesson body has bottom padding; last paragraph visible above collapsed bar
-- [x] 4.9 Resize ≥ 1024 px: chat returns to desktop aside layout
+- [x] 4.4 Narrow viewport (< 1024 px): chat collapses to fixed bottom bar — 99bf572
+- [x] 4.5 Tap bar → expands to 70 vh overlay with body scroll locked — 99bf572
+- [x] 4.6 Tap close (X) → collapses back to bar — 99bf572
+- [x] 4.7 New message while collapsed → pulse dot on bar; clears on expand — 99bf572
+- [x] 4.8 Lesson body has bottom padding; last paragraph visible above collapsed bar — 99bf572
+- [x] 4.9 Resize ≥ 1024 px: chat returns to desktop aside layout — 99bf572
 
 ### Phase 5: Operator seeding docs + final verification + close-out
 
 #### Automated
 
-- [ ] 5.1 `npm run lint` exits 0
-- [ ] 5.2 `npm run build` exits 0
-- [ ] 5.3 `npx astro check` exits 0
-- [ ] 5.4 `npx supabase db reset` applies cleanly with expanded seed
+- [x] 5.1 `npm run lint` exits 0
+- [x] 5.2 `npm run build` exits 0
+- [x] 5.3 `npx astro check` exits 0
+- [x] 5.4 `npx supabase db reset` applies cleanly with expanded seed
 
 #### Manual
 
-- [ ] 5.5 `docs/operator/seeding.md` renders cleanly
-- [ ] 5.6 After db reset, lesson chat shows ~4 seeded + 1 peer message
-- [ ] 5.7 Full end-to-end demo: anon → catalog → course → sign-in → lesson → chat populated → post → live → narrow viewport drawer works
-- [ ] 5.8 AGENTS.md has the client-env exposure paragraph
+- [x] 5.5 `docs/operator/seeding.md` renders cleanly
+- [x] 5.6 After db reset, lesson chat shows ~4 seeded + 1 peer message
+- [x] 5.7 Full end-to-end demo: anon → catalog → course → sign-in → lesson → chat populated → post → live → narrow viewport drawer works
+- [x] 5.8 AGENTS.md has the client-env exposure paragraph
 - [ ] 5.9 `change.md.status: implemented` after epilogue commit
