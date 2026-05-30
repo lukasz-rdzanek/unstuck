@@ -66,12 +66,23 @@ insert into public.courses (id, slug, title, is_free) values
   ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'rls-free-course', 'RLS Test — Free', true),
   ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'rls-paid-course', 'RLS Test — Paid', false);
 
-insert into public.lessons (id, course_id, slug, title, position, video_url) values
+-- One chapter per course (S-05 introduces lessons.chapter_id NOT NULL FK).
+insert into public.chapters (id, course_id, slug, title, position) values
+  ('5a5a5a5a-5a5a-5a5a-5a5a-5a5a5a5a5a5a',
+   'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
+   'introduction', 'Introduction', 1),
+  ('5b5b5b5b-5b5b-5b5b-5b5b-5b5b5b5b5b5b',
+   'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb',
+   'introduction', 'Introduction', 1);
+
+insert into public.lessons (id, course_id, chapter_id, slug, title, position, video_url) values
   ('cccccccc-cccc-cccc-cccc-cccccccccccc',
    'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
+   '5a5a5a5a-5a5a-5a5a-5a5a-5a5a5a5a5a5a',
    'free-lesson-1', 'Free Lesson 1', 1, 'https://example.com/v/free-1'),
   ('dddddddd-dddd-dddd-dddd-dddddddddddd',
    'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb',
+   '5b5b5b5b-5b5b-5b5b-5b5b-5b5b5b5b5b5b',
    'paid-lesson-1', 'Paid Lesson 1', 1, 'https://example.com/v/paid-1');
 
 -- Two messages in the free-course lesson: one operator-seeded, one peer-posted.
@@ -102,6 +113,12 @@ begin
     raise exception '[anon] expected courses readable (catalog public), got 0';
   end if;
 
+  -- S-05: chapters are public metadata like courses (anon-readable).
+  select count(*) into cnt from public.chapters;
+  if cnt = 0 then
+    raise exception '[anon] expected chapters readable (catalog public), got 0';
+  end if;
+
   select count(*) into cnt from public.lessons;
   if cnt != 0 then
     raise exception '[anon] expected 0 lessons (gated read), got %', cnt;
@@ -117,7 +134,7 @@ begin
     raise exception '[anon] expected 0 enrollments (gated read), got %', cnt;
   end if;
 
-  raise notice '[anon] ok: catalog readable, lessons/messages/enrollments deny';
+  raise notice '[anon] ok: catalog + chapters readable, lessons/messages/enrollments deny';
 end $$;
 
 -- ----------------------------------------------------------------------------
@@ -131,6 +148,16 @@ do $$
 declare
   cnt int;
 begin
+  -- S-05: chapters readable to authenticated like courses (both fixture rows).
+  -- Scope to the fixture courses so the assertion is robust against seed
+  -- contributions in the surrounding DB.
+  select count(*) into cnt from public.chapters
+   where course_id in ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
+                       'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb');
+  if cnt != 2 then
+    raise exception '[auth-free] expected 2 chapters readable (fixture courses), got %', cnt;
+  end if;
+
   -- Free-course lesson visible
   select count(*) into cnt from public.lessons
    where course_id = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa';

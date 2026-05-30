@@ -14,7 +14,7 @@
  */
 
 import type { createClient } from "@/lib/supabase";
-import type { Course, Lesson } from "@/types";
+import type { ChapterWithLessons, Course, Lesson } from "@/types";
 
 type SupabaseClient = NonNullable<ReturnType<typeof createClient>>;
 
@@ -50,6 +50,33 @@ export async function listLessonsForCourse(supabase: SupabaseClient, courseId: s
     .order("position", { ascending: true });
   if (error) {
     console.error("[courses] listLessonsForCourse failed:", error.message);
+    return [];
+  }
+  return data;
+}
+
+/**
+ * Course-detail view (S-05): chapters in course order, each carrying its
+ * lessons in chapter-local position order. One PostgREST embed query.
+ *
+ * Empty chapters return with `lessons: []` (not missing) so the page can
+ * render a "No lessons in this chapter yet." placeholder. Lessons inherit
+ * the F-01 RLS gating via `has_course_access(course_id)` — anon viewers
+ * still see chapter rows (chapters are public metadata) but no nested
+ * lessons.
+ */
+export async function listChaptersWithLessonsForCourse(
+  supabase: SupabaseClient,
+  courseId: string,
+): Promise<ChapterWithLessons[]> {
+  const { data, error } = await supabase
+    .from("chapters")
+    .select("*, lessons(*)")
+    .eq("course_id", courseId)
+    .order("position", { ascending: true })
+    .order("position", { ascending: true, referencedTable: "lessons" });
+  if (error) {
+    console.error("[courses] listChaptersWithLessonsForCourse failed:", error.message);
     return [];
   }
   return data;

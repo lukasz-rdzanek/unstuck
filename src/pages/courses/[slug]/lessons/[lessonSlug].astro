@@ -17,7 +17,7 @@ if (!result) {
 const lesson = result?.lesson;
 const course = result?.course;
 const html = lesson ? renderMarkdown(lesson.content_md) : "";
-const video = lesson ? parseVideoUrl(lesson.video_url) : null;
+const video = lesson?.video_url ? parseVideoUrl(lesson.video_url) : null;
 const pageTitle = lesson ? `${lesson.title} — Unstuck` : "Lesson not found — Unstuck";
 
 // Resolve the signed-in user's display_name from profiles (per impl-review

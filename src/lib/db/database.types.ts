@@ -34,6 +34,41 @@ export type Database = {
   }
   public: {
     Tables: {
+      chapters: {
+        Row: {
+          course_id: string
+          created_at: string
+          id: string
+          position: number
+          slug: string
+          title: string
+        }
+        Insert: {
+          course_id: string
+          created_at?: string
+          id?: string
+          position: number
+          slug: string
+          title: string
+        }
+        Update: {
+          course_id?: string
+          created_at?: string
+          id?: string
+          position?: number
+          slug?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chapters_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       courses: {
         Row: {
           created_at: string
@@ -92,6 +127,7 @@ export type Database = {
       }
       lessons: {
         Row: {
+          chapter_id: string
           content_md: string
           course_id: string
           created_at: string
@@ -99,9 +135,10 @@ export type Database = {
           position: number
           slug: string
           title: string
-          video_url: string
+          video_url: string | null
         }
         Insert: {
+          chapter_id: string
           content_md?: string
           course_id: string
           created_at?: string
@@ -109,9 +146,10 @@ export type Database = {
           position: number
           slug: string
           title: string
-          video_url: string
+          video_url?: string | null
         }
         Update: {
+          chapter_id?: string
           content_md?: string
           course_id?: string
           created_at?: string
@@ -119,9 +157,16 @@ export type Database = {
           position?: number
           slug?: string
           title?: string
-          video_url?: string
+          video_url?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "lessons_chapter_id_fkey"
+            columns: ["chapter_id"]
+            isOneToOne: false
+            referencedRelation: "chapters"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "lessons_course_id_fkey"
             columns: ["course_id"]

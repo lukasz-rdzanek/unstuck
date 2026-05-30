@@ -67,12 +67,31 @@ on conflict (id) do nothing;
 
 
 -- ----------------------------------------------------------------------------
--- 3. lessons — one lesson under the course
+-- 3. chapters — one default "Introduction" chapter under the course
 -- ----------------------------------------------------------------------------
-insert into public.lessons (id, course_id, slug, title, position, video_url, content_md) values
+-- S-05 introduces chapter grouping. The seed mirrors the production-migration
+-- backfill: every course gets a default "Introduction" chapter that owns its
+-- lessons. New courses authored post-migration can add additional chapters
+-- via the operator SQL recipes in docs/operator/chapters.md.
+insert into public.chapters (id, course_id, slug, title, position) values
+  (
+    'e0000000-0000-0000-0000-000000000001',
+    'a0000000-0000-0000-0000-000000000001',
+    'introduction',
+    'Introduction',
+    1
+  )
+on conflict (id) do nothing;
+
+
+-- ----------------------------------------------------------------------------
+-- 4. lessons — one lesson under the chapter
+-- ----------------------------------------------------------------------------
+insert into public.lessons (id, course_id, chapter_id, slug, title, position, video_url, content_md) values
   (
     'b0000000-0000-0000-0000-000000000001',
     'a0000000-0000-0000-0000-000000000001',
+    'e0000000-0000-0000-0000-000000000001',
     'server-components-streaming',
     'Server Components and the Streaming Model',
     1,
@@ -83,7 +102,7 @@ on conflict (id) do nothing;
 
 
 -- ----------------------------------------------------------------------------
--- 4. messages — one operator-seeded thread, one peer-posted reply
+-- 5. messages — one operator-seeded thread, one peer-posted reply
 -- ----------------------------------------------------------------------------
 -- The seeded message is what FR-006 pins on top of the chat (operator
 -- curation before peer discussion). The peer message demonstrates the

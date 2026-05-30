@@ -24,9 +24,21 @@ type Tables = Database["public"]["Tables"];
 
 export type Profile = Tables["profiles"]["Row"];
 export type Course = Tables["courses"]["Row"];
+export type Chapter = Tables["chapters"]["Row"];
 export type Lesson = Tables["lessons"]["Row"];
 export type Enrollment = Tables["enrollments"]["Row"];
 export type Message = Tables["messages"]["Row"];
+
+/**
+ * Composite view for course-detail rendering (S-05 / FR-004 chapters):
+ * a chapter together with its lessons in chapter-local position order.
+ * Returned by `listChaptersWithLessonsForCourse` via a single PostgREST
+ * embed query. The `lessons` array is empty (not missing) for chapters
+ * authored without lesson assignments yet.
+ */
+export type ChapterWithLessons = Chapter & {
+  lessons: Lesson[];
+};
 
 // ---------------------------------------------------------------------------
 // DTOs — input shapes for downstream slices (S-01, S-02, S-03).
