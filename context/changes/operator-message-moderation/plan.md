@@ -466,28 +466,28 @@ chronological timeline of every moderation decision.
 
 #### Automated
 
-- [x] 1.1 `npx supabase db reset` clean; new rls_matrix.sql probe asserts
-- [x] 1.2 `npm run lint` exits 0
-- [x] 1.3 `npm run build` exits 0
-- [x] 1.4 `npx astro check` exits 0
+- [x] 1.1 `npx supabase db reset` clean; new rls_matrix.sql probe asserts — 0c26468
+- [x] 1.2 `npm run lint` exits 0 — 0c26468
+- [x] 1.3 `npm run build` exits 0 — 0c26468
+- [x] 1.4 `npx astro check` exits 0 — 0c26468
 
 #### Manual
 
-- [x] 1.5 `docs/operator/moderation.md` renders cleanly; SQL blocks highlighted; cross-links resolve
-- [x] 1.6 `docs/operator/moderation-log.md` exists with sample row + column convention
-- [x] 1.7 Operator-flow: Studio SQL DELETE removes message; reload shows it gone
+- [x] 1.5 `docs/operator/moderation.md` renders cleanly; SQL blocks highlighted; cross-links resolve — 0c26468
+- [x] 1.6 `docs/operator/moderation-log.md` exists with sample row + column convention — 0c26468
+- [x] 1.7 Operator-flow: Studio SQL DELETE removes message; reload shows it gone — 0c26468
 
 ### Phase 2: Final verification + MVP close-out
 
 #### Automated
 
-- [ ] 2.1 `npx supabase db reset` clean (probe still asserts)
-- [ ] 2.2 `npm run lint` exits 0
-- [ ] 2.3 `npm run build` exits 0
-- [ ] 2.4 `npx astro check` exits 0
+- [x] 2.1 `npx supabase db reset` clean (probe still asserts)
+- [x] 2.2 `npm run lint` exits 0
+- [x] 2.3 `npm run build` exits 0
+- [x] 2.4 `npx astro check` exits 0
 
 #### Manual
 
-- [ ] 2.5 Full moderation flow walked end-to-end on local stack
-- [ ] 2.6 `roadmap.md` reflects S-03 done + MVP-complete one-liner
-- [ ] 2.7 `change.md.status: implemented` after epilogue commit
+- [x] 2.5 Full moderation flow walked end-to-end on local stack
+- [x] 2.6 `roadmap.md` reflects S-03 done + MVP-complete one-liner
+- [x] 2.7 `change.md.status: implemented` after epilogue commit

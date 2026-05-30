@@ -28,9 +28,11 @@ Unstuck unifies a video lesson and the conversation about that lesson on one sur
 | ID   | Change ID                    | Outcome (user can …)                                                          | Prerequisites | PRD refs              | Status   |
 | ---- | ---------------------------- | ----------------------------------------------------------------------------- | ------------- | --------------------- | -------- |
 | F-01 | `lesson-chat-data-model`     | (foundation) lesson/course/message schema with lesson-scoping, operator-seed flag, and RLS | —             | NFR (privacy), FR-006 | done |
-| S-01 | `lesson-workspace-shell`     | browse the single-course catalog and open a lesson to watch video + read markdown | F-01          | FR-003, FR-004        | proposed |
-| S-02 | `lesson-scoped-chat`         | post in a lesson's chat and read prior messages (operator seeds pinned on top, peer messages chronological below), live | S-01, F-01    | FR-004, FR-005, FR-006, US-01 | proposed |
-| S-03 | `operator-message-moderation`| (operator) delete any message in any lesson chat                              | F-01, S-02    | FR-007                | proposed |
+| S-01 | `lesson-workspace-shell`     | browse the single-course catalog and open a lesson to watch video + read markdown | F-01          | FR-003, FR-004        | done |
+| S-02 | `lesson-scoped-chat`         | post in a lesson's chat and read prior messages (operator seeds pinned on top, peer messages chronological below), live | S-01, F-01    | FR-004, FR-005, FR-006, US-01 | done |
+| S-03 | `operator-message-moderation`| (operator) delete any message in any lesson chat                              | F-01, S-02    | FR-007                | done |
+
+> **MVP complete (2026-05-30)** — all four planned slices (F-01 + S-01 + S-02 + S-03) shipped. North star (S-02) validated end-to-end via local stack. Deferred features captured under `## Parked`; revisit post-first-look per the `ship-over-polish` operating preference.
 
 ## Baseline
 
@@ -71,7 +73,7 @@ What's already in place in the codebase as of 2026-05-27 (auto-researched + user
 - **Unknowns:**
   - Cross-device support floor (which mobile OS / browser versions the responsive bottom-drawer must support) — Owner: user. Block: no (ship desktop-first; the responsive refinement follows once the floor is set — see Open Roadmap Question 2).
 - **Risk:** Sequenced before the chat north star because the chat panel attaches to this page — there is nowhere to put chat until the lesson surface exists. Kept deliberately thin (no chat) so the north star (S-02) lands as early as possible. Video is an external embed per Non-Goals, so no hosting/transcoding work here.
-- **Status:** proposed
+- **Status:** done (2026-05-29 impl_reviewed at `d087924`) — 5-phase implementation `442a6cf` → `c287271` → `141ea38` → `ad4b29f` → `4228222`; close-out + triage at `d087924`. 18 manual rows deferred per "ship over polish" — non-blocking.
 
 ### S-02: Lesson-scoped chat (NORTH STAR)
 
@@ -85,7 +87,7 @@ What's already in place in the codebase as of 2026-05-27 (auto-researched + user
   - Realtime transport shape (Supabase Realtime channel-per-lesson vs polling) and whether it meets the < 2 s NFR at MVP scale — Owner: user/team, resolve during `/10x-plan`. Block: no (`infrastructure.md` already commits to Supabase Realtime; this is a planning detail, not a roadmap blocker).
   - Operator-seeding workflow (how seed messages are inserted before launch, given no in-product UI) — Owner: user. Block: no (out-of-band per FR-007 model; the operator-seed flag from F-01 is the hook).
 - **Risk:** The validation milestone and the riskiest slice in one. Carries both the product risk (will learners use lesson chat to unblock?) and the technical risk (realtime < 2 s without degrading the video). Sequenced as early as its prerequisites allow (immediately after the thin S-01) because, for `main_goal: market-feedback`, every later slice is wasted effort if this loop doesn't land. The Guardrail (chat must not degrade the lesson) is the acceptance bar.
-- **Status:** proposed
+- **Status:** done (2026-05-30 impl_reviewed + epilogue at `a97eef8` + `9340ae8`) — 5-phase implementation `f0baa1d` → `c65d0b5` → `d2ae86f` → `99bf572` → `fd5daec`; close-out `9340ae8`; impl-review triage `a97eef8`. NORTH STAR validated end-to-end: cross-viewer visibility verified <2 s via psql INSERT, reconnect catch-up verified via DevTools offline test, optimistic post + dedup verified via composer flow.
 
 ### S-03: Operator message moderation
 
@@ -98,7 +100,7 @@ What's already in place in the codebase as of 2026-05-27 (auto-researched + user
 - **Unknowns:**
   - Whether "out-of-band" is acceptable for launch or a minimal operator-only delete affordance is needed — Owner: user. Block: no (PRD Non-Goals explicitly defer an in-product moderation interface; out-of-band delete is the v1 contract).
 - **Risk:** Smallest slice; sequenced last because moderation is only meaningful once peer posting (S-02) exists. Low risk — the operator-seed flag and RLS from F-01 already establish the data paths; this adds a delete capability, not new infrastructure.
-- **Status:** proposed
+- **Status:** done (2026-05-30) — Phase 1 at `0c26468` (Cell 5 probe in `supabase/tests/rls_matrix.sql` asserts authenticated DELETE returns row_count = 0 for own + seeded messages; `docs/operator/moderation.md` workflow guide + `docs/operator/moderation-log.md` changelog skeleton). Verified manually: operator DELETE via psql removed `d0000000-...005`; refresh on lesson page showed the message gone.
 
 ## Backlog Handoff
 
