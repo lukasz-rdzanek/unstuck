@@ -43,7 +43,10 @@ export const POST: APIRoute = async (context) => {
 
   const { error } = await supabase.auth.signInWithPassword(parsed.data);
   if (error) {
-    const params = new URLSearchParams({ error: error.message });
+    const isUnconfirmed = error.code === "email_not_confirmed" || error.message.includes("Email not confirmed");
+    const params = new URLSearchParams(
+      isUnconfirmed ? { error: "unconfirmed", unconfirmed_email: parsed.data.email } : { error: error.message },
+    );
     if (isSafeNext(next)) params.set("next", next);
     return context.redirect(`/auth/signin?${params.toString()}`);
   }

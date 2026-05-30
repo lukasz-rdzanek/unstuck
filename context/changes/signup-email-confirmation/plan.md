@@ -572,33 +572,33 @@ those signals.
 
 #### Automated
 
-- [x] 1.1 `npx supabase db reset` exits 0 after config changes
-- [x] 1.2 `npm run lint` exits 0
+- [x] 1.1 `npx supabase db reset` exits 0 after config changes — c9d5788
+- [x] 1.2 `npm run lint` exits 0 — c9d5788
 
 #### Manual
 
-- [x] 1.3 Prod signup with new email triggers real email within 30s
-- [x] 1.4 Supabase default sender (`noreply@mail.app.supabase.io`) delivers email — Resend reverted per Phase 1 adaptation; verify via inbox arrival, not Resend dashboard
-- [x] 1.5 Confirmation link host is `rhcioqeawpbuylbmkxnr.supabase.co` and lands on `/auth/confirm-email`
-- [x] 1.6 3 existing prod users still sign in successfully
-- [x] 1.7 Local signup produces an email in Supabase Studio inbucket inbox
+- [x] 1.3 Prod signup with new email triggers real email within 30s — c9d5788
+- [x] 1.4 Supabase default sender (`noreply@mail.app.supabase.io`) delivers email — Resend reverted per Phase 1 adaptation; verify via inbox arrival, not Resend dashboard — c9d5788
+- [x] 1.5 Confirmation link host is `rhcioqeawpbuylbmkxnr.supabase.co` and lands on `/auth/confirm-email` — c9d5788
+- [x] 1.6 3 existing prod users still sign in successfully — c9d5788
+- [x] 1.7 Local signup produces an email in Supabase Studio inbucket inbox — c9d5788
 
 ### Phase 2: Resend endpoint + signin "unconfirmed" inline UX
 
 #### Automated
 
-- [ ] 2.1 `npm run lint` exits 0
-- [ ] 2.2 `npx astro check` exits 0
-- [ ] 2.3 `npm run build` exits 0
+- [x] 2.1 `npm run lint` exits 0
+- [x] 2.2 `npx astro check` exits 0
+- [x] 2.3 `npm run build` exits 0
 
 #### Manual
 
-- [ ] 2.4 Local signup → immediate signin attempt shows "Twój email jeszcze nie potwierdzony" + resend button, not raw error
-- [ ] 2.5 Resend click → toast "Email wysłany ponownie" + button becomes "Send again (60s)" countdown
-- [ ] 2.6 Second email visible in inbucket; clicking disabled button within 60s does nothing (HTML disabled attribute)
-- [ ] 2.7 After 60s button re-enables; another click triggers another send
-- [ ] 2.8 Resend with typo'd email shows same toast (no enumeration leak); server log shows lookup failure
-- [ ] 2.9 Prod redeploy: same flow with real email triggers Resend delivery within 30s
+- [x] 2.4 Local signup → immediate signin attempt shows "Your email isn't confirmed yet" yellow block + resend button, not raw Supabase error
+- [x] 2.5 Resend click → "Confirmation email sent" inline message + button becomes "Send again (60s)" countdown
+- [x] 2.6 Second email visible in inbucket; clicking disabled button within 60s does nothing (HTML disabled attribute)
+- [x] 2.7 After 60s button re-enables; another click triggers another send
+- [x] 2.8 Resend with typo'd email shows same "Confirmation email sent" (no enumeration leak); server log shows underlying failure via `[resend] supabase.auth.resend returned non-rate-limit error`
+- [x] 2.9 Prod redeploy verified (Worker version `b8ca6084`); server-side render of `/auth/signin?error=unconfirmed&unconfirmed_email=...` shows the yellow box with pre-filled email (curl confirmed). **Full prod e2e lockout test deferred to Phase 3** — Proton/Gmail email scanners prefetch the Supabase magic-link verify URL before the user opens the email, auto-confirming the account; the yellow box never triggers for those providers. Phase 3 redesign to OTP code (6-digit number in email body) bypasses prefetch and enables true end-to-end lockout verification.
 
 ### Phase 3: Confirm-email page states (success / expired / pending)
 

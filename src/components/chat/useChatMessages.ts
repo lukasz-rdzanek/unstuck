@@ -299,7 +299,7 @@ export function useChatMessages({ lessonId, userId, userDisplayName }: UseChatMe
         body: trimmed,
         is_seeded: false,
         created_at: new Date().toISOString(),
-        author: { id: ownerId, display_name: userDisplayNameRef.current },
+        author: userDisplayNameRef.current ? { id: ownerId, display_name: userDisplayNameRef.current } : null,
         status: "sending",
       };
       setMessages((prev) => [...prev, optimistic]);

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Mail, Lock, LogIn } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
+import { Mail, Lock, LogIn, Send } from "lucide-react";
 import { FormField } from "@/components/auth/FormField";
 import { PasswordToggle } from "@/components/auth/PasswordToggle";
 import { SubmitButton } from "@/components/auth/SubmitButton";
@@ -8,13 +8,45 @@ import { ServerError } from "@/components/auth/ServerError";
 interface Props {
   serverError?: string | null;
   next?: string | null;
+  unconfirmedEmail?: string | null;
 }
 
-export default function SignInForm({ serverError, next }: Props) {
-  const [email, setEmail] = useState("");
+const RESEND_FALLBACK_SECONDS = 60;
+
+type ResendStatus = "idle" | "sending" | "sent" | "error";
+
+export default function SignInForm({ serverError, next, unconfirmedEmail }: Props) {
+  const [email, setEmail] = useState(unconfirmedEmail ?? "");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+
+  const isUnconfirmedFlow = serverError === "unconfirmed";
+
+  const [resendCountdown, setResendCountdown] = useState(0);
+  const [resendStatus, setResendStatus] = useState<ResendStatus>("idle");
+  const [resendMessage, setResendMessage] = useState<string | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    if (resendCountdown <= 0) {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+      return;
+    }
+    if (intervalRef.current) return;
+    intervalRef.current = setInterval(() => {
+      setResendCountdown((prev) => (prev <= 1 ? 0 : prev - 1));
+    }, 1000);
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [resendCountdown]);
 
   function validate() {
     const next: typeof errors = {};
@@ -39,6 +71,51 @@ export default function SignInForm({ serverError, next }: Props) {
       e.preventDefault();
     }
   }
+
+  async function handleResend() {
+    if (resendCountdown > 0 || resendStatus === "sending") return;
+    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setResendStatus("error");
+      setResendMessage("Enter a valid email address above first.");
+      return;
+    }
+    setResendStatus("sending");
+    setResendMessage(null);
+    try {
+      const body = new FormData();
+      body.set("email", email);
+      const res = await fetch("/api/auth/resend", { method: "POST", body });
+      if (res.status === 200) {
+        setResendStatus("sent");
+        setResendMessage("Confirmation email sent — check your inbox.");
+        setResendCountdown(RESEND_FALLBACK_SECONDS);
+      } else if (res.status === 429) {
+        const data = (await res.json().catch(() => ({}))) as { retryAfterSeconds?: number };
+        const wait = data.retryAfterSeconds ?? RESEND_FALLBACK_SECONDS;
+        setResendStatus("idle");
+        setResendMessage(`Please wait before requesting again.`);
+        setResendCountdown(wait);
+      } else if (res.status === 400) {
+        const data = (await res.json().catch(() => ({}))) as { error?: string };
+        setResendStatus("error");
+        setResendMessage(data.error ?? "Invalid email address.");
+      } else {
+        setResendStatus("error");
+        setResendMessage("Couldn't send right now. Try again in a moment.");
+      }
+    } catch {
+      setResendStatus("error");
+      setResendMessage("Network error — check your connection and retry.");
+    }
+  }
+
+  const resendDisabled = resendCountdown > 0 || resendStatus === "sending";
+  const resendLabel =
+    resendCountdown > 0
+      ? `Send again (${resendCountdown}s)`
+      : resendStatus === "sending"
+        ? "Sending..."
+        : "Send confirmation again";
 
   return (
     <form method="POST" action="/api/auth/signin" className="space-y-4" onSubmit={handleSubmit} noValidate>
@@ -79,7 +156,23 @@ export default function SignInForm({ serverError, next }: Props) {
         }
       />
 
-      <ServerError message={serverError} />
+      {isUnconfirmedFlow ? (
+        <div className="space-y-2 rounded-lg border border-yellow-400/30 bg-yellow-400/10 p-3 text-sm text-yellow-100">
+          <p>Your email isn&apos;t confirmed yet. Check your inbox for the link, or request a new one.</p>
+          <button
+            type="button"
+            onClick={handleResend}
+            disabled={resendDisabled}
+            className="inline-flex items-center gap-2 rounded-md bg-yellow-400/20 px-3 py-1.5 text-xs font-medium text-yellow-50 transition hover:bg-yellow-400/30 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <Send className="size-3" />
+            {resendLabel}
+          </button>
+          {resendMessage ? <p className="text-xs text-yellow-100/80">{resendMessage}</p> : null}
+        </div>
+      ) : (
+        <ServerError message={serverError} />
+      )}
 
       <SubmitButton pendingText="Signing in..." icon={<LogIn className="size-4" />}>
         Sign in
