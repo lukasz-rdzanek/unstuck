@@ -7,6 +7,8 @@ const errorParam = Astro.url.searchParams.get("error");
 const errorCopy: Record<string, string> = {
   invalid_otp: "That code didn't match. Double-check and try again.",
   otp_expired: "Your code expired. Request a new one below.",
+  format_invalid: "The code must be 6 digits — re-enter it.",
+  email_invalid: "Enter a valid email address.",
   supabase_not_configured: "Server is misconfigured — contact the operator.",
 };
 const errorMessage = errorParam ? (errorCopy[errorParam] ?? "Couldn't verify. Try again or request a new code.") : null;
@@ -50,6 +52,10 @@ const errorMessage = errorParam ? (errorCopy[errorParam] ?? "Couldn't verify. Tr
 
         <div>
           <label for="token" class="mb-1 block text-xs font-medium text-blue-100/80">6-digit code</label>
+          {
+            /* pattern + maxlength match Supabase's auth.email.otp_length in supabase/config.toml.
+              Keep in lockstep with the regex on src/pages/api/auth/verify-otp.ts. */
+          }
           <input
             id="token"
             type="text"

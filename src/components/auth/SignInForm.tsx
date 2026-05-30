@@ -26,19 +26,19 @@ export default function SignInForm({ serverError, next, unconfirmedEmail }: Prop
   const [resendCountdown, setResendCountdown] = useState(0);
   const [resendStatus, setResendStatus] = useState<ResendStatus>("idle");
   const [resendMessage, setResendMessage] = useState<string | null>(null);
+  // Mount-only ticker: one setInterval for the component lifetime,
+  // reads countdown via state-setter callback so the effect doesn't
+  // need a dependency on the value itself. Strict Mode safe (cleanup
+  // clears the interval; re-mount creates exactly one new one).
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  // Synchronous in-flight flag — React state flush is async, so a
+  // pure `resendStatus === "sending"` guard allows two same-tick
+  // clicks to both pass. The ref flips synchronously and immunises.
+  const resendInFlightRef = useRef(false);
 
   useEffect(() => {
-    if (resendCountdown <= 0) {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-      return;
-    }
-    if (intervalRef.current) return;
     intervalRef.current = setInterval(() => {
-      setResendCountdown((prev) => (prev <= 1 ? 0 : prev - 1));
+      setResendCountdown((prev) => (prev <= 0 ? 0 : prev - 1));
     }, 1000);
     return () => {
       if (intervalRef.current) {
@@ -46,7 +46,7 @@ export default function SignInForm({ serverError, next, unconfirmedEmail }: Prop
         intervalRef.current = null;
       }
     };
-  }, [resendCountdown]);
+  }, []);
 
   function validate() {
     const next: typeof errors = {};
@@ -66,19 +66,20 @@ export default function SignInForm({ serverError, next, unconfirmedEmail }: Prop
     if (errors[field]) setErrors((prev) => ({ ...prev, [field]: undefined }));
   }
 
-  function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
+  function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
     if (!validate()) {
       e.preventDefault();
     }
   }
 
   async function handleResend() {
-    if (resendCountdown > 0 || resendStatus === "sending") return;
+    if (resendInFlightRef.current || resendCountdown > 0) return;
     if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setResendStatus("error");
       setResendMessage("Enter a valid email address above first.");
       return;
     }
+    resendInFlightRef.current = true;
     setResendStatus("sending");
     setResendMessage(null);
     try {
@@ -106,6 +107,8 @@ export default function SignInForm({ serverError, next, unconfirmedEmail }: Prop
     } catch {
       setResendStatus("error");
       setResendMessage("Network error — check your connection and retry.");
+    } finally {
+      resendInFlightRef.current = false;
     }
   }
 

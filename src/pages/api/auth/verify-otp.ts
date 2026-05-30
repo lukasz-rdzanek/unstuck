@@ -1,20 +1,23 @@
-import type { APIRoute } from "astro";
+import type { APIContext, APIRoute } from "astro";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase";
 
 export const prerender = false;
 
+// `\d{6}` matches Supabase's `auth.email.otp_length` in supabase/config.toml.
+// If the operator bumps otp_length, update this regex AND the HTML
+// pattern/maxlength on src/pages/auth/confirm-email.astro in lockstep.
 const verifySchema = z.object({
   email: z.email("Enter a valid email address"),
   token: z.string().regex(/^\d{6}$/, "Enter the 6-digit code from your email"),
 });
 
-function redirectToConfirm(email: string, errorCode: string): Response {
+// Always go through context.redirect so any cookies queued by Supabase
+// via AstroCookies.set (e.g. on a token-already-consumed edge case)
+// are merged into the outgoing response. Matches signin.ts/signup.ts.
+function redirectToConfirm(context: APIContext, email: string, errorCode: string): Response {
   const params = new URLSearchParams({ email, error: errorCode });
-  return new Response(null, {
-    status: 302,
-    headers: { Location: `/auth/confirm-email?${params.toString()}` },
-  });
+  return context.redirect(`/auth/confirm-email?${params.toString()}`);
 }
 
 export const POST: APIRoute = async (context) => {
@@ -27,12 +30,17 @@ export const POST: APIRoute = async (context) => {
   if (!parsed.success) {
     const emailRaw = form.get("email");
     const emailStr = typeof emailRaw === "string" ? emailRaw : "";
-    return redirectToConfirm(emailStr, parsed.error.issues[0].message);
+    // Pass a stable error code (not the raw zod message) so the
+    // confirm page can render an actionable copy mapped from
+    // errorCopy. Distinguish bad-email vs bad-token shape.
+    const issuePath = parsed.error.issues[0].path[0];
+    const code = issuePath === "token" ? "format_invalid" : "email_invalid";
+    return redirectToConfirm(context, emailStr, code);
   }
 
   const supabase = createClient(context.request.headers, context.cookies);
   if (!supabase) {
-    return redirectToConfirm(parsed.data.email, "supabase_not_configured");
+    return redirectToConfirm(context, parsed.data.email, "supabase_not_configured");
   }
 
   const { error } = await supabase.auth.verifyOtp({
@@ -46,7 +54,7 @@ export const POST: APIRoute = async (context) => {
     // node_modules/@supabase/auth-js/dist/main/lib/error-codes.d.ts).
     // Anything else falls through to a generic friendly message.
     const code = error.code ?? "verify_failed";
-    return redirectToConfirm(parsed.data.email, code);
+    return redirectToConfirm(context, parsed.data.email, code);
   }
 
   // Success: Supabase set the session cookies via createClient's
