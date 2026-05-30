@@ -132,3 +132,4 @@ What's already in place in the codebase as of 2026-05-27 (auto-researched + user
 ## Done
 
 - **F-01: (foundation) a persistent schema exists for courses, lessons, and lesson-scoped messages, with an operator-seed flag distinguishing curated threads from peer posts, and row-level security enforcing that chat content is reachable only by signed-in, enrolled/free-tier learners.** — Archived 2026-05-30 → `context/archive/2026-05-28-lesson-chat-data-model/`. Lesson: —.
+- **S-01: A learner can browse the single-course catalog, open a lesson, and watch its embedded video alongside its markdown content. On desktop the lesson body and a (still-empty in this slice) chat region sit side by side; on narrow screens the layout reflows.** — Archived 2026-05-30 → `context/archive/2026-05-28-lesson-workspace-shell/`. Lesson: —.
