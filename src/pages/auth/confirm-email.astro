@@ -1,36 +1,132 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 
-const isAutoConfirmed = import.meta.env.DEV;
+const emailParam = Astro.url.searchParams.get("email") ?? "";
+const errorParam = Astro.url.searchParams.get("error");
 
-const content = isAutoConfirmed
-  ? {
-      emoji: "✅",
-      heading: "Registration successful",
-      description: "Your account has been created. You can now sign in.",
-      linkText: "Go to sign in",
-    }
-  : {
-      emoji: "📧",
-      heading: "Check your email",
-      description: "We've sent a confirmation link to your email address. Click it to activate your account.",
-      linkText: "Back to sign in",
-    };
+const errorCopy: Record<string, string> = {
+  invalid_otp: "That code didn't match. Double-check and try again.",
+  otp_expired: "Your code expired. Request a new one below.",
+  supabase_not_configured: "Server is misconfigured — contact the operator.",
+};
+const errorMessage = errorParam ? (errorCopy[errorParam] ?? "Couldn't verify. Try again or request a new code.") : null;
 ---
 
-<Layout title={content.heading}>
+<Layout title="Confirm your email">
   <div class="bg-cosmic flex min-h-screen items-center justify-center p-4">
     <div
       class="w-full max-w-sm rounded-2xl border border-white/10 bg-white/10 p-8 text-center text-white backdrop-blur-xl"
     >
-      <div class="mb-4 text-5xl">{content.emoji}</div>
+      <div class="mb-4 text-5xl">📧</div>
       <h1 class="mb-3 bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-2xl font-bold text-transparent">
-        {content.heading}
+        Confirm your email
       </h1>
-      <p class="mb-6 text-blue-100/80">{content.description}</p>
-      <a href="/auth/signin" class="text-sm text-purple-300 hover:underline">
-        {content.linkText}
-      </a>
+      <p class="mb-5 text-sm text-blue-100/80">
+        We sent a 6-digit code to your inbox. Enter it below to activate your account.
+      </p>
+
+      {
+        errorMessage && (
+          <div class="mb-4 rounded-lg border border-red-400/30 bg-red-400/10 p-3 text-sm text-red-100">
+            {errorMessage}
+          </div>
+        )
+      }
+
+      <form method="POST" action="/api/auth/verify-otp" class="space-y-3 text-left">
+        <div>
+          <label for="email" class="mb-1 block text-xs font-medium text-blue-100/80">Email</label>
+          <input
+            id="email"
+            type="email"
+            name="email"
+            value={emailParam}
+            readonly={emailParam !== ""}
+            required
+            class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-blue-100/40 read-only:cursor-not-allowed read-only:opacity-70 focus:border-purple-400 focus:outline-none"
+            placeholder="you@example.com"
+          />
+        </div>
+
+        <div>
+          <label for="token" class="mb-1 block text-xs font-medium text-blue-100/80">6-digit code</label>
+          <input
+            id="token"
+            type="text"
+            name="token"
+            inputmode="numeric"
+            pattern="\d{6}"
+            maxlength="6"
+            autocomplete="one-time-code"
+            required
+            class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-center font-mono text-lg tracking-[0.5em] text-white placeholder:text-blue-100/30 focus:border-purple-400 focus:outline-none"
+            placeholder="123456"
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="w-full rounded-md bg-gradient-to-r from-blue-500 to-purple-500 px-4 py-2 text-sm font-medium text-white transition hover:opacity-90"
+        >
+          Confirm and sign in
+        </button>
+      </form>
+
+      <div class="mt-6 border-t border-white/10 pt-4 text-xs text-blue-100/60">
+        <p class="mb-2">Didn&apos;t get the code?</p>
+        <form id="resend-form" method="POST" action="/api/auth/resend" class="flex items-center justify-center gap-2">
+          <input type="hidden" name="email" value={emailParam} />
+          <button
+            id="resend-button"
+            type="submit"
+            class="rounded-md bg-white/10 px-3 py-1.5 text-xs text-blue-100 transition hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            Resend code
+          </button>
+        </form>
+        <p id="resend-status" class="mt-2 hidden text-blue-100/80"></p>
+      </div>
+
+      <p class="mt-5 text-xs text-blue-100/50">
+        <a href="/auth/signin" class="text-purple-300 hover:underline">Back to sign in</a>
+      </p>
     </div>
   </div>
 </Layout>
+
+<script>
+  const form = document.getElementById("resend-form") as HTMLFormElement | null;
+  const button = document.getElementById("resend-button") as HTMLButtonElement | null;
+  const status = document.getElementById("resend-status") as HTMLParagraphElement | null;
+  if (form && button && status) {
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      button.disabled = true;
+      status.classList.remove("hidden");
+      status.textContent = "Sending…";
+      try {
+        const body = new FormData(form);
+        const res = await fetch("/api/auth/resend", { method: "POST", body });
+        if (res.status === 200) {
+          status.textContent = "Code sent — check your inbox.";
+        } else if (res.status === 429) {
+          const data = (await res.json().catch(() => ({}))) as { retryAfterSeconds?: number };
+          const wait = data.retryAfterSeconds ?? 60;
+          status.textContent = `Please wait about ${wait}s before requesting again.`;
+        } else if (res.status === 400) {
+          const data = (await res.json().catch(() => ({}))) as { error?: string };
+          status.textContent = data.error ?? "Couldn't request a new code.";
+        } else {
+          status.textContent = "Couldn't request a new code right now.";
+        }
+      } catch {
+        status.textContent = "Network error — try again in a moment.";
+      } finally {
+        // Re-enable after a short cooldown so accidental double-clicks don't spam.
+        setTimeout(() => {
+          button.disabled = false;
+        }, 5000);
+      }
+    });
+  }
+</script>

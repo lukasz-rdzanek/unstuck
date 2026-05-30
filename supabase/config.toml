@@ -231,6 +231,11 @@ otp_expiry = 3600
 # subject = "You have been invited"
 # content_path = "./supabase/templates/invite.html"
 
+# Signup confirmation email — OTP code only, NO magic link (prefetch-resistant per S-04 Phase 3).
+[auth.email.template.confirmation]
+subject = "Your Unstuck confirmation code"
+content_path = "./supabase/templates/confirmation.html"
+
 # Uncomment to customize notification email template
 # [auth.email.notification.password_changed]
 # enabled = true

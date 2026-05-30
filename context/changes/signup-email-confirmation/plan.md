@@ -387,103 +387,184 @@ parameter so the user doesn't retype it.
 
 ---
 
-## Phase 3: Confirm-email page states (success / expired / pending)
+## Phase 3: OTP code-based confirmation (prefetch-resistant)
+
+> **Redesign rationale (2026-05-30)**: Original Phase 3 design was URL-param
+> state branching for magic-link recovery (success / expired / pending).
+> Discovered during Phase 2 prod verification that Proton/Gmail/Outlook
+> email scanners prefetch the Supabase magic-link verify URL before the
+> user opens the email, auto-confirming accounts. The lockout half of
+> the abuse-vector closure is defeated for ~90% of email providers.
+> Redesigning Phase 3 to use a 6-digit OTP code (typed into our form) —
+> scanners cannot consume a numeric code in email body, so prefetch is
+> bypassed entirely. The original Phase 3 design plus its plan-review
+> findings F3 (`error_code=otp_expired` normalizer) and the related
+> Phase 1 Section 2 Redirect URL allow-list entries (`?error=expired`,
+> `?error=invalid`) are no longer applicable — magic links aren't part
+> of the flow.
 
 ### Overview
 
-Extend `confirm-email.astro` so the page renders the three real states
-the user lands on, plus an inline resend form for the expired case. No
-new endpoints — reuses the `/api/auth/resend` endpoint from Phase 2.
+Switch the confirmation mechanism from magic-link to 6-digit OTP code.
+Customize the Supabase confirmation email template to feature ONLY the
+OTP (removing the magic link entirely so prefetchers have nothing to
+consume). Refactor `/auth/confirm-email.astro` into an interactive
+form: pre-filled email + code input + submit. Add a new POST
+`/api/auth/verify-otp` endpoint that calls `supabase.auth.verifyOtp()`
+to complete confirmation and establish the session. Update `signup.ts`
+to pass the user's email forward via URL so the confirm page pre-fills
+it. The signin yellow box from Phase 2 gains a link to the confirm
+page for users who land there from a delayed signin attempt.
 
 ### Changes Required:
 
-#### 1. URL-param state branching in `confirm-email.astro`
+#### 1. Customize confirmation email template (Supabase prod dashboard + local config)
+
+**File**: External (Supabase dashboard) + `supabase/config.toml` +
+`supabase/templates/confirmation.html` (new)
+
+**Intent**: Replace the default Supabase confirmation email template
+with one that prominently displays the 6-digit token and contains NO
+magic link. This is the load-bearing piece — without removing the link,
+prefetchers still defeat the lockout.
+
+**Contract**:
+- Create `supabase/templates/confirmation.html` with this body:
+  - `<h2>Confirm your Unstuck account</h2>`
+  - Short instruction: "Enter this 6-digit code on the confirmation page to activate your account:"
+  - Prominent token: `<strong style="font-size: 32px; letter-spacing: 6px;">{{ .Token }}</strong>`
+  - Ignore-if-not-you footer line.
+  - **NO `{{ .ConfirmationURL }}` anywhere** — that's the prefetch-vulnerable surface.
+- Add `[auth.email.template.confirmation]` block to `supabase/config.toml`
+  with `subject = "Your Unstuck confirmation code"` and
+  `content_path = "./supabase/templates/confirmation.html"` so local
+  inbucket emails mirror prod template.
+- In Supabase prod dashboard: Authentication → Email Templates →
+  Confirm signup → replace the default HTML with the same content from
+  `confirmation.html`; subject to "Your Unstuck confirmation code".
+  Verify there is no `{{ .ConfirmationURL }}` reference left in the
+  prod template body.
+
+#### 2. New POST endpoint — `src/pages/api/auth/verify-otp.ts`
+
+**File**: `src/pages/api/auth/verify-otp.ts` (new)
+
+**Intent**: Accept email + 6-digit code, call `supabase.auth.verifyOtp()`,
+let Supabase establish a session via the cookie binding on success.
+This is the load-bearing replacement for the magic-link verify URL.
+
+**Contract**:
+- `export const prerender = false`. `export const POST: APIRoute`.
+- Accepts form-encoded `email` (string) + `token` (string).
+- zod schema: `z.object({ email: z.email(...), token: z.string().regex(/^\d{6}$/, "Enter the 6-digit code") })`.
+- On validation failure → `context.redirect("/auth/confirm-email?email=<email>&error=<msg>")`.
+- Calls `supabase.auth.verifyOtp({ email, token, type: "signup" })`.
+- On success: Supabase sets cookies via our `cookies.setAll` binding
+  (already wired in `src/lib/supabase.ts`); `context.redirect("/")`
+  lands the user signed-in on the cosmic landing.
+- On error: detect `AuthApiError.code` values
+  (`otp_expired`, `invalid_otp`, plus generic fallback) and redirect to
+  `/auth/confirm-email?email=<email>&error=<code>` for retry. The
+  confirm page renders the error inline above the form so user can
+  re-enter (typically a typo in the 6 digits).
+- No CSRF token check (matches existing signin/signup/resend posture).
+
+#### 3. Refactor `confirm-email.astro` into interactive OTP form
 
 **File**: `src/pages/auth/confirm-email.astro`
 
-**Intent**: Replace the current `import.meta.env.DEV` branch with explicit
-URL-param-driven state (`?status=success`, `?error=expired`, default =
-pending). Each state gets distinct UI: success shows a "Sign in"
-button, expired shows the resend form, pending shows the existing
-"Check your email" copy. The dev convenience copy is dropped — local
-dev now mirrors prod confirmation flow.
+**Intent**: Replace the current static "Check your email" copy with an
+interactive form: email (pre-filled, read-only if from URL) + 6-digit
+code input + submit. Also accommodate an error retry state and a
+"resend code" affordance reusing Phase 2's `/api/auth/resend` endpoint.
 
 **Contract**:
-- Read `Astro.url.searchParams.get("status")` and `.get("error")` at
-  the frontmatter level.
-- Three branches:
-  - `error === "expired"` → "Link wygasł" heading + inline form with
-    `<input name="email">` and `[Send new link]` submit that posts to
-    `/api/auth/resend`.
-  - `status === "success"` → "Email potwierdzony" heading + green
-    accent + `[Sign in]` link to `/auth/signin`.
-  - Otherwise → existing "Check your email" pending copy.
-- The expired-state form is plain HTML form posting to the resend
-  endpoint, NOT a React island (form is one-shot; no countdown UX
-  needed here — the page is already a recovery surface, not a flooding
-  vector).
-- After form submit, redirect back to `/auth/confirm-email?status=success`
-  if the email shape was valid (per anti-enum, we can't distinguish
-  whether the email actually triggered a send).
+- Read URL params: `email` (pre-fill), `error` (inline error display).
+- Render form:
+  - `<input type="email" name="email" value={email} required readonly />` if email param present, else editable.
+  - `<input type="text" name="token" inputmode="numeric" pattern="\d{6}" maxlength="6" autocomplete="one-time-code" placeholder="123456" />`
+    — `autocomplete="one-time-code"` is the magic attribute that lets
+    iOS Safari and Android Chrome auto-fill OTPs from SMS / email
+    notifications.
+  - Submit posts to `/api/auth/verify-otp`.
+- Below the verify form, render a small "Didn't get the code? [Resend]"
+  affordance — plain HTML form posting to `/api/auth/resend` with the
+  email field. No countdown UX here (one-shot recovery; the signin
+  yellow box from Phase 2 is the high-frequency retry surface).
+- If `error` param present, render an inline alert above the form
+  mapping the error code to friendly copy:
+  - `invalid_otp` → "That code didn't match. Double-check and try again."
+  - `otp_expired` → "Your code expired. Request a new one below."
+  - anything else → "Couldn't verify. Try again or request a new code."
+- Drop the `import.meta.env.DEV` branch entirely; local dev now uses
+  the same flow as prod (inbucket shows the OTP from the customized
+  template).
 
-#### 2. Configure Supabase to redirect expired tokens
+#### 4. signup.ts passes email forward
 
-**File**: External (Supabase dashboard, same project as Phase 1)
+**File**: `src/pages/api/auth/signup.ts`
 
-**Intent**: When Supabase rejects a confirmation token as expired/invalid,
-it currently redirects to the Site URL with an error in the hash
-fragment. We want it to land on `/auth/confirm-email?error=expired` so
-the page can render the recovery flow.
+**Intent**: After successful `signUp()`, pass the user's email to the
+confirm page so the OTP form pre-fills it (one less thing for user to
+type).
 
-**Contract**: Authentication → URL Configuration → add
-`https://unstuck.lukasz-rdzanek.workers.dev/auth/confirm-email?error=expired`
-AND `https://unstuck.lukasz-rdzanek.workers.dev/auth/confirm-email?error=invalid`
-to the Redirect URLs allow-list. The Site URL stays at the canonical
-origin. The redirect target on token-failure is controlled by the
-client-side `redirectTo` parameter in `signUp()`, which we're not
-currently passing — Supabase falls back to the Site URL with error
-information in the URL hash fragment (e.g.
-`#error=access_denied&error_code=otp_expired&error_description=...`).
-A tiny inline `<script>` on confirm-email.astro parses
-`window.location.hash`, reads both `error` and `error_code` fields, and
-uses `history.replaceState` to rewrite the URL to one of:
-- `?error=expired` when `error_code === 'otp_expired'` (per
-  `node_modules/@supabase/auth-js/dist/main/lib/error-codes.d.ts:6`)
-- `?error=invalid` for any other non-empty `error` value (covers
-  token-mismatch, malformed, replay, etc.)
-- no rewrite when hash is empty or unrelated (page stays in pending
-  state)
-The recovery UI MAY collapse both states into one branch with generic
-copy ("Link nieaktualny lub niepoprawny — wyślij nowy") if separate UI
-isn't worth the maintenance; the script still distinguishes so we have
-the option without rework.
+**Contract**: Change the success redirect from
+`/auth/confirm-email` to
+`` `/auth/confirm-email?email=${encodeURIComponent(parsed.data.email)}` ``.
+Error path stays as today.
+
+#### 5. SignInForm yellow box: link to confirm-email for code entry
+
+**File**: `src/components/auth/SignInForm.tsx`
+
+**Intent**: When the unconfirmed flow triggers (Phase 2 yellow box),
+add a secondary affordance below the resend button: "Already have a
+code? Enter it here →" linking to `/auth/confirm-email?email=<that>`.
+Discoverable path for users who close the post-signup tab and return
+later via signin.
+
+**Contract**: Within the existing yellow-box `<div>` (the
+`isUnconfirmedFlow ? (...)` branch), append an `<a>` link styled
+similarly to the resend button, target
+`` `/auth/confirm-email?email=${encodeURIComponent(email)}` ``. Use a
+small "→" character or `lucide-react` `ArrowRight` icon to suggest
+navigation.
 
 ### Success Criteria:
 
 #### Automated Verification:
 
-- `npx astro check` exits 0.
+- `npx supabase db reset` exits 0 after `supabase/config.toml` template
+  change.
 - `npm run lint` exits 0.
+- `npx astro check` exits 0.
 - `npm run build` exits 0.
 
 #### Manual Verification:
 
-- Visit `/auth/confirm-email` directly (no params) → "Check your email"
-  pending copy renders.
-- Visit `/auth/confirm-email?status=success` → "Email potwierdzony"
-  success copy with Sign in link.
-- Visit `/auth/confirm-email?error=expired` → "Link wygasł" copy with
-  inline resend form.
-- Submit the resend form with a valid email → redirect to
-  `/auth/confirm-email?status=success`; new email arrives in inbucket
-  (local) or Resend (prod).
-- On prod: simulate expired token by manually constructing a confirm
-  URL with a clearly-invalid token; verify Supabase redirects with
-  error-in-hash; verify the inline script normalizes to
-  `?error=expired` and the page renders the recovery UI.
-- After successful confirmation in prod (real flow): user lands on
-  `/auth/confirm-email?status=success`, clicks Sign in, enters
-  credentials, reaches `/dashboard`.
+- Local: signup with a new email → `/auth/confirm-email?email=...`
+  renders the form with email pre-filled (read-only) and an empty code
+  field.
+- Local: check inbucket inbox → email contains a prominent 6-digit code
+  AND NO clickable confirmation URL anywhere.
+- Local: type the code on the confirm page → POST `/api/auth/verify-otp`
+  → redirect to `/`; user is signed in (cookie set).
+- Local: type a wrong code → redirect back to
+  `/auth/confirm-email?email=...&error=invalid_otp` with inline alert;
+  form is ready to retry.
+- Local: click the resend link on the confirm page → new email arrives
+  in inbucket; no countdown needed here (one-shot recovery).
+- Local: SignInForm yellow box (unconfirmed signin) shows the new
+  "Enter code →" link in addition to "Send confirmation again".
+- Prod redeploy + same end-to-end flow with a real email
+  (lukasz.rdzanek+s04prod-otp@protonmail.com or similar alias):
+  signup → confirm-email page → check inbox → enter the 6-digit code →
+  redirect to `/` signed in. The Proton scanner cannot consume the
+  code, so this time the lockout-then-confirm flow works end-to-end.
+- Prod: a user who signs up but DOESN'T enter the code, then tries to
+  sign in, sees the yellow box from Phase 2 (this confirms the
+  lockout — the `email_not_confirmed` error path is now actually
+  reachable for Proton users).
 
 ---
 
@@ -587,32 +668,35 @@ those signals.
 
 #### Automated
 
-- [x] 2.1 `npm run lint` exits 0
-- [x] 2.2 `npx astro check` exits 0
-- [x] 2.3 `npm run build` exits 0
+- [x] 2.1 `npm run lint` exits 0 — f439737
+- [x] 2.2 `npx astro check` exits 0 — f439737
+- [x] 2.3 `npm run build` exits 0 — f439737
 
 #### Manual
 
-- [x] 2.4 Local signup → immediate signin attempt shows "Your email isn't confirmed yet" yellow block + resend button, not raw Supabase error
-- [x] 2.5 Resend click → "Confirmation email sent" inline message + button becomes "Send again (60s)" countdown
-- [x] 2.6 Second email visible in inbucket; clicking disabled button within 60s does nothing (HTML disabled attribute)
-- [x] 2.7 After 60s button re-enables; another click triggers another send
-- [x] 2.8 Resend with typo'd email shows same "Confirmation email sent" (no enumeration leak); server log shows underlying failure via `[resend] supabase.auth.resend returned non-rate-limit error`
-- [x] 2.9 Prod redeploy verified (Worker version `b8ca6084`); server-side render of `/auth/signin?error=unconfirmed&unconfirmed_email=...` shows the yellow box with pre-filled email (curl confirmed). **Full prod e2e lockout test deferred to Phase 3** — Proton/Gmail email scanners prefetch the Supabase magic-link verify URL before the user opens the email, auto-confirming the account; the yellow box never triggers for those providers. Phase 3 redesign to OTP code (6-digit number in email body) bypasses prefetch and enables true end-to-end lockout verification.
+- [x] 2.4 Local signup → immediate signin attempt shows "Your email isn't confirmed yet" yellow block + resend button, not raw Supabase error — f439737
+- [x] 2.5 Resend click → "Confirmation email sent" inline message + button becomes "Send again (60s)" countdown — f439737
+- [x] 2.6 Second email visible in inbucket; clicking disabled button within 60s does nothing (HTML disabled attribute) — f439737
+- [x] 2.7 After 60s button re-enables; another click triggers another send — f439737
+- [x] 2.8 Resend with typo'd email shows same "Confirmation email sent" (no enumeration leak); server log shows underlying failure via `[resend] supabase.auth.resend returned non-rate-limit error` — f439737
+- [x] 2.9 Prod redeploy verified (Worker version `b8ca6084`); server-side render of `/auth/signin?error=unconfirmed&unconfirmed_email=...` shows the yellow box with pre-filled email (curl confirmed). **Full prod e2e lockout test deferred to Phase 3** — Proton/Gmail email scanners prefetch the Supabase magic-link verify URL before the user opens the email, auto-confirming the account; the yellow box never triggers for those providers. Phase 3 redesign to OTP code (6-digit number in email body) bypasses prefetch and enables true end-to-end lockout verification. — f439737
 
-### Phase 3: Confirm-email page states (success / expired / pending)
+### Phase 3: OTP code-based confirmation (prefetch-resistant)
 
 #### Automated
 
-- [ ] 3.1 `npx astro check` exits 0
-- [ ] 3.2 `npm run lint` exits 0
-- [ ] 3.3 `npm run build` exits 0
+- [x] 3.1 `npx supabase db reset` exits 0 after `supabase/config.toml` template change
+- [x] 3.2 `npm run lint` exits 0
+- [x] 3.3 `npx astro check` exits 0
+- [x] 3.4 `npm run build` exits 0
 
 #### Manual
 
-- [ ] 3.4 `/auth/confirm-email` no params → pending copy
-- [ ] 3.5 `/auth/confirm-email?status=success` → success copy with Sign in link
-- [ ] 3.6 `/auth/confirm-email?error=expired` → expired copy with inline resend form
-- [ ] 3.7 Submit resend form with valid email → redirect to `?status=success`; fresh email arrives
-- [ ] 3.8 Prod: invalid token redirects with hash fragment; inline script normalizes to `?error=expired`; recovery UI renders
-- [ ] 3.9 Full end-to-end happy path on prod: signup → email → confirm → sign in → `/dashboard`
+- [x] 3.5 Local signup → `/auth/confirm-email?email=...` renders form with email pre-filled (read-only) + empty code field
+- [x] 3.6 Local inbucket email contains prominent 6-digit code AND NO clickable confirmation URL anywhere in body
+- [x] 3.7 Local: type correct code → POST /api/auth/verify-otp → redirect to `/`; user signed in (cookie set)
+- [x] 3.8 Local: wrong code → redirect back to `/auth/confirm-email?email=...&error=invalid_otp` with inline alert; form ready to retry
+- [x] 3.9 Local: click resend link on confirm page → new email arrives in inbucket
+- [x] 3.10 Local: SignInForm yellow box (unconfirmed signin) shows new "Enter code →" link in addition to "Send confirmation again"
+- [x] 3.11 Prod redeploy + same end-to-end with real email (Proton alias): signup → confirm page → check inbox → enter 6-digit code → redirect to `/` signed in. Proton scanner cannot consume the code; lockout-then-confirm flow works end-to-end.
+- [x] 3.12 Prod: user signs up but doesn't enter code, then tries signin → yellow box from Phase 2 appears (confirms `email_not_confirmed` is now actually reachable for Proton users)
