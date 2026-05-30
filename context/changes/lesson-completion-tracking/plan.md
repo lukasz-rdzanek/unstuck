@@ -612,15 +612,15 @@ revert" note.
 
 #### Automated
 
-- [x] 3.1 `npx supabase db push` exits 0 (migration applied to prod)
-- [x] 3.2 Post-push `gen types --linked` produces no schema diff against local `database.types.ts`
-- [x] 3.3 Prod curl `/courses/generative-ai-leader` returns HTTP 200
-- [x] 3.4 Prod curl POST `/api/lessons/<uuid>/complete` without session returns 403 (Astro CSRF rejects cross-site before reaching the 401 auth gate — stronger posture than the planned 401-only check; same proof that the endpoint is wired and refusing unauthorized access)
+- [x] 3.1 `npx supabase db push` exits 0 (migration applied to prod) — d05da03
+- [x] 3.2 Post-push `gen types --linked` produces no schema diff against local `database.types.ts` — d05da03
+- [x] 3.3 Prod curl `/courses/generative-ai-leader` returns HTTP 200 — d05da03
+- [x] 3.4 Prod curl POST `/api/lessons/<uuid>/complete` without session returns 403 (Astro CSRF rejects cross-site before reaching the 401 auth gate — stronger posture than the planned 401-only check; same proof that the endpoint is wired and refusing unauthorized access) — d05da03
 
 #### Manual
 
-- [x] 3.5 Signed-in prod operator: lesson page shows "Mark as complete" button
-- [x] 3.6 Mark complete on prod → flip + particle + persisted in prod Studio SQL
-- [x] 3.7 Course detail on prod: green check + faded title on completed lesson
-- [x] 3.8 Unmark on prod: reverts on lesson page + course detail
-- [x] 3.9 Operator follows `docs/operator/completions.md` "see my completions" SQL recipe → row appears
+- [x] 3.5 Signed-in prod operator: lesson page shows "Mark as complete" button — d05da03
+- [x] 3.6 Mark complete on prod → flip + particle + persisted in prod Studio SQL — d05da03
+- [x] 3.7 Course detail on prod: green check + faded title on completed lesson — d05da03
+- [x] 3.8 Unmark on prod: reverts on lesson page + course detail — d05da03
+- [x] 3.9 Operator follows `docs/operator/completions.md` "see my completions" SQL recipe → row appears — d05da03
