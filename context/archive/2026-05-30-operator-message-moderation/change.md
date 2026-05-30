@@ -1,10 +1,10 @@
 ---
 change_id: operator-message-moderation
 title: Operator message moderation — out-of-band delete
-status: impl_reviewed
+status: archived
 created: 2026-05-30
 updated: 2026-05-30
-archived_at: null
+archived_at: 2026-05-30T10:58:07Z
 ---
 
 ## Notes
