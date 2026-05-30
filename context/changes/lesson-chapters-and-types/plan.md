@@ -530,26 +530,26 @@ rollback recipe under a "Emergency revert" section.
 
 #### Automated
 
-- [x] 2.1 `npm run lint` exits 0
-- [x] 2.2 `npx astro check` exits 0
-- [x] 2.3 `npm run build` exits 0
+- [x] 2.1 `npm run lint` exits 0 — ea3dff0
+- [x] 2.2 `npx astro check` exits 0 — ea3dff0
+- [x] 2.3 `npm run build` exits 0 — ea3dff0
 
 #### Manual
 
-- [ ] 2.4 Local `/courses/<seed-course-slug>` renders chapter heading with lessons under it (not flat)
-- [ ] 2.5 Empty chapter renders "No lessons in this chapter yet." placeholder, no broken layout
-- [ ] 2.6 Text-only lesson (video_url IS NULL) renders markdown-only with "Reading" badge and no video region
-- [ ] 2.7 Original video lesson `/courses/<slug>/lessons/introduction` still renders video + markdown + ChatPanel unchanged
-- [ ] 2.8 Anonymous visit to course detail renders chapter heading + "Sign in to view lessons" CTA (S-01 behavior preserved)
+- [x] 2.4 Local `/courses/<seed-course-slug>` renders chapter heading with lessons under it (not flat) — ea3dff0
+- [x] 2.5 Empty chapter renders "No lessons in this chapter yet." placeholder, no broken layout — ea3dff0
+- [x] 2.6 Text-only lesson (video_url IS NULL) renders markdown-only with "Reading" badge and no video region — ea3dff0
+- [x] 2.7 Original video lesson `/courses/<slug>/lessons/introduction` still renders video + markdown + ChatPanel unchanged — ea3dff0
+- [x] 2.8 Anonymous visit to course detail renders chapter heading + "Sign in to view lessons" CTA (S-01 behavior preserved) — ea3dff0
 
 ### Phase 3: Operator docs + prod deploy + smoke
 
 #### Automated
 
-- [ ] 3.1 `npx supabase db push` exits 0 (migration applied to prod)
-- [ ] 3.2 Post-push `gen types --linked` produces no diff against local-generated `database.types.ts`
-- [ ] 3.3 `curl /courses/generative-ai-leader` on prod returns HTTP 200 and HTML contains "Introduction"
-- [ ] 3.4 `curl /courses/generative-ai-leader/lessons/introduction` on prod returns HTTP 302 to signin (unchanged)
+- [x] 3.1 `npx supabase db push` exits 0 (migration applied to prod)
+- [x] 3.2 Post-push `gen types --linked` produces no diff against local-generated `database.types.ts`
+- [x] 3.3 `curl /courses/generative-ai-leader` on prod returns HTTP 200 and HTML contains "Introduction"
+- [x] 3.4 `curl /courses/generative-ai-leader/lessons/introduction` on prod returns HTTP 302 to signin (unchanged)
 
 #### Manual
 
