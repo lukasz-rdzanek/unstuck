@@ -1,7 +1,7 @@
 ---
 change_id: lesson-page-polish-bundle
 title: "Lesson page UX polish: cursor + topbar + prev/next + collapse + scrollbar"
-status: implementing
+status: implemented
 created: 2026-05-31
 updated: 2026-05-31
 archived_at: null

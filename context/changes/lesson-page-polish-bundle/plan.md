@@ -422,14 +422,14 @@ of an earlier version.
 
 #### Automated
 
-- [x] 2.1 Pre-deploy `npm run lint` exits 0
-- [x] 2.2 Pre-deploy `npm run build` exits 0
-- [x] 2.3 Post-deploy curl `/courses/generative-ai-leader/lessons/introduction` returns HTTP 302
+- [x] 2.1 Pre-deploy `npm run lint` exits 0 — 8ec2967
+- [x] 2.2 Pre-deploy `npm run build` exits 0 — 8ec2967
+- [x] 2.3 Post-deploy curl `/courses/generative-ai-leader/lessons/introduction` returns HTTP 302 — 8ec2967
 
 #### Manual
 
-- [x] 2.4 Prod topbar shows username pill (not email)
-- [x] 2.5 Prod lesson page: collapse aside → content takes full width
-- [x] 2.6 Prod lesson page: prev/next arrows + Lesson N of M badge work
-- [x] 2.7 Prod cursor + scrollbar visible globally
-- [x] 2.8 Prod no-regression: Realtime chat + Mark Complete still work end-to-end
+- [x] 2.4 Prod topbar shows username pill (not email) — 8ec2967
+- [x] 2.5 Prod lesson page: collapse aside → content takes full width — 8ec2967
+- [x] 2.6 Prod lesson page: prev/next arrows + Lesson N of M badge work — 8ec2967
+- [x] 2.7 Prod cursor + scrollbar visible globally — 8ec2967
+- [x] 2.8 Prod no-regression: Realtime chat + Mark Complete still work end-to-end — 8ec2967
