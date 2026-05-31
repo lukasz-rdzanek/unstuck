@@ -644,27 +644,27 @@ End-to-end on prod after Phase 5:
 
 #### Automated
 
-- [x] 4.1 `npm run lint` exits 0
-- [x] 4.2 `npx astro check` exits 0
-- [x] 4.3 `npm run build` exits 0
+- [x] 4.1 `npm run lint` exits 0 — 976c93d
+- [x] 4.2 `npx astro check` exits 0 — 976c93d
+- [x] 4.3 `npm run build` exits 0 — 976c93d
 
 #### Manual
 
-- [x] 4.4 Bump course updated_at via SQL → Lessons tab dot + banner visible
-- [x] 4.5 Click banner X → dismissed; refresh → still dismissed
-- [x] 4.6 Bump updated_at again → indicator reappears (newer than dismissed timestamp)
-- [x] 4.7 Fresh user first visit → no indicator (graceful Q5 default)
-- [x] 4.8 Second visit without edits → no indicator
-- [x] 4.9 Pre-deploy lint + build green
-- [x] 4.10 wrangler deploy succeeds
-- [x] 4.11 Post-deploy smoke curl returns 302
+- [x] 4.4 Bump course updated_at via SQL → Lessons tab dot + banner visible — 976c93d
+- [x] 4.5 Click banner X → dismissed; refresh → still dismissed — 976c93d
+- [x] 4.6 Bump updated_at again → indicator reappears (newer than dismissed timestamp) — 976c93d
+- [x] 4.7 Fresh user first visit → no indicator (graceful Q5 default) — 976c93d
+- [x] 4.8 Second visit without edits → no indicator — 976c93d
+- [x] 4.9 Pre-deploy lint + build green — 1be40e0
+- [x] 4.10 wrangler deploy succeeds — 1be40e0
+- [x] 4.11 Post-deploy smoke curl returns 302 — 1be40e0
 
 ### Phase 5: End-to-end smoke on prod
 
 #### Manual
 
-- [ ] 5.1 New incognito session → Lessons tab default
-- [ ] 5.2 Chat-pulse-on-Lessons retarget verified
-- [ ] 5.3 MarkComplete ↔ LessonsNav row sync verified
-- [ ] 5.4 Course-updated indicator + dismiss verified
-- [ ] 5.5 No regression: chat, particle burst, prev/next, aside collapse fluid grid all still work
+- [x] 5.1 New incognito session → Lessons tab default
+- [x] 5.2 Chat-pulse-on-Lessons retarget verified
+- [x] 5.3 MarkComplete ↔ LessonsNav row sync verified
+- [x] 5.4 Course-updated indicator + dismiss verified
+- [x] 5.5 No regression: chat, particle burst, prev/next, aside collapse fluid grid all still work
