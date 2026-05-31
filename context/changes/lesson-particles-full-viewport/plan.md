@@ -267,11 +267,11 @@ Phase 1 commit.
 
 #### Automated
 
-- [x] 2.1 Pre-deploy `npm run lint` exits 0
-- [x] 2.2 Pre-deploy `npm run build` exits 0
-- [x] 2.3 Post-deploy curl `/courses/generative-ai-leader/lessons/introduction` returns HTTP 302
+- [x] 2.1 Pre-deploy `npm run lint` exits 0 — 551422e
+- [x] 2.2 Pre-deploy `npm run build` exits 0 — 551422e
+- [x] 2.3 Post-deploy curl `/courses/generative-ai-leader/lessons/introduction` returns HTTP 302 — 551422e
 
 #### Manual
 
-- [x] 2.4 Prod mark-complete fires viewport-wide cosmic burst
-- [x] 2.5 Prod no-regression: chat + Mark Complete toggle + LessonAside Lessons highlight still work
+- [x] 2.4 Prod mark-complete fires viewport-wide cosmic burst — 551422e
+- [x] 2.5 Prod no-regression: chat + Mark Complete toggle + LessonAside Lessons highlight still work — 551422e
