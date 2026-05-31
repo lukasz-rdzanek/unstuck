@@ -634,11 +634,11 @@ End-to-end on prod after Phase 5:
 - [x] 3.5 Edit a lesson row in Studio → `lessons.updated_at` auto-bumps
 - [x] 3.6 RLS verified: own course_views row visible, others hidden
 - [x] 3.7 Visit lesson page (signed in) → course_views row appears with current timestamp; refresh updates
-- [ ] 3.8 `supabase db push` to prod succeeds
-- [ ] 3.9 Pre-deploy app lint + build green
-- [ ] 3.10 wrangler deploy succeeds
-- [ ] 3.11 Post-deploy smoke curl returns 302
-- [ ] 3.12 Prod manual: visit lesson signed in → course_views populated on prod
+- [x] 3.8 `supabase db push` to prod succeeds
+- [x] 3.9 Pre-deploy app lint + build green
+- [x] 3.10 wrangler deploy succeeds
+- [x] 3.11 Post-deploy smoke curl returns 302
+- [x] 3.12 Prod manual: visit lesson signed in → course_views populated on prod
 
 ### Phase 4: Course-updated indicator UI
 
