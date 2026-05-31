@@ -405,31 +405,31 @@ of an earlier version.
 
 #### Automated
 
-- [x] 1.1 `npm run lint` exits 0
-- [x] 1.2 `npx astro check` exits 0
-- [x] 1.3 `npm run build` exits 0
+- [x] 1.1 `npm run lint` exits 0 — 77d5916
+- [x] 1.2 `npx astro check` exits 0 — 77d5916
+- [x] 1.3 `npm run build` exits 0 — 77d5916
 
 #### Manual
 
-- [x] 1.4 cursor: hover buttons + tabs + links → pointer; disabled buttons still not-allowed
-- [x] 1.5 scrollbar: long page scrollbar matches chat-panel thin cosmic style (Chrome + Firefox)
-- [x] 1.6 aside-fluid: collapse aside → content takes full width; re-open restores 360px column
-- [x] 1.7 topbar: username pill shows display_name (not email); refactored profiles service in use
-- [x] 1.8 prev/next + badge: first lesson hides Back; last hides Next; walk increments badge correctly
-- [x] 1.9 no regression: chat post + Realtime, Mark Complete toggle, LessonAside Lessons highlight still work
+- [x] 1.4 cursor: hover buttons + tabs + links → pointer; disabled buttons still not-allowed — 77d5916
+- [x] 1.5 scrollbar: long page scrollbar matches chat-panel thin cosmic style (Chrome + Firefox) — 77d5916
+- [x] 1.6 aside-fluid: collapse aside → content takes full width; re-open restores 360px column — 77d5916
+- [x] 1.7 topbar: username pill shows display_name (not email); refactored profiles service in use — 77d5916
+- [x] 1.8 prev/next + badge: first lesson hides Back; last hides Next; walk increments badge correctly — 77d5916
+- [x] 1.9 no regression: chat post + Realtime, Mark Complete toggle, LessonAside Lessons highlight still work — 77d5916
 
 ### Phase 2: Prod deploy + smoke
 
 #### Automated
 
-- [ ] 2.1 Pre-deploy `npm run lint` exits 0
-- [ ] 2.2 Pre-deploy `npm run build` exits 0
-- [ ] 2.3 Post-deploy curl `/courses/generative-ai-leader/lessons/introduction` returns HTTP 302
+- [x] 2.1 Pre-deploy `npm run lint` exits 0
+- [x] 2.2 Pre-deploy `npm run build` exits 0
+- [x] 2.3 Post-deploy curl `/courses/generative-ai-leader/lessons/introduction` returns HTTP 302
 
 #### Manual
 
-- [ ] 2.4 Prod topbar shows username pill (not email)
-- [ ] 2.5 Prod lesson page: collapse aside → content takes full width
-- [ ] 2.6 Prod lesson page: prev/next arrows + Lesson N of M badge work
-- [ ] 2.7 Prod cursor + scrollbar visible globally
-- [ ] 2.8 Prod no-regression: Realtime chat + Mark Complete still work end-to-end
+- [x] 2.4 Prod topbar shows username pill (not email)
+- [x] 2.5 Prod lesson page: collapse aside → content takes full width
+- [x] 2.6 Prod lesson page: prev/next arrows + Lesson N of M badge work
+- [x] 2.7 Prod cursor + scrollbar visible globally
+- [x] 2.8 Prod no-regression: Realtime chat + Mark Complete still work end-to-end
