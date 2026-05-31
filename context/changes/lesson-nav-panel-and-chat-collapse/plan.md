@@ -619,14 +619,14 @@ they're just unused.
 
 #### Automated
 
-- [x] 3.1 Pre-deploy `npm run lint` exits 0
-- [x] 3.2 Pre-deploy `npm run build` exits 0
-- [x] 3.3 Post-deploy curl `/courses/generative-ai-leader/lessons/introduction` returns HTTP 302 (protected route unchanged)
+- [x] 3.1 Pre-deploy `npm run lint` exits 0 — 7b8998c
+- [x] 3.2 Pre-deploy `npm run build` exits 0 — 7b8998c
+- [x] 3.3 Post-deploy curl `/courses/generative-ai-leader/lessons/introduction` returns HTTP 302 (protected route unchanged) — 7b8998c
 
 #### Manual
 
-- [x] 3.4 Prod signed-in operator: tab strip visible on lesson page; Chat default; chat works
-- [x] 3.5 Prod Lessons tab: chapter hierarchy + current lesson highlighted; click navigates correctly
-- [x] 3.6 Prod collapse + re-open works via pill handle
-- [x] 3.7 Prod refresh: tab + collapse persist
-- [x] 3.8 Prod mobile (or emulated <1024px viewport): bottom drawer holds tab switcher; both tabs work
+- [x] 3.4 Prod signed-in operator: tab strip visible on lesson page; Chat default; chat works — 7b8998c
+- [x] 3.5 Prod Lessons tab: chapter hierarchy + current lesson highlighted; click navigates correctly — 7b8998c
+- [x] 3.6 Prod collapse + re-open works via pill handle — 7b8998c
+- [x] 3.7 Prod refresh: tab + collapse persist — 7b8998c
+- [x] 3.8 Prod mobile (or emulated <1024px viewport): bottom drawer holds tab switcher; both tabs work — 7b8998c
