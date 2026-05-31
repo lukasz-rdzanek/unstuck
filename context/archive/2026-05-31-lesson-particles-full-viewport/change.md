@@ -1,10 +1,10 @@
 ---
 change_id: lesson-particles-full-viewport
 title: "Lift completion particle burst to viewport-wide portal (UNS-13)"
-status: implemented
+status: archived
 created: 2026-05-31
 updated: 2026-05-31
-archived_at: null
+archived_at: 2026-05-31T15:50:29Z
 ---
 
 ## Notes
