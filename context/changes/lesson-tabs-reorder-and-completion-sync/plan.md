@@ -594,11 +594,11 @@ End-to-end on prod after Phase 5:
 - [x] 1.5 Existing localStorage `chat` preference → still lands on Chat (honor returning users)
 - [x] 1.6 With Lessons active, chat message from another tab → Chat tab pulses
 - [x] 1.7 Switch to Chat → pulse clears
-- [ ] 1.8 Pre-deploy `npm run lint` + `npm run build` succeed
-- [ ] 1.9 Build with prod env, bundle verified prod-only
-- [ ] 1.10 `wrangler deploy` exits 0
-- [ ] 1.11 Post-deploy curl `/courses/<slug>/lessons/<slug>` returns HTTP 302
-- [ ] 1.12 Prod manual: clear localStorage, open lesson → Lessons tab default
+- [x] 1.8 Pre-deploy `npm run lint` + `npm run build` succeed
+- [x] 1.9 Build with prod env, bundle verified prod-only
+- [x] 1.10 `wrangler deploy` exits 0
+- [x] 1.11 Post-deploy curl `/courses/<slug>/lessons/<slug>` returns HTTP 302
+- [x] 1.12 Prod manual: clear localStorage, open lesson → Lessons tab default
 
 ### Phase 2: Bidirectional MarkComplete ↔ LessonsNav sync
 
