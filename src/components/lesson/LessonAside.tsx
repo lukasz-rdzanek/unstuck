@@ -8,6 +8,7 @@ import type { ChapterWithLessons } from "@/types";
 type Tab = "chat" | "lessons";
 
 interface Props {
+  courseId: string;
   lessonId: string;
   userId: string | null;
   userDisplayName: string | null;
@@ -15,6 +16,20 @@ interface Props {
   chapters: ChapterWithLessons[];
   completedLessonIds: string[];
   currentLessonId: string;
+  /**
+   * UNS-14 (c): MAX of courses.updated_at + lessons.updated_at across the
+   * whole course, ISO string. Null when there's no signed-in user or no
+   * course context. UI consumes in Phase 4 — passed but unused here for
+   * now (props are wired in P3 so the next phase is a UI-only change).
+   */
+  courseUpdatedAt: string | null;
+  /**
+   * UNS-14 (c): the user's last_seen_at for this course (from
+   * course_views), ISO string. Null on first visit after deploy —
+   * indicator is suppressed in that case per Q5 graceful-default
+   * decision. UI consumes in Phase 4.
+   */
+  lastSeenAt: string | null;
 }
 
 const MOBILE_MEDIA = "(max-width: 1023px)";

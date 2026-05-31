@@ -604,36 +604,36 @@ End-to-end on prod after Phase 5:
 
 #### Automated
 
-- [x] 2.1 `npm run lint` exits 0
-- [x] 2.2 `npx astro check` exits 0
-- [x] 2.3 `npm run build` exits 0
+- [x] 2.1 `npm run lint` exits 0 — 386a909
+- [x] 2.2 `npx astro check` exits 0 — 386a909
+- [x] 2.3 `npm run build` exits 0 — 386a909
 
 #### Manual
 
-- [x] 2.4 Mark complete → Lessons row flips green + faded immediately
-- [x] 2.5 Unmark → row reverts immediately
-- [x] 2.6 Rapid mark/unmark cycles reflect in real-time
-- [x] 2.7 Navigate to different lesson → SSR completion state correct; new listener attached
-- [x] 2.8 API fail (5xx) → MarkComplete rolls back; LessonsNav row reflects rollback (event was not dispatched)
-- [x] 2.9 Pre-deploy lint + build green
-- [x] 2.10 wrangler deploy succeeds
-- [x] 2.11 Post-deploy smoke curl returns 302
-- [x] 2.12 Prod manual: mark/unmark cycles sync to Lessons list
+- [x] 2.4 Mark complete → Lessons row flips green + faded immediately — 386a909
+- [x] 2.5 Unmark → row reverts immediately — 386a909
+- [x] 2.6 Rapid mark/unmark cycles reflect in real-time — 386a909
+- [x] 2.7 Navigate to different lesson → SSR completion state correct; new listener attached — 386a909
+- [x] 2.8 API fail (5xx) → MarkComplete rolls back; LessonsNav row reflects rollback (event was not dispatched) — 386a909
+- [x] 2.9 Pre-deploy lint + build green — c498dde
+- [x] 2.10 wrangler deploy succeeds — c498dde
+- [x] 2.11 Post-deploy smoke curl returns 302 — c498dde
+- [x] 2.12 Prod manual: mark/unmark cycles sync to Lessons list — c498dde
 
 ### Phase 3: Schema migration + view tracking
 
 #### Automated
 
-- [ ] 3.1 `npm run lint` exits 0
-- [ ] 3.2 `npx astro check` exits 0
-- [ ] 3.3 `npm run build` exits 0
-- [ ] 3.4 Local migration apply via `supabase db reset` succeeds; new columns + table visible via `\d+`
+- [x] 3.1 `npm run lint` exits 0
+- [x] 3.2 `npx astro check` exits 0
+- [x] 3.3 `npm run build` exits 0
+- [x] 3.4 Local migration apply via `supabase db reset` succeeds; new columns + table visible via `\d+`
 
 #### Manual
 
-- [ ] 3.5 Edit a lesson row in Studio → `lessons.updated_at` auto-bumps
-- [ ] 3.6 RLS verified: own course_views row visible, others hidden
-- [ ] 3.7 Visit lesson page (signed in) → course_views row appears with current timestamp; refresh updates
+- [x] 3.5 Edit a lesson row in Studio → `lessons.updated_at` auto-bumps
+- [x] 3.6 RLS verified: own course_views row visible, others hidden
+- [x] 3.7 Visit lesson page (signed in) → course_views row appears with current timestamp; refresh updates
 - [ ] 3.8 `supabase db push` to prod succeeds
 - [ ] 3.9 Pre-deploy app lint + build green
 - [ ] 3.10 wrangler deploy succeeds

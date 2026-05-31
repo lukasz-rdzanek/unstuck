@@ -69,6 +69,32 @@ export type Database = {
           },
         ]
       }
+      course_views: {
+        Row: {
+          course_id: string
+          last_seen_at: string
+          user_id: string
+        }
+        Insert: {
+          course_id: string
+          last_seen_at?: string
+          user_id: string
+        }
+        Update: {
+          course_id?: string
+          last_seen_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_views_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       courses: {
         Row: {
           created_at: string
@@ -77,6 +103,7 @@ export type Database = {
           is_free: boolean
           slug: string
           title: string
+          updated_at: string
         }
         Insert: {
           created_at?: string
@@ -85,6 +112,7 @@ export type Database = {
           is_free?: boolean
           slug: string
           title: string
+          updated_at?: string
         }
         Update: {
           created_at?: string
@@ -93,6 +121,7 @@ export type Database = {
           is_free?: boolean
           slug?: string
           title?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -161,6 +190,7 @@ export type Database = {
           position: number
           slug: string
           title: string
+          updated_at: string
           video_url: string | null
         }
         Insert: {
@@ -172,6 +202,7 @@ export type Database = {
           position: number
           slug: string
           title: string
+          updated_at?: string
           video_url?: string | null
         }
         Update: {
@@ -183,6 +214,7 @@ export type Database = {
           position?: number
           slug?: string
           title?: string
+          updated_at?: string
           video_url?: string | null
         }
         Relationships: [

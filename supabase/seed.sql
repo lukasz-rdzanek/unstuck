@@ -85,8 +85,13 @@ on conflict (id) do nothing;
 
 
 -- ----------------------------------------------------------------------------
--- 4. lessons — one lesson under the chapter
+-- 4. lessons — two lessons under the chapter
 -- ----------------------------------------------------------------------------
+-- Second lesson added during UNS-13 polish work (and made permanent during
+-- UNS-14) so the prev/next nav arrows + "Lesson N of M" badge have content
+-- to exercise. Without ≥2 lessons in a course, the nav block is
+-- intentionally hidden (see lessonSlug.astro:77 guard) and the badge
+-- collapses to "1/1 Lesson" — both states are unreachable for testing.
 insert into public.lessons (id, course_id, chapter_id, slug, title, position, video_url, content_md) values
   (
     'b0000000-0000-0000-0000-000000000001',
@@ -97,6 +102,16 @@ insert into public.lessons (id, course_id, chapter_id, slug, title, position, vi
     1,
     'https://www.youtube.com/watch?v=TQQPAU21ZUw',
     E'## What you will build\n\nA streaming-aware page where one component blocks on slow data while the rest of the tree renders eagerly. By the end you will be able to explain when Suspense boundaries help vs hurt.\n\n## Prerequisites\n\n- Familiarity with React 18 Suspense\n- Comfortable with a server framework (Next.js, Astro, or Remix)\n\n## Common blocker\n\nLearners often see the streaming behave like a regular SSR fallback — that usually means a parent component is awaiting too high in the tree. Watch the section at 14:20 if you hit this.'
+  ),
+  (
+    'b0000000-0000-0000-0000-000000000002',
+    'a0000000-0000-0000-0000-000000000001',
+    'e0000000-0000-0000-0000-000000000001',
+    'streaming-suspense-in-practice',
+    'Streaming and Suspense in Practice',
+    2,
+    'https://www.youtube.com/watch?v=aircAruvnKk',
+    E'## Test lesson for prev/next nav\n\nSecond lesson in the seed so the lesson topbar prev/next arrows + cyan "Lesson N of M" badge have content to exercise during local dev. Prod uses a different course (generative-ai-leader) with its own seeded chapters/lessons; this lesson is local-seed-only.\n\n## Notes\n\nFeel free to edit content freely — this row exists to support UI testing, not as canonical course material.'
   )
 on conflict (id) do nothing;
 

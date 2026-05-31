@@ -3,6 +3,7 @@ import AppLayout from "@/layouts/AppLayout.astro";
 import { createClient } from "@/lib/supabase";
 import { getLessonBySlugs, listChaptersWithLessonsForCourse } from "@/lib/services/courses";
 import { getCompletedLessonIdsForCourse, isLessonCompletedByUser } from "@/lib/services/completions";
+import { getCourseLastSeenAt, getCourseLatestUpdatedAt, upsertCourseView } from "@/lib/services/course-views";
 import { renderMarkdown } from "@/lib/markdown";
 import { parseVideoUrl } from "@/lib/video-embed";
 import LessonAside from "@/components/lesson/LessonAside";
@@ -31,14 +32,25 @@ const userDisplayName = Astro.locals.displayName;
 // Run all three Supabase queries in parallel — they share no data
 // dependency (all need course.id and userId only). Saves two
 // Worker→Supabase round-trips on every lesson render vs sequential.
-const [isCompleted, chapters, completedLessonIds] =
+const [isCompleted, chapters, completedLessonIds, lastSeenAt, courseUpdatedAt] =
   supabase && userId && lesson && course
     ? await Promise.all([
         isLessonCompletedByUser(supabase, lesson.id, userId),
         listChaptersWithLessonsForCourse(supabase, course.id),
         getCompletedLessonIdsForCourse(supabase, course.id, userId),
+        getCourseLastSeenAt(supabase, course.id, userId),
+        getCourseLatestUpdatedAt(supabase, course.id),
       ])
-    : [false, [], new Set<string>()];
+    : [false, [], new Set<string>(), null, null];
+
+// UNS-14 (c): record this visit so the next render's lastSeenAt
+// reflects today. Awaited (~50ms) so the upsert lands before the
+// next visit could observe stale state. Errors are logged in the
+// service, not thrown — visit-recording failures should not block
+// the lesson render.
+if (supabase && userId && course) {
+  await upsertCourseView(supabase, course.id, userId);
+}
 
 // 1.F: prev/next nav + "Lesson N of M" badge — derived from chapters
 // (already loaded above; zero new queries). Flatten chapter→lesson tree
@@ -180,6 +192,7 @@ const nextLesson = currentIndex >= 0 && currentIndex < totalLessons - 1 ? allLes
                   client-side (LessonsNav.tsx:29) for the same O(1) lookups. */}
               <LessonAside
                 client:load
+                courseId={course.id}
                 lessonId={lesson.id}
                 userId={userId}
                 userDisplayName={userDisplayName}
@@ -187,6 +200,8 @@ const nextLesson = currentIndex >= 0 && currentIndex < totalLessons - 1 ? allLes
                 chapters={chapters}
                 completedLessonIds={Array.from(completedLessonIds)}
                 currentLessonId={lesson.id}
+                courseUpdatedAt={courseUpdatedAt ? courseUpdatedAt.toISOString() : null}
+                lastSeenAt={lastSeenAt ? lastSeenAt.toISOString() : null}
               />
             </aside>
           </div>
