@@ -42,8 +42,12 @@ function writeLocalStorage(key: string, value: string): void {
 }
 
 function loadTab(): Tab {
+  // Default flipped to "lessons" (UNS-14): new users see course progress
+  // as the primary affordance. Returning users with a stored "chat"
+  // preference are honored — we explicitly check for "chat" so anyone
+  // else (no key, malformed value, "lessons" itself) lands on Lessons.
   const stored = readLocalStorage(TAB_STORAGE_KEY);
-  return stored === "lessons" ? "lessons" : "chat";
+  return stored === "chat" ? "chat" : "lessons";
 }
 
 function loadCollapsed(): boolean {
@@ -213,6 +217,23 @@ export default function LessonAside({
             <button
               type="button"
               role="tab"
+              aria-selected={activeTab === "lessons"}
+              onClick={() => {
+                setActiveTab("lessons");
+              }}
+              className={cn(
+                "inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-colors",
+                activeTab === "lessons"
+                  ? "bg-primary/15 text-primary"
+                  : "text-muted-foreground hover:text-foreground hover:bg-card/60",
+              )}
+            >
+              <ListTree className="size-3.5" />
+              <span>Lessons</span>
+            </button>
+            <button
+              type="button"
+              role="tab"
               aria-selected={activeTab === "chat"}
               onClick={() => {
                 setActiveTab("chat");
@@ -232,23 +253,6 @@ export default function LessonAside({
                   aria-label="New chat activity"
                 />
               )}
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={activeTab === "lessons"}
-              onClick={() => {
-                setActiveTab("lessons");
-              }}
-              className={cn(
-                "inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-colors",
-                activeTab === "lessons"
-                  ? "bg-primary/15 text-primary"
-                  : "text-muted-foreground hover:text-foreground hover:bg-card/60",
-              )}
-            >
-              <ListTree className="size-3.5" />
-              <span>Lessons</span>
             </button>
           </div>
           <div className="flex items-center gap-1">
