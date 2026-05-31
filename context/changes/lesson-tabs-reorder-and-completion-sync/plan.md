@@ -655,9 +655,9 @@ End-to-end on prod after Phase 5:
 - [x] 4.6 Bump updated_at again → indicator reappears (newer than dismissed timestamp)
 - [x] 4.7 Fresh user first visit → no indicator (graceful Q5 default)
 - [x] 4.8 Second visit without edits → no indicator
-- [ ] 4.9 Pre-deploy lint + build green
-- [ ] 4.10 wrangler deploy succeeds
-- [ ] 4.11 Post-deploy smoke curl returns 302
+- [x] 4.9 Pre-deploy lint + build green
+- [x] 4.10 wrangler deploy succeeds
+- [x] 4.11 Post-deploy smoke curl returns 302
 
 ### Phase 5: End-to-end smoke on prod
 
