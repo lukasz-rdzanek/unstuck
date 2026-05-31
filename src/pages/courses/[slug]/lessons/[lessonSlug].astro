@@ -5,7 +5,7 @@ import { getLessonBySlugs } from "@/lib/services/courses";
 import { isLessonCompletedByUser } from "@/lib/services/completions";
 import { renderMarkdown } from "@/lib/markdown";
 import { parseVideoUrl } from "@/lib/video-embed";
-import ChatPanel from "@/components/chat/ChatPanel";
+import ChatPanelChrome from "@/components/chat/ChatPanelChrome";
 import MarkCompleteButton from "@/components/lesson/MarkCompleteButton";
 
 const { slug, lessonSlug } = Astro.params;
@@ -107,7 +107,7 @@ const isCompleted = supabase && userId && lesson ? await isLessonCompletedByUser
             </div>
 
             <aside class="lg:sticky lg:top-8 lg:self-start">
-              <ChatPanel client:load lessonId={lesson.id} userId={userId} userDisplayName={userDisplayName} />
+              <ChatPanelChrome client:load lessonId={lesson.id} userId={userId} userDisplayName={userDisplayName} />
             </aside>
           </div>
         </>
