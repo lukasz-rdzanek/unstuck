@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { CheckCircle2 } from "lucide-react";
 import confetti from "canvas-confetti";
 
@@ -19,6 +19,20 @@ export default function MarkCompleteButton({ lessonId, initialCompleted }: Props
   const inflightRef = useRef(false);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const errorTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Mount-only cleanup — clears any pending auto-clear timer if the
+  // component unmounts within the 3s error-display window. Without this
+  // the timeout fires setError(null) on an unmounted component (React
+  // 18+ silently ignores it but the closure leaks until the timer
+  // resolves).
+  useEffect(() => {
+    return () => {
+      if (errorTimerRef.current) {
+        clearTimeout(errorTimerRef.current);
+        errorTimerRef.current = null;
+      }
+    };
+  }, []);
 
   function fireConfetti() {
     const node = buttonRef.current;
@@ -59,9 +73,13 @@ export default function MarkCompleteButton({ lessonId, initialCompleted }: Props
         setCompleted(wasCompleted);
         setError(res.status === 401 ? "Sign in to save your progress." : "Couldn't save — try again.");
       }
-    } catch {
+    } catch (err) {
       setCompleted(wasCompleted);
-      setError("Network error — try again in a moment.");
+      // `fetch` throws TypeError on actual network failure (DNS, offline,
+      // CORS). Anything else (e.g. AbortError from a future cancel) is
+      // unexpected — surface a generic message instead of misleading the
+      // user about a non-existent network problem.
+      setError(err instanceof TypeError ? "Network error — try again in a moment." : "Couldn't save — try again.");
     } finally {
       inflightRef.current = false;
       if (errorTimerRef.current) clearTimeout(errorTimerRef.current);

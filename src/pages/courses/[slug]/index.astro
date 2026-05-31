@@ -12,13 +12,17 @@ if (!course) {
   Astro.response.status = 404;
 }
 
-const chapters = course && supabase ? await listChaptersWithLessonsForCourse(supabase, course.id) : [];
 const userId = Astro.locals.user?.id ?? null;
 const isSignedIn = userId !== null;
-const completedLessonIds =
+// Run both queries in parallel — they share no data dependency, both
+// only need course.id and (for completions) userId. Saves one Worker→
+// Supabase round-trip on every course detail render.
+const [chapters, completedLessonIds] = await Promise.all([
+  course && supabase ? listChaptersWithLessonsForCourse(supabase, course.id) : Promise.resolve([]),
   isSignedIn && supabase && course && userId
-    ? await getCompletedLessonIdsForCourse(supabase, course.id, userId)
-    : new Set<string>();
+    ? getCompletedLessonIdsForCourse(supabase, course.id, userId)
+    : Promise.resolve(new Set<string>()),
+]);
 const pageTitle = course ? `${course.title} — Unstuck` : "Course not found — Unstuck";
 ---
 

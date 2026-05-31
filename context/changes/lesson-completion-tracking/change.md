@@ -1,7 +1,7 @@
 ---
 change_id: lesson-completion-tracking
 title: Per-user lesson completion tracking with celebratory particle effect
-status: implemented
+status: impl_reviewed
 created: 2026-05-30
 updated: 2026-05-31
 archived_at: null
