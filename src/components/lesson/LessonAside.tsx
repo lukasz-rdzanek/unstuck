@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { MessageSquare, ListTree, PanelRightClose, PanelLeftOpen, X } from "lucide-react";
+import { MessageSquare, ListTree, PanelRightClose, PanelLeftOpen, Sparkles, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ChatPanel from "@/components/chat/ChatPanel";
 import LessonsNav from "./LessonsNav";
@@ -35,6 +35,13 @@ interface Props {
 const MOBILE_MEDIA = "(max-width: 1023px)";
 const TAB_STORAGE_KEY = "unstuck.lesson-aside.tab";
 const COLLAPSED_STORAGE_KEY = "unstuck.lesson-aside.collapsed";
+
+/** Per-course dismiss key for the UNS-14 "course updated" banner. Stores
+ *  the ISO timestamp of the courseUpdatedAt that was dismissed; a NEWER
+ *  update supersedes the dismiss and re-shows the indicator. */
+function courseUpdateDismissedKey(courseId: string): string {
+  return `unstuck.lesson-aside.course-update-dismissed.${courseId}`;
+}
 
 // localStorage helpers — Safari private mode throws on write, so every
 // read/write is try/catch wrapped with sensible defaults.
@@ -83,6 +90,7 @@ function loadCollapsed(): boolean {
  * Replaces ChatPanelChrome (S-07 P1) on the lesson page.
  */
 export default function LessonAside({
+  courseId,
   lessonId,
   userId,
   userDisplayName,
@@ -90,8 +98,28 @@ export default function LessonAside({
   chapters,
   completedLessonIds,
   currentLessonId,
+  courseUpdatedAt,
+  lastSeenAt,
 }: Props) {
   const [activeTab, setActiveTabState] = useState<Tab>(() => loadTab());
+
+  // UNS-14 (c) indicator state. Derived `hasFreshUpdate` boolean:
+  //   - true iff lastSeenAt != null AND courseUpdatedAt > lastSeenAt
+  //   - per Q5 graceful default: lastSeenAt == null (first-visit-after-
+  //     deploy) suppresses the indicator entirely
+  // `dismissedAt` is the ISO timestamp the user last dismissed for THIS
+  // courseId. A newer courseUpdatedAt supersedes the dismiss.
+  const hasFreshUpdate = lastSeenAt !== null && courseUpdatedAt !== null && courseUpdatedAt > lastSeenAt;
+  const [dismissedAt, setDismissedAt] = useState<string | null>(() =>
+    readLocalStorage(courseUpdateDismissedKey(courseId)),
+  );
+  const showIndicator = hasFreshUpdate && (dismissedAt === null || (courseUpdatedAt && dismissedAt < courseUpdatedAt));
+
+  const dismissUpdateIndicator = useCallback(() => {
+    if (!courseUpdatedAt) return;
+    writeLocalStorage(courseUpdateDismissedKey(courseId), courseUpdatedAt);
+    setDismissedAt(courseUpdatedAt);
+  }, [courseId, courseUpdatedAt]);
   const [collapsed, setCollapsedState] = useState<boolean>(() => loadCollapsed());
 
   // Mobile drawer expansion (ephemeral — not persisted).
@@ -245,6 +273,12 @@ export default function LessonAside({
             >
               <ListTree className="size-3.5" />
               <span>Lessons</span>
+              {showIndicator && (
+                <span
+                  className="ml-1 h-1.5 w-1.5 rounded-full bg-cyan-400"
+                  aria-label="Course has new content since your last visit"
+                />
+              )}
             </button>
             <button
               type="button"
@@ -311,7 +345,21 @@ export default function LessonAside({
           />
         </div>
         {activeTab === "lessons" && (
-          <div className="min-h-0 flex-1">
+          <div className="flex min-h-0 flex-1 flex-col gap-3">
+            {showIndicator && (
+              <div className="flex items-start gap-2 rounded-lg border border-cyan-400/30 bg-cyan-400/10 p-3 text-xs text-cyan-100">
+                <Sparkles className="mt-0.5 size-4 shrink-0 text-cyan-300" aria-hidden="true" />
+                <p className="flex-1">This course has new content since your last visit.</p>
+                <button
+                  type="button"
+                  onClick={dismissUpdateIndicator}
+                  className="text-cyan-300 transition-colors hover:text-cyan-100"
+                  aria-label="Dismiss course-updated notice"
+                >
+                  <X className="size-3.5" />
+                </button>
+              </div>
+            )}
             <LessonsNav
               courseSlug={courseSlug}
               chapters={chapters}

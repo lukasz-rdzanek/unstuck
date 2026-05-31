@@ -624,37 +624,37 @@ End-to-end on prod after Phase 5:
 
 #### Automated
 
-- [x] 3.1 `npm run lint` exits 0
-- [x] 3.2 `npx astro check` exits 0
-- [x] 3.3 `npm run build` exits 0
-- [x] 3.4 Local migration apply via `supabase db reset` succeeds; new columns + table visible via `\d+`
+- [x] 3.1 `npm run lint` exits 0 — 5e8a9aa
+- [x] 3.2 `npx astro check` exits 0 — 5e8a9aa
+- [x] 3.3 `npm run build` exits 0 — 5e8a9aa
+- [x] 3.4 Local migration apply via `supabase db reset` succeeds; new columns + table visible via `\d+` — 5e8a9aa
 
 #### Manual
 
-- [x] 3.5 Edit a lesson row in Studio → `lessons.updated_at` auto-bumps
-- [x] 3.6 RLS verified: own course_views row visible, others hidden
-- [x] 3.7 Visit lesson page (signed in) → course_views row appears with current timestamp; refresh updates
-- [x] 3.8 `supabase db push` to prod succeeds
-- [x] 3.9 Pre-deploy app lint + build green
-- [x] 3.10 wrangler deploy succeeds
-- [x] 3.11 Post-deploy smoke curl returns 302
-- [x] 3.12 Prod manual: visit lesson signed in → course_views populated on prod
+- [x] 3.5 Edit a lesson row in Studio → `lessons.updated_at` auto-bumps — 5e8a9aa
+- [x] 3.6 RLS verified: own course_views row visible, others hidden — 5e8a9aa
+- [x] 3.7 Visit lesson page (signed in) → course_views row appears with current timestamp; refresh updates — 5e8a9aa
+- [x] 3.8 `supabase db push` to prod succeeds — 72150bd
+- [x] 3.9 Pre-deploy app lint + build green — 72150bd
+- [x] 3.10 wrangler deploy succeeds — 72150bd
+- [x] 3.11 Post-deploy smoke curl returns 302 — 72150bd
+- [x] 3.12 Prod manual: visit lesson signed in → course_views populated on prod — 72150bd
 
 ### Phase 4: Course-updated indicator UI
 
 #### Automated
 
-- [ ] 4.1 `npm run lint` exits 0
-- [ ] 4.2 `npx astro check` exits 0
-- [ ] 4.3 `npm run build` exits 0
+- [x] 4.1 `npm run lint` exits 0
+- [x] 4.2 `npx astro check` exits 0
+- [x] 4.3 `npm run build` exits 0
 
 #### Manual
 
-- [ ] 4.4 Bump course updated_at via SQL → Lessons tab dot + banner visible
-- [ ] 4.5 Click banner X → dismissed; refresh → still dismissed
-- [ ] 4.6 Bump updated_at again → indicator reappears (newer than dismissed timestamp)
-- [ ] 4.7 Fresh user first visit → no indicator (graceful Q5 default)
-- [ ] 4.8 Second visit without edits → no indicator
+- [x] 4.4 Bump course updated_at via SQL → Lessons tab dot + banner visible
+- [x] 4.5 Click banner X → dismissed; refresh → still dismissed
+- [x] 4.6 Bump updated_at again → indicator reappears (newer than dismissed timestamp)
+- [x] 4.7 Fresh user first visit → no indicator (graceful Q5 default)
+- [x] 4.8 Second visit without edits → no indicator
 - [ ] 4.9 Pre-deploy lint + build green
 - [ ] 4.10 wrangler deploy succeeds
 - [ ] 4.11 Post-deploy smoke curl returns 302
