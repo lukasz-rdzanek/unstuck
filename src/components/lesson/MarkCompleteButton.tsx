@@ -37,17 +37,60 @@ export default function MarkCompleteButton({ lessonId, initialCompleted }: Props
   function fireConfetti() {
     const node = buttonRef.current;
     if (!node || typeof window === "undefined") return;
+
+    // Cancel any in-flight burst before firing — rapid mark/unmark/mark
+    // cycles otherwise stack live particle systems on top of each other.
+    confetti.reset();
+
+    // Button-rect origin (normalized 0-1) for the center shot.
     const rect = node.getBoundingClientRect();
-    const x = (rect.left + rect.width / 2) / window.innerWidth;
-    const y = (rect.top + rect.height / 2) / window.innerHeight;
-    // confetti() returns a Promise that resolves when the animation
-    // finishes — we don't need to await it (fire-and-forget animation).
-    void confetti({
-      particleCount: 150,
-      spread: 70,
-      origin: { x, y },
+    const buttonX = (rect.left + rect.width / 2) / window.innerWidth;
+    const buttonY = (rect.top + rect.height / 2) / window.innerHeight;
+
+    // Shared physics base. Higher startVelocity + ticks so particles
+    // actually travel across the viewport instead of clumping at spawn.
+    // Colors: canvas-confetti default rainbow palette — cosmic tokens
+    // (--primary/--accent/--ring) blend into the dark theme background;
+    // bright defaults give us the contrast needed for a visible celebration.
+    const base = {
+      startVelocity: 55,
+      ticks: 250,
+      gravity: 0.9,
+      decay: 0.92,
       disableForReducedMotion: true,
+    };
+
+    // Three sequential shots — left cannon → center burst → right cannon.
+    // 150ms stagger gives ~500ms total run time (the gravity pulls the
+    // first shot's particles down by the time the third fires).
+    // confetti() returns a Promise that resolves when the animation
+    // finishes — fire-and-forget; orphaned setTimeouts after unmount
+    // are harmless (the library appends to document.body anyway).
+    void confetti({
+      ...base,
+      particleCount: 70,
+      angle: 60,
+      spread: 55,
+      origin: { x: 0, y: 0.7 },
     });
+    window.setTimeout(() => {
+      void confetti({
+        ...base,
+        particleCount: 100,
+        angle: 90,
+        spread: 100,
+        origin: { x: buttonX, y: buttonY },
+      });
+    }, 150);
+    window.setTimeout(() => {
+      void confetti({
+        ...base,
+        particleCount: 70,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1, y: 0.7 },
+      });
+    }, 300);
   }
 
   async function handleClick() {
