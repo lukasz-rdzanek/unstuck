@@ -251,27 +251,27 @@ Phase 1 commit.
 
 #### Automated
 
-- [x] 1.1 `npm run lint` exits 0
-- [x] 1.2 `npx astro check` exits 0
-- [x] 1.3 `npm run build` exits 0
+- [x] 1.1 `npm run lint` exits 0 — 81a81fb
+- [x] 1.2 `npx astro check` exits 0 — 81a81fb
+- [x] 1.3 `npm run build` exits 0 — 81a81fb
 
 #### Manual
 
-- [x] 1.4 Mark complete fires 3-shot burst (left cannon + button + right cannon) visibly filling the viewport
-- [x] 1.5 Unmark does NOT fire a burst (existing behavior preserved)
-- [x] 1.6 Rapid-fire mark/unmark cancels prior burst before firing new (no canvas accumulation)
-- [x] 1.7 Particle colors are the canvas-confetti default rainbow — visibly contrast against cosmic dark background (cosmic-palette colors were tried + reverted: they blended into the background)
-- [x] 1.8 With macOS Reduce Motion ON → no burst fires (disableForReducedMotion honored)
+- [x] 1.4 Mark complete fires 3-shot burst (left cannon + button + right cannon) visibly filling the viewport — 81a81fb
+- [x] 1.5 Unmark does NOT fire a burst (existing behavior preserved) — 81a81fb
+- [x] 1.6 Rapid-fire mark/unmark cancels prior burst before firing new (no canvas accumulation) — 81a81fb
+- [x] 1.7 Particle colors are the canvas-confetti default rainbow — visibly contrast against cosmic dark background (cosmic-palette colors were tried + reverted: they blended into the background) — 81a81fb
+- [x] 1.8 With macOS Reduce Motion ON → no burst fires (disableForReducedMotion honored) — 81a81fb
 
 ### Phase 2: Prod deploy + smoke
 
 #### Automated
 
-- [ ] 2.1 Pre-deploy `npm run lint` exits 0
-- [ ] 2.2 Pre-deploy `npm run build` exits 0
-- [ ] 2.3 Post-deploy curl `/courses/generative-ai-leader/lessons/introduction` returns HTTP 302
+- [x] 2.1 Pre-deploy `npm run lint` exits 0
+- [x] 2.2 Pre-deploy `npm run build` exits 0
+- [x] 2.3 Post-deploy curl `/courses/generative-ai-leader/lessons/introduction` returns HTTP 302
 
 #### Manual
 
-- [ ] 2.4 Prod mark-complete fires viewport-wide cosmic burst
-- [ ] 2.5 Prod no-regression: chat + Mark Complete toggle + LessonAside Lessons highlight still work
+- [x] 2.4 Prod mark-complete fires viewport-wide cosmic burst
+- [x] 2.5 Prod no-regression: chat + Mark Complete toggle + LessonAside Lessons highlight still work
