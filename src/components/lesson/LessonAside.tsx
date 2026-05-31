@@ -83,6 +83,19 @@ export default function LessonAside({
   const [hasNewChat, setHasNewChat] = useState(false);
   const prevMessageCountRef = useRef<number | null>(null);
 
+  // Mirror activeTab + isExpanded into refs so handleChatMessageCount
+  // can read the latest values without including them in its useCallback
+  // dep array — otherwise the callback identity churns on every state
+  // change and re-fires ChatPanel's onMessageCountChange effect.
+  const activeTabRef = useRef<Tab>(activeTab);
+  const isExpandedRef = useRef<boolean>(isExpanded);
+  useEffect(() => {
+    activeTabRef.current = activeTab;
+  }, [activeTab]);
+  useEffect(() => {
+    isExpandedRef.current = isExpanded;
+  }, [isExpanded]);
+
   const setActiveTab = useCallback((tab: Tab) => {
     setActiveTabState(tab);
     writeLocalStorage(TAB_STORAGE_KEY, tab);
@@ -107,27 +120,22 @@ export default function LessonAside({
     };
   }, [isExpanded]);
 
-  const handleChatMessageCount = useCallback(
-    (count: number) => {
-      const prev = prevMessageCountRef.current;
-      prevMessageCountRef.current = count;
-      // First report is the initial load — don't treat as "new".
-      if (prev === null) return;
-      if (count <= prev) return;
-      // New message arrived. Pulse the Chat tab unless we're already
-      // looking at it (or the mobile drawer is collapsed — the existing
-      // ChatPanelChrome had a similar signal there; here we
-      // consolidate: pulse always indicates "Chat has activity you
-      // haven't seen", regardless of cause).
-      if (
-        activeTab !== "chat" ||
-        (typeof window !== "undefined" && window.matchMedia(MOBILE_MEDIA).matches && !isExpanded)
-      ) {
-        setHasNewChat(true);
-      }
-    },
-    [activeTab, isExpanded],
-  );
+  const handleChatMessageCount = useCallback((count: number) => {
+    const prev = prevMessageCountRef.current;
+    prevMessageCountRef.current = count;
+    // First report is the initial load — don't treat as "new".
+    if (prev === null) return;
+    if (count <= prev) return;
+    // New message arrived. Pulse the Chat tab unless we're already
+    // looking at it (or the mobile drawer is collapsed —
+    // pulse always indicates "Chat has activity you haven't seen").
+    if (
+      activeTabRef.current !== "chat" ||
+      (typeof window !== "undefined" && window.matchMedia(MOBILE_MEDIA).matches && !isExpandedRef.current)
+    ) {
+      setHasNewChat(true);
+    }
+  }, []);
 
   // === Render: desktop collapsed ===
   // Pill handle on the right edge; aside hidden via grid-collapse in
@@ -176,7 +184,7 @@ export default function LessonAside({
           }}
           className="text-foreground flex w-full items-center justify-between px-4 py-3 text-sm font-semibold lg:hidden"
           aria-label="Open lesson panel"
-          aria-expanded={false}
+          aria-expanded={isExpanded}
         >
           <span className="flex items-center gap-2">
             <span>Lesson panel</span>

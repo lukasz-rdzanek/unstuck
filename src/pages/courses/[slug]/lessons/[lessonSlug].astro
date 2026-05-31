@@ -114,6 +114,10 @@ const [isCompleted, chapters, completedLessonIds] =
             </div>
 
             <aside class="lg:sticky lg:top-8 lg:self-start">
+              {/* Set → array → Set: completions service returns Set<string> for
+                  O(1) `.has()` in course detail, but Set isn't JSON-serializable
+                  across the Astro → React-island boundary. LessonsNav re-Set's
+                  client-side (LessonsNav.tsx:29) for the same O(1) lookups. */}
               <LessonAside
                 client:load
                 lessonId={lesson.id}
