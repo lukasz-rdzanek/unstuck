@@ -584,37 +584,37 @@ End-to-end on prod after Phase 5:
 
 #### Automated
 
-- [x] 1.1 `npm run lint` exits 0
-- [x] 1.2 `npx astro check` exits 0
-- [x] 1.3 `npm run build` exits 0
+- [x] 1.1 `npm run lint` exits 0 — 5fcfc78
+- [x] 1.2 `npx astro check` exits 0 — 5fcfc78
+- [x] 1.3 `npm run build` exits 0 — 5fcfc78
 
 #### Manual
 
-- [x] 1.4 Cleared localStorage + refresh → Lessons tab default
-- [x] 1.5 Existing localStorage `chat` preference → still lands on Chat (honor returning users)
-- [x] 1.6 With Lessons active, chat message from another tab → Chat tab pulses
-- [x] 1.7 Switch to Chat → pulse clears
-- [x] 1.8 Pre-deploy `npm run lint` + `npm run build` succeed
-- [x] 1.9 Build with prod env, bundle verified prod-only
-- [x] 1.10 `wrangler deploy` exits 0
-- [x] 1.11 Post-deploy curl `/courses/<slug>/lessons/<slug>` returns HTTP 302
-- [x] 1.12 Prod manual: clear localStorage, open lesson → Lessons tab default
+- [x] 1.4 Cleared localStorage + refresh → Lessons tab default — 5fcfc78
+- [x] 1.5 Existing localStorage `chat` preference → still lands on Chat (honor returning users) — 5fcfc78
+- [x] 1.6 With Lessons active, chat message from another tab → Chat tab pulses — 5fcfc78
+- [x] 1.7 Switch to Chat → pulse clears — 5fcfc78
+- [x] 1.8 Pre-deploy `npm run lint` + `npm run build` succeed — 1e4415a
+- [x] 1.9 Build with prod env, bundle verified prod-only — 1e4415a
+- [x] 1.10 `wrangler deploy` exits 0 — 1e4415a
+- [x] 1.11 Post-deploy curl `/courses/<slug>/lessons/<slug>` returns HTTP 302 — 1e4415a
+- [x] 1.12 Prod manual: clear localStorage, open lesson → Lessons tab default — 1e4415a
 
 ### Phase 2: Bidirectional MarkComplete ↔ LessonsNav sync
 
 #### Automated
 
-- [ ] 2.1 `npm run lint` exits 0
-- [ ] 2.2 `npx astro check` exits 0
-- [ ] 2.3 `npm run build` exits 0
+- [x] 2.1 `npm run lint` exits 0
+- [x] 2.2 `npx astro check` exits 0
+- [x] 2.3 `npm run build` exits 0
 
 #### Manual
 
-- [ ] 2.4 Mark complete → Lessons row flips green + faded immediately
-- [ ] 2.5 Unmark → row reverts immediately
-- [ ] 2.6 Rapid mark/unmark cycles reflect in real-time
-- [ ] 2.7 Navigate to different lesson → SSR completion state correct; new listener attached
-- [ ] 2.8 API fail (5xx) → MarkComplete rolls back; LessonsNav row reflects rollback (event was not dispatched)
+- [x] 2.4 Mark complete → Lessons row flips green + faded immediately
+- [x] 2.5 Unmark → row reverts immediately
+- [x] 2.6 Rapid mark/unmark cycles reflect in real-time
+- [x] 2.7 Navigate to different lesson → SSR completion state correct; new listener attached
+- [x] 2.8 API fail (5xx) → MarkComplete rolls back; LessonsNav row reflects rollback (event was not dispatched)
 - [ ] 2.9 Pre-deploy lint + build green
 - [ ] 2.10 wrangler deploy succeeds
 - [ ] 2.11 Post-deploy smoke curl returns 302

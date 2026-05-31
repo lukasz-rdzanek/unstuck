@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
 import { CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { ChapterWithLessons } from "@/types";
@@ -15,6 +15,11 @@ interface Props {
   currentLessonId: string;
 }
 
+interface LessonCompletionChangedDetail {
+  lessonId: string;
+  completed: boolean;
+}
+
 /**
  * Lesson navigation content — chapter hierarchy with completion check,
  * current-lesson highlight, and click-to-navigate. Pure presentational;
@@ -24,9 +29,39 @@ interface Props {
  * Click on any lesson is a standard <a> navigation (full SSR load) —
  * the new page re-renders with the new currentLessonId; localStorage
  * keeps the Lessons tab active across the navigation.
+ *
+ * UNS-14 (d): subscribes to `unstuck:lesson-completion-changed` window
+ * events emitted by MarkCompleteButton so the current lesson's row
+ * reflects mark/unmark instantly, without waiting for a full page
+ * navigation. SSR-passed completedLessonIds remain the source of
+ * truth across navigations.
  */
 export default function LessonsNav({ courseSlug, chapters, completedLessonIds, currentLessonId }: Props) {
-  const completedSet = useMemo(() => new Set(completedLessonIds), [completedLessonIds]);
+  // Local state seeded from the SSR prop. Astro lesson nav is full
+  // SSR (`<a href>` → page reload → island remount), so the initializer
+  // captures fresh props on every navigation — no prop-sync useEffect
+  // needed (and lint forbids the antipattern anyway).
+  const [completedSet, setCompletedSet] = useState<Set<string>>(() => new Set(completedLessonIds));
+
+  // Subscribe to MarkComplete success events (UNS-14 d).
+  useEffect(() => {
+    function handle(event: Event) {
+      const { lessonId, completed } = (event as CustomEvent<LessonCompletionChangedDetail>).detail;
+      setCompletedSet((prev) => {
+        const next = new Set(prev);
+        if (completed) {
+          next.add(lessonId);
+        } else {
+          next.delete(lessonId);
+        }
+        return next;
+      });
+    }
+    window.addEventListener("unstuck:lesson-completion-changed", handle);
+    return () => {
+      window.removeEventListener("unstuck:lesson-completion-changed", handle);
+    };
+  }, []);
 
   if (chapters.length === 0) {
     return <p className="text-muted-foreground p-4 text-center text-sm">No chapters in this course yet.</p>;

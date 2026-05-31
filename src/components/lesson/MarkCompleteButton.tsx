@@ -115,6 +115,18 @@ export default function MarkCompleteButton({ lessonId, initialCompleted }: Props
         // mid-burst) but the state reverts so the next click can retry.
         setCompleted(wasCompleted);
         setError(res.status === 401 ? "Sign in to save your progress." : "Couldn't save — try again.");
+      } else if (typeof window !== "undefined") {
+        // UNS-14 (d): broadcast confirmed completion change so sibling
+        // islands (currently LessonsNav) can update their UI without a
+        // full page navigation. Event name follows project convention
+        // `unstuck:<feature>:<action>` (first such bus in the repo).
+        // Dispatch only on success — rollback path keeps subscribers
+        // consistent with server truth.
+        window.dispatchEvent(
+          new CustomEvent("unstuck:lesson-completion-changed", {
+            detail: { lessonId, completed: !wasCompleted },
+          }),
+        );
       }
     } catch (err) {
       setCompleted(wasCompleted);
