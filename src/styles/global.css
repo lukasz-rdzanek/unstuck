@@ -161,6 +161,44 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* 1.A: cursor:pointer for every interactive control. Disabled buttons
+     keep the not-allowed cursor (the :disabled selector overrides). */
+  button:not(:disabled),
+  [role="tab"]:not([aria-disabled="true"]),
+  a[href] {
+    cursor: pointer;
+  }
+
+}
+
+/* 1.B: cosmic thin scrollbar applied at top-level (outside @layer base) so
+   it overrides Tailwind preflight + native UA scrollbar styling.
+   Firefox uses scrollbar-* on html (document scroller). WebKit/Blink uses
+   ::-webkit-scrollbar-* — we apply universally (*) so every scroll
+   container (document, chat panel, dropdowns, etc.) gets the same
+   cosmic chrome. Browsers without these APIs (older Safari, IE) fall
+   back to the OS default — graceful degradation. */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--border)) transparent;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--border));
+  border-radius: 4px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(var(--muted-foreground));
+}
+*::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 /* Thin token-driven scrollbar for the chat message list so the default

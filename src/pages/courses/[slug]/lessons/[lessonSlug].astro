@@ -3,6 +3,7 @@ import AppLayout from "@/layouts/AppLayout.astro";
 import { createClient } from "@/lib/supabase";
 import { getLessonBySlugs, listChaptersWithLessonsForCourse } from "@/lib/services/courses";
 import { getCompletedLessonIdsForCourse, isLessonCompletedByUser } from "@/lib/services/completions";
+import { getDisplayNameOrFallback } from "@/lib/services/profiles";
 import { renderMarkdown } from "@/lib/markdown";
 import { parseVideoUrl } from "@/lib/video-embed";
 import LessonAside from "@/components/lesson/LessonAside";
@@ -22,17 +23,12 @@ const html = lesson ? renderMarkdown(lesson.content_md) : "";
 const video = lesson?.video_url ? parseVideoUrl(lesson.video_url) : null;
 const pageTitle = lesson ? `${lesson.title} — Unstuck` : "Lesson not found — Unstuck";
 
-// Resolve the signed-in user's display_name from profiles (per impl-review
-// F3). Falls back to email-local-part only if no profile row exists, then
-// to "Learner" — but the signup trigger guarantees a profile row, so the
-// fallback rarely fires in practice. Surfacing the email prefix to all
-// chat viewers would be a privacy regression.
-let userDisplayName: string | null = null;
+// Resolve the signed-in user's display_name (per impl-review F3 from S-06).
+// Falls back to email-local-part only if no profile row exists. Surfacing
+// the full email to chat viewers would be a privacy regression.
 const userId = Astro.locals.user?.id ?? null;
-if (supabase && userId) {
-  const { data: profile } = await supabase.from("profiles").select("display_name").eq("id", userId).single();
-  userDisplayName = profile?.display_name ?? Astro.locals.user?.email?.split("@")[0] ?? null;
-}
+const userDisplayName =
+  supabase && userId ? await getDisplayNameOrFallback(supabase, userId, Astro.locals.user?.email ?? null) : null;
 
 // Run all three Supabase queries in parallel — they share no data
 // dependency (all need course.id and userId only). Saves two
@@ -45,6 +41,16 @@ const [isCompleted, chapters, completedLessonIds] =
         getCompletedLessonIdsForCourse(supabase, course.id, userId),
       ])
     : [false, [], new Set<string>()];
+
+// 1.F: prev/next nav + "Lesson N of M" badge — derived from chapters
+// (already loaded above; zero new queries). Flatten chapter→lesson tree
+// in chapter.position then lesson.position order (the service returns
+// them ordered). currentIndex === -1 falls back to back-only behaviour.
+const allLessons = lesson && course ? chapters.flatMap((ch) => ch.lessons) : [];
+const currentIndex = lesson ? allLessons.findIndex((l) => l.id === lesson.id) : -1;
+const totalLessons = allLessons.length;
+const prevLesson = currentIndex > 0 ? allLessons[currentIndex - 1] : null;
+const nextLesson = currentIndex >= 0 && currentIndex < totalLessons - 1 ? allLessons[currentIndex + 1] : null;
 ---
 
 <AppLayout title={pageTitle}>
@@ -52,14 +58,61 @@ const [isCompleted, chapters, completedLessonIds] =
     {
       lesson && course ? (
         <>
-          <a
-            href={`/courses/${course.slug}`}
-            class="text-primary mb-6 inline-block text-sm transition-opacity hover:opacity-80"
-          >
-            ← {course.title}
-          </a>
-          <div class="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_360px]">
+          <div class="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_360px] [&:has([data-aside-collapsed='true'])]:lg:grid-cols-1">
             <div class="min-w-0">
+              <div class="mb-6 flex items-center justify-between gap-3">
+                <a href={`/courses/${course.slug}`} class="text-primary text-sm transition-opacity hover:opacity-80">
+                  ← {course.title}
+                </a>
+                {currentIndex !== -1 && (prevLesson ?? nextLesson) ? (
+                  <nav class="flex items-center gap-2" aria-label="Lesson navigation">
+                    {prevLesson ? (
+                      <a
+                        href={`/courses/${course.slug}/lessons/${prevLesson.slug}`}
+                        class="inline-flex size-9 items-center justify-center rounded-xl border border-cyan-400/30 bg-cyan-400/10 text-cyan-200 backdrop-blur-xl transition-colors hover:bg-cyan-400/20"
+                        aria-label={`Previous lesson: ${prevLesson.title}`}
+                        title={`Previous: ${prevLesson.title}`}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="size-4"
+                          aria-hidden="true"
+                        >
+                          <path d="m15 18-6-6 6-6" />
+                        </svg>
+                      </a>
+                    ) : null}
+                    {nextLesson ? (
+                      <a
+                        href={`/courses/${course.slug}/lessons/${nextLesson.slug}`}
+                        class="inline-flex size-9 items-center justify-center rounded-xl border border-cyan-400/30 bg-cyan-400/10 text-cyan-200 backdrop-blur-xl transition-colors hover:bg-cyan-400/20"
+                        aria-label={`Next lesson: ${nextLesson.title}`}
+                        title={`Next: ${nextLesson.title}`}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="size-4"
+                          aria-hidden="true"
+                        >
+                          <path d="m9 18 6-6-6-6" />
+                        </svg>
+                      </a>
+                    ) : null}
+                  </nav>
+                ) : null}
+              </div>
               {lesson.video_url !== null ? (
                 <div class="bg-card/40 border-border relative mb-6 aspect-video w-full overflow-hidden rounded-2xl border backdrop-blur-xl">
                   {video?.embedSrc ? (
@@ -95,6 +148,15 @@ const [isCompleted, chapters, completedLessonIds] =
                     <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
                   </svg>
                   Reading
+                </div>
+              )}
+
+              {currentIndex !== -1 && totalLessons > 0 && (
+                <div class="mb-3 inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-400/10 px-3 py-1 text-xs font-medium tracking-wide text-cyan-200 uppercase">
+                  <span class="font-mono">{currentIndex + 1}</span>
+                  <span class="text-cyan-200/60">/</span>
+                  <span class="font-mono">{totalLessons}</span>
+                  <span class="ml-0.5">Lesson</span>
                 </div>
               )}
 

@@ -145,6 +145,7 @@ export default function LessonAside({
     return (
       <button
         type="button"
+        data-aside-collapsed="true"
         onClick={() => {
           setCollapsed(false);
         }}
@@ -165,6 +166,7 @@ export default function LessonAside({
   // === Render: expanded surface (desktop always; mobile only when isExpanded) ===
   const surface = (
     <div
+      data-aside-collapsed="false"
       className={cn(
         "bg-card/95 border-border backdrop-blur-xl",
         // Mobile collapsed: fixed thin bar at bottom.
