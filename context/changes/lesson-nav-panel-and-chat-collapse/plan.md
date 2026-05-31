@@ -585,35 +585,35 @@ they're just unused.
 
 #### Automated
 
-- [x] 1.1 `npm run lint` exits 0
-- [x] 1.2 `npx astro check` exits 0
-- [x] 1.3 `npm run build` exits 0
+- [x] 1.1 `npm run lint` exits 0 — 4a169e0
+- [x] 1.2 `npx astro check` exits 0 — 4a169e0
+- [x] 1.3 `npm run build` exits 0 — 4a169e0
 
 #### Manual
 
-- [ ] 1.4 Desktop lesson page renders chat panel identically to today (border, glow, scroll, Composer, Realtime delivery, new-message pill)
-- [ ] 1.5 Mobile (<lg) bottom bar collapses + expands; body scroll-lock works; close button works
-- [ ] 1.6 Optimistic post + retry/discard flow from S-02 still works in both viewports
-- [ ] 1.7 Realtime delivery from another tab still appears in real-time
+- [x] 1.4 Desktop lesson page renders chat panel identically to today (border, glow, scroll, Composer, Realtime delivery, new-message pill) — 4a169e0
+- [x] 1.5 Mobile (<lg) bottom bar collapses + expands; body scroll-lock works; close button works — 4a169e0
+- [x] 1.6 Optimistic post + retry/discard flow from S-02 still works in both viewports — 4a169e0
+- [x] 1.7 Realtime delivery from another tab still appears in real-time — 4a169e0
 
 ### Phase 2: Build LessonAside (tabs + collapse + LessonsNav)
 
 #### Automated
 
-- [ ] 2.1 `npm run lint` exits 0
-- [ ] 2.2 `npx astro check` exits 0
-- [ ] 2.3 `npm run build` exits 0
+- [x] 2.1 `npm run lint` exits 0
+- [x] 2.2 `npx astro check` exits 0
+- [x] 2.3 `npm run build` exits 0
 
 #### Manual
 
-- [ ] 2.4 First visit: aside shows tab strip with Chat default; chat content fills the aside
-- [ ] 2.5 Switch to Lessons tab → chapter hierarchy with current-lesson cosmic-gradient highlight + green check on completed + Reading badge on text-only
-- [ ] 2.6 Click another lesson in LessonsNav → page navigates; Lessons tab still active; new lesson is highlighted
-- [ ] 2.7 Switch back to Chat → instant (no Loading flash); scroll position preserved
-- [ ] 2.8 Collapse button → aside disappears, full-width content, pill handle visible on right edge; click handle → re-opens with same active tab
-- [ ] 2.9 New chat message while on Lessons tab → Chat tab shows pulse dot; switching to Chat clears it
-- [ ] 2.10 Page refresh → tab + collapse state restored from localStorage
-- [ ] 2.11 Mobile (<lg): bottom drawer holds tab strip; both tabs work inside drawer; pulse dot on collapsed bar when new message
+- [x] 2.4 First visit: aside shows tab strip with Chat default; chat content fills the aside
+- [x] 2.5 Switch to Lessons tab → chapter hierarchy with current-lesson cosmic-gradient highlight + green check on completed + Reading badge on text-only
+- [x] 2.6 Click another lesson in LessonsNav → page navigates; Lessons tab still active; new lesson is highlighted
+- [x] 2.7 Switch back to Chat → instant (no Loading flash); scroll position preserved
+- [x] 2.8 Collapse button → aside disappears, full-width content, pill handle visible on right edge; click handle → re-opens with same active tab
+- [x] 2.9 New chat message while on Lessons tab → Chat tab shows pulse dot; switching to Chat clears it
+- [x] 2.10 Page refresh → tab + collapse state restored from localStorage
+- [x] 2.11 Mobile (<lg): bottom drawer holds tab strip; both tabs work inside drawer; pulse dot on collapsed bar when new message
 
 ### Phase 3: Prod deploy + smoke
 

@@ -1,11 +1,11 @@
 ---
 import AppLayout from "@/layouts/AppLayout.astro";
 import { createClient } from "@/lib/supabase";
-import { getLessonBySlugs } from "@/lib/services/courses";
-import { isLessonCompletedByUser } from "@/lib/services/completions";
+import { getLessonBySlugs, listChaptersWithLessonsForCourse } from "@/lib/services/courses";
+import { getCompletedLessonIdsForCourse, isLessonCompletedByUser } from "@/lib/services/completions";
 import { renderMarkdown } from "@/lib/markdown";
 import { parseVideoUrl } from "@/lib/video-embed";
-import ChatPanelChrome from "@/components/chat/ChatPanelChrome";
+import LessonAside from "@/components/lesson/LessonAside";
 import MarkCompleteButton from "@/components/lesson/MarkCompleteButton";
 
 const { slug, lessonSlug } = Astro.params;
@@ -34,10 +34,17 @@ if (supabase && userId) {
   userDisplayName = profile?.display_name ?? Astro.locals.user?.email?.split("@")[0] ?? null;
 }
 
-// Seed the MarkCompleteButton island with the persisted completion state
-// so the initial render reflects truth (no flash of "Mark as complete"
-// on a refresh of an already-completed lesson).
-const isCompleted = supabase && userId && lesson ? await isLessonCompletedByUser(supabase, lesson.id, userId) : false;
+// Run all three Supabase queries in parallel — they share no data
+// dependency (all need course.id and userId only). Saves two
+// Worker→Supabase round-trips on every lesson render vs sequential.
+const [isCompleted, chapters, completedLessonIds] =
+  supabase && userId && lesson && course
+    ? await Promise.all([
+        isLessonCompletedByUser(supabase, lesson.id, userId),
+        listChaptersWithLessonsForCourse(supabase, course.id),
+        getCompletedLessonIdsForCourse(supabase, course.id, userId),
+      ])
+    : [false, [], new Set<string>()];
 ---
 
 <AppLayout title={pageTitle}>
@@ -107,7 +114,16 @@ const isCompleted = supabase && userId && lesson ? await isLessonCompletedByUser
             </div>
 
             <aside class="lg:sticky lg:top-8 lg:self-start">
-              <ChatPanelChrome client:load lessonId={lesson.id} userId={userId} userDisplayName={userDisplayName} />
+              <LessonAside
+                client:load
+                lessonId={lesson.id}
+                userId={userId}
+                userDisplayName={userDisplayName}
+                courseSlug={course.slug}
+                chapters={chapters}
+                completedLessonIds={Array.from(completedLessonIds)}
+                currentLessonId={lesson.id}
+              />
             </aside>
           </div>
         </>
