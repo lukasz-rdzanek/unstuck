@@ -615,10 +615,10 @@ End-to-end on prod after Phase 5:
 - [x] 2.6 Rapid mark/unmark cycles reflect in real-time
 - [x] 2.7 Navigate to different lesson → SSR completion state correct; new listener attached
 - [x] 2.8 API fail (5xx) → MarkComplete rolls back; LessonsNav row reflects rollback (event was not dispatched)
-- [ ] 2.9 Pre-deploy lint + build green
-- [ ] 2.10 wrangler deploy succeeds
-- [ ] 2.11 Post-deploy smoke curl returns 302
-- [ ] 2.12 Prod manual: mark/unmark cycles sync to Lessons list
+- [x] 2.9 Pre-deploy lint + build green
+- [x] 2.10 wrangler deploy succeeds
+- [x] 2.11 Post-deploy smoke curl returns 302
+- [x] 2.12 Prod manual: mark/unmark cycles sync to Lessons list
 
 ### Phase 3: Schema migration + view tracking
 
