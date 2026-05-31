@@ -600,33 +600,33 @@ they're just unused.
 
 #### Automated
 
-- [x] 2.1 `npm run lint` exits 0
-- [x] 2.2 `npx astro check` exits 0
-- [x] 2.3 `npm run build` exits 0
+- [x] 2.1 `npm run lint` exits 0 — 88c7edf
+- [x] 2.2 `npx astro check` exits 0 — 88c7edf
+- [x] 2.3 `npm run build` exits 0 — 88c7edf
 
 #### Manual
 
-- [x] 2.4 First visit: aside shows tab strip with Chat default; chat content fills the aside
-- [x] 2.5 Switch to Lessons tab → chapter hierarchy with current-lesson cosmic-gradient highlight + green check on completed + Reading badge on text-only
-- [x] 2.6 Click another lesson in LessonsNav → page navigates; Lessons tab still active; new lesson is highlighted
-- [x] 2.7 Switch back to Chat → instant (no Loading flash); scroll position preserved
-- [x] 2.8 Collapse button → aside disappears, full-width content, pill handle visible on right edge; click handle → re-opens with same active tab
-- [x] 2.9 New chat message while on Lessons tab → Chat tab shows pulse dot; switching to Chat clears it
-- [x] 2.10 Page refresh → tab + collapse state restored from localStorage
-- [x] 2.11 Mobile (<lg): bottom drawer holds tab strip; both tabs work inside drawer; pulse dot on collapsed bar when new message
+- [x] 2.4 First visit: aside shows tab strip with Chat default; chat content fills the aside — 88c7edf
+- [x] 2.5 Switch to Lessons tab → chapter hierarchy with current-lesson cosmic-gradient highlight + green check on completed + Reading badge on text-only — 88c7edf
+- [x] 2.6 Click another lesson in LessonsNav → page navigates; Lessons tab still active; new lesson is highlighted — 88c7edf
+- [x] 2.7 Switch back to Chat → instant (no Loading flash); scroll position preserved — 88c7edf
+- [x] 2.8 Collapse button → aside disappears, full-width content, pill handle visible on right edge; click handle → re-opens with same active tab — 88c7edf
+- [x] 2.9 New chat message while on Lessons tab → Chat tab shows pulse dot; switching to Chat clears it — 88c7edf
+- [x] 2.10 Page refresh → tab + collapse state restored from localStorage — 88c7edf
+- [x] 2.11 Mobile (<lg): bottom drawer holds tab strip; both tabs work inside drawer; pulse dot on collapsed bar when new message — 88c7edf
 
 ### Phase 3: Prod deploy + smoke
 
 #### Automated
 
-- [ ] 3.1 Pre-deploy `npm run lint` exits 0
-- [ ] 3.2 Pre-deploy `npm run build` exits 0
-- [ ] 3.3 Post-deploy curl `/courses/generative-ai-leader/lessons/introduction` returns HTTP 302 (protected route unchanged)
+- [x] 3.1 Pre-deploy `npm run lint` exits 0
+- [x] 3.2 Pre-deploy `npm run build` exits 0
+- [x] 3.3 Post-deploy curl `/courses/generative-ai-leader/lessons/introduction` returns HTTP 302 (protected route unchanged)
 
 #### Manual
 
-- [ ] 3.4 Prod signed-in operator: tab strip visible on lesson page; Chat default; chat works
-- [ ] 3.5 Prod Lessons tab: chapter hierarchy + current lesson highlighted; click navigates correctly
-- [ ] 3.6 Prod collapse + re-open works via pill handle
-- [ ] 3.7 Prod refresh: tab + collapse persist
-- [ ] 3.8 Prod mobile (or emulated <1024px viewport): bottom drawer holds tab switcher; both tabs work
+- [x] 3.4 Prod signed-in operator: tab strip visible on lesson page; Chat default; chat works
+- [x] 3.5 Prod Lessons tab: chapter hierarchy + current lesson highlighted; click navigates correctly
+- [x] 3.6 Prod collapse + re-open works via pill handle
+- [x] 3.7 Prod refresh: tab + collapse persist
+- [x] 3.8 Prod mobile (or emulated <1024px viewport): bottom drawer holds tab switcher; both tabs work
