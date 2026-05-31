@@ -3,7 +3,6 @@ import AppLayout from "@/layouts/AppLayout.astro";
 import { createClient } from "@/lib/supabase";
 import { getLessonBySlugs, listChaptersWithLessonsForCourse } from "@/lib/services/courses";
 import { getCompletedLessonIdsForCourse, isLessonCompletedByUser } from "@/lib/services/completions";
-import { getDisplayNameOrFallback } from "@/lib/services/profiles";
 import { renderMarkdown } from "@/lib/markdown";
 import { parseVideoUrl } from "@/lib/video-embed";
 import LessonAside from "@/components/lesson/LessonAside";
@@ -23,12 +22,11 @@ const html = lesson ? renderMarkdown(lesson.content_md) : "";
 const video = lesson?.video_url ? parseVideoUrl(lesson.video_url) : null;
 const pageTitle = lesson ? `${lesson.title} — Unstuck` : "Lesson not found — Unstuck";
 
-// Resolve the signed-in user's display_name (per impl-review F3 from S-06).
-// Falls back to email-local-part only if no profile row exists. Surfacing
-// the full email to chat viewers would be a privacy regression.
+// Signed-in user identity (per impl-review F3 from S-06: no raw email
+// to chat viewers — privacy). display_name is resolved by middleware
+// once per request and exposed via Astro.locals.displayName.
 const userId = Astro.locals.user?.id ?? null;
-const userDisplayName =
-  supabase && userId ? await getDisplayNameOrFallback(supabase, userId, Astro.locals.user?.email ?? null) : null;
+const userDisplayName = Astro.locals.displayName;
 
 // Run all three Supabase queries in parallel — they share no data
 // dependency (all need course.id and userId only). Saves two

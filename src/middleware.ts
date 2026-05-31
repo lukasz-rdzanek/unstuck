@@ -1,5 +1,6 @@
 import { defineMiddleware } from "astro:middleware";
 import { createClient } from "@/lib/supabase";
+import { getDisplayNameOrFallback } from "@/lib/services/profiles";
 
 const LESSON_ROUTE_RE = /^\/courses\/[^/]+\/lessons\//;
 
@@ -19,6 +20,21 @@ export const onRequest = defineMiddleware(async (context, next) => {
     context.locals.user = user ?? null;
   } else {
     context.locals.user = null;
+  }
+
+  // Resolve display_name once per request and expose via locals so
+  // both AppTopbar and the lesson page consume from a single source —
+  // skips the duplicate profiles query that AppTopbar would otherwise
+  // do per render. Skipped for unauthenticated requests (no profile to
+  // resolve).
+  if (supabase && context.locals.user) {
+    context.locals.displayName = await getDisplayNameOrFallback(
+      supabase,
+      context.locals.user.id,
+      context.locals.user.email ?? null,
+    );
+  } else {
+    context.locals.displayName = null;
   }
 
   if (isProtectedRoute(context.url.pathname)) {

@@ -3,16 +3,11 @@
 // Sibling: src/components/Topbar.astro — hardcoded-Tailwind variant kept for
 // the landing/auth surfaces per Q4 ("tokenize new surfaces only"). Keep these
 // two in sync when the cosmic system absorbs the landing as well.
-import { createClient } from "@/lib/supabase";
-import { getDisplayNameOrFallback } from "@/lib/services/profiles";
-
-const { user } = Astro.locals;
-
-// Resolve display_name from profiles for the username pill. Falls back
-// to email-local-part if no profile row; we never render the raw email
-// here (privacy: avoid leaks during screen-sharing / demos).
-const supabase = user ? createClient(Astro.request.headers, Astro.cookies) : null;
-const displayName = supabase && user ? await getDisplayNameOrFallback(supabase, user.id, user.email ?? null) : null;
+// displayName is resolved by middleware once per request
+// (Astro.locals.displayName) so we don't issue a duplicate profiles
+// query here. We never render the raw email — privacy: avoid leaks
+// during screen-sharing / demos.
+const { user, displayName } = Astro.locals;
 ---
 
 <div

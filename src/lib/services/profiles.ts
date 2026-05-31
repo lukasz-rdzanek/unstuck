@@ -13,6 +13,10 @@ import type { createClient } from "@/lib/supabase";
 
 type SupabaseClient = NonNullable<ReturnType<typeof createClient>>;
 
+// PGRST116: ".single()" found no rows — treated as a normal not-found, not
+// a service error worth logging. Matches the convention in courses.ts.
+const NOT_FOUND_CODE = "PGRST116";
+
 /**
  * Resolve a display name for the given user. Falls back to the
  * email-local-part if the profile row has no display_name; falls back
@@ -30,8 +34,13 @@ export async function getDisplayNameOrFallback(
 ): Promise<string | null> {
   const { data, error } = await supabase.from("profiles").select("display_name").eq("id", userId).single();
   if (error) {
-    // Not necessarily a real error — `.single()` errors on zero rows too.
-    // Fall back to email-local-part so the UI doesn't blank out.
+    // Distinguish "no profile row" (expected — signup trigger races,
+    // legacy accounts, etc.) from a real Supabase failure (network,
+    // RLS denial, schema drift). Silent fallback for the former; log
+    // the latter so it surfaces in Worker logs.
+    if (error.code !== NOT_FOUND_CODE) {
+      console.error("[profiles] getDisplayNameOrFallback failed:", error.message);
+    }
     return emailFallback ? (emailFallback.split("@")[0] ?? null) : null;
   }
   // display_name is NOT NULL in schema (signup trigger seeds a default),
