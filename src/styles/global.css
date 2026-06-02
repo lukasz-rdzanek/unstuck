@@ -6,29 +6,56 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Neutral light palette — bare HSL channel triples (shadcn convention) so
-     `@theme inline` can map tokens via `hsl(var(--token))` consistently
-     between light (this block) and dark (cosmic, below). Values are HSL
-     equivalents of the starter's previous OKLCH neutral palette. */
+  /* "Cosmic dawn" light palette — the daylight counterpart to the dark cosmic
+     theme. Bare HSL channel triples (shadcn convention) so `@theme inline` can
+     map tokens via `hsl(var(--token))` consistently between light (this block)
+     and dark (cosmic, below). Surfaces are a soft cool-violet white; the violet
+     primary / cobalt accent are kept but deepened so they pass contrast on
+     light. Token names mirror the .dark block 1:1. */
   --radius: 0.625rem;
-  --background: 0 0% 100%;
-  --foreground: 0 0% 9%;
-  --card: 0 0% 100%;
-  --card-foreground: 0 0% 9%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 0 0% 9%;
-  --primary: 0 0% 15%;
-  --primary-foreground: 0 0% 98%;
-  --secondary: 0 0% 96%;
-  --secondary-foreground: 0 0% 15%;
-  --muted: 0 0% 96%;
-  --muted-foreground: 0 0% 45%;
-  --accent: 0 0% 96%;
-  --accent-foreground: 0 0% 15%;
-  --destructive: 0 75% 50%;
-  --border: 0 0% 92%;
-  --input: 0 0% 92%;
-  --ring: 0 0% 64%;
+  --background: 240 40% 98%; /* soft lavender-white */
+  --foreground: 240 30% 12%; /* deep violet-ink */
+  --card: 240 45% 99%;
+  --card-foreground: 240 30% 12%;
+  --popover: 240 45% 99%;
+  --popover-foreground: 240 30% 12%;
+  --primary: 263 70% 52%; /* violet — deepened vs dark's 62% for light contrast */
+  --primary-foreground: 0 0% 100%;
+  --secondary: 240 30% 94%;
+  --secondary-foreground: 240 30% 18%;
+  --muted: 240 30% 94%;
+  --muted-foreground: 240 12% 40%;
+  --accent: 224 80% 52%; /* cobalt — deepened */
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 72% 48%;
+  --border: 240 24% 88%;
+  --input: 240 24% 88%;
+  --ring: 263 70% 58%;
+
+  /* Semantic status tokens (light values — darker for contrast on light
+     surfaces). Replace the scattered cyan/green/yellow tints site-wide. */
+  --success: 145 55% 36%;
+  --success-foreground: 0 0% 100%;
+  --info: 190 70% 38%;
+  --info-foreground: 0 0% 100%;
+  --warning: 38 92% 44%;
+  --warning-foreground: 0 0% 100%;
+
+  /* Frosted-glass surfaces (full color incl. alpha — these encode
+     translucency, not bare triples). On light: translucent white frost. */
+  --glass-bg: 240 40% 100% / 0.55;
+  --glass-border: 240 20% 40% / 0.12;
+
+  /* Cosmic motifs, theme-aware (consumed by the bg-cosmic / starfield
+     utilities and by the Welcome orbs). Light: lavender gradient + faint
+     violet-ink micro-stars + muted blooms. */
+  --cosmic-bg: linear-gradient(to bottom, #f6f5ff, #eef1fb, #f6f5ff);
+  --star-color: 240 30% 30%;
+  --star-opacity: 0.06;
+  --orb-1: 263 70% 60% / 0.12;
+  --orb-2: 224 80% 60% / 0.1;
+  --orb-3: 250 70% 65% / 0.08;
+
   /* chart-* and sidebar-* unused by this slice — leave at starter OKLCH. */
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
@@ -66,6 +93,29 @@
   --border: 230 35% 24%;
   --input: 230 35% 24%;
   --ring: 263 78% 70%;
+
+  /* Semantic status tokens (dark values — brighter for contrast on the
+     near-black cosmic surfaces). */
+  --success: 145 60% 55%;
+  --success-foreground: 224 47% 6%;
+  --info: 190 80% 62%;
+  --info-foreground: 224 47% 6%;
+  --warning: 45 90% 60%;
+  --warning-foreground: 224 47% 6%;
+
+  /* Frosted-glass surfaces — the original white/alpha glass look. */
+  --glass-bg: 0 0% 100% / 0.05;
+  --glass-border: 0 0% 100% / 0.1;
+
+  /* Cosmic motifs — the original cosmic gradient, white starfield, and the
+     purple/blue/indigo glow orbs. */
+  --cosmic-bg: linear-gradient(to bottom, #06080f, #0f1529, #06080f);
+  --star-color: 0 0% 100%;
+  --star-opacity: 0.15;
+  --orb-1: 258 90% 66% / 0.2;
+  --orb-2: 217 91% 60% / 0.15;
+  --orb-3: 235 84% 70% / 0.1;
+
   /* chart-* and sidebar-* unused by this slice — leave at starter OKLCH. */
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
@@ -105,6 +155,18 @@
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
+  /* Semantic status tokens — generate bg-success / text-info / border-warning
+     etc. (opacity modifiers like bg-success/10 work since these are triples). */
+  --color-success: hsl(var(--success));
+  --color-success-foreground: hsl(var(--success-foreground));
+  --color-info: hsl(var(--info));
+  --color-info-foreground: hsl(var(--info-foreground));
+  --color-warning: hsl(var(--warning));
+  --color-warning-foreground: hsl(var(--warning-foreground));
+  /* Frosted-glass — generate bg-glass / border-glass. Alpha is baked into the
+     token value, so don't add opacity modifiers to these. */
+  --color-glass: hsl(var(--glass-bg));
+  --color-glass-border: hsl(var(--glass-border));
   /* chart-* and sidebar-* tokens stay raw — still expressed in OKLCH in
      :root and .dark, not used by this slice. */
   --color-chart-1: var(--chart-1);
@@ -122,11 +184,11 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
-/* bg-cosmic uses literal hex endpoints (matching cosmic --background ≈ #06080F)
-   so it renders consistently on existing auth + dashboard pages that don't
-   activate the .dark scope. Reference: `--background: 224 47% 4%` in .dark. */
+/* bg-cosmic is theme-aware via --cosmic-bg: the dark cosmic gradient under
+   .dark, the light "cosmic dawn" lavender gradient under :root. The endpoints
+   live in the palette blocks above so this utility flips with the root theme. */
 @utility bg-cosmic {
-  background-image: linear-gradient(to bottom, #06080f, #0f1529, #06080f);
+  background-image: var(--cosmic-bg);
 }
 
 /* Headline gradient — primary → accent, both cosmic tokens.
@@ -143,13 +205,15 @@
   box-shadow: 0 0 32px hsl(var(--primary) / 0.35);
 }
 
-/* Low-density three-layer star field. Lifted from Welcome.astro's inline
-   radial-gradient pattern so the lesson page + AppLayout can reuse it. */
+/* Low-density three-layer star field, theme-aware. Star color + base opacity
+   come from --star-color / --star-opacity (white at 0.15 under .dark; faint
+   violet-ink at 0.06 under light). The three layers keep their original
+   relative opacity ratios (1, ~0.67, ~0.47) via calc on the base. */
 @utility bg-cosmic-starfield {
   background-image:
-    radial-gradient(circle, rgba(255, 255, 255, 0.15) 1px, transparent 1px),
-    radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
-    radial-gradient(circle, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+    radial-gradient(circle, hsl(var(--star-color) / var(--star-opacity)) 1px, transparent 1px),
+    radial-gradient(circle, hsl(var(--star-color) / calc(var(--star-opacity) * 0.67)) 1px, transparent 1px),
+    radial-gradient(circle, hsl(var(--star-color) / calc(var(--star-opacity) * 0.47)) 1px, transparent 1px);
   background-size: 200px 200px, 150px 150px, 100px 100px;
   background-position: 0 0, 40px 60px, 80px 30px;
 }
