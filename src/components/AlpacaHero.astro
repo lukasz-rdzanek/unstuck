@@ -1,0 +1,81 @@
+---
+// AlpacaHero — landing brand lockup.
+//
+// A static alpaca mark (the 1536x1024 prancing source, background keyed to
+// transparency offline so it sits on the cosmic theme) over a soft static glow,
+// paired with the animated "Unstuck" wordmark. Only the wordmark animates — its
+// gradient echoes the logo's amber -> red -> violet -> blue and slowly shimmers.
+// The alpaca itself is intentionally still.
+//
+// Pure presentational -> Astro, not React (AGENTS.md). The lone moving piece
+// (wordmark shimmer) is gated behind prefers-reduced-motion.
+---
+
+<div class="alpaca-hero flex flex-col items-center">
+  <div class="alpaca-stage relative">
+    <div class="alpaca-glow" aria-hidden="true"></div>
+    <img src="/brand/alpaca-prance.webp" alt="Unstuck" width="596" height="667" decoding="async" class="alpaca" />
+  </div>
+
+  <h1 class="alpaca-wordmark mt-1 text-5xl leading-tight font-bold tracking-tight sm:text-6xl lg:text-7xl">Unstuck</h1>
+</div>
+
+<style>
+  .alpaca-stage {
+    display: inline-block;
+    height: 184px;
+  }
+  @media (min-width: 640px) {
+    .alpaca-stage {
+      height: 224px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .alpaca-stage {
+      height: 264px;
+    }
+  }
+
+  .alpaca {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    width: auto;
+    display: block;
+    filter: drop-shadow(0 12px 26px rgba(239, 68, 68, 0.28));
+  }
+
+  /* Soft static cosmic glow behind the mark — no animation. */
+  .alpaca-glow {
+    position: absolute;
+    inset: -12% -8%;
+    border-radius: 9999px;
+    background: radial-gradient(circle, rgba(168, 85, 247, 0.32) 0%, rgba(99, 102, 241, 0.15) 44%, transparent 70%);
+    filter: blur(8px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Wordmark: gradient echoes the logo, with a slow shimmer sweep. */
+  .alpaca-wordmark {
+    background-image: linear-gradient(100deg, #fbbf24, #f97316, #ef4444, #a855f7, #6366f1, #fbbf24);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: alpaca-shimmer 7s linear infinite;
+  }
+
+  @keyframes alpaca-shimmer {
+    to {
+      background-position: 200% center;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .alpaca-wordmark {
+      animation: none;
+      background-position: 0 center;
+    }
+  }
+</style>
