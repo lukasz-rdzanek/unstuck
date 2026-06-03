@@ -37,6 +37,13 @@ export const onRequest = defineMiddleware(async (context, next) => {
     context.locals.displayName = null;
   }
 
+  // Resolve the active theme from the `theme` cookie so Layout can render the
+  // matching class on <html> server-side (no flash for returning visitors).
+  // Default dark (brand); first-visit prefers-color-scheme is handled by the
+  // inline head script in Layout.astro.
+  const themeCookie = context.cookies.get("theme")?.value;
+  context.locals.theme = themeCookie === "light" ? "light" : "dark";
+
   if (isProtectedRoute(context.url.pathname)) {
     if (!context.locals.user) {
       const nextParam = encodeURIComponent(context.url.pathname + context.url.search);

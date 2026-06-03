@@ -367,9 +367,9 @@ No data migration. Existing users without a `theme` cookie get system preference
 
 #### Automated
 
-- [x] 1.1 Type check passes: `npx astro check`
-- [x] 1.2 Lint passes: `npm run lint`
-- [x] 1.3 Build succeeds: `npm run build`
+- [x] 1.1 Type check passes: `npx astro check` — 386011c
+- [x] 1.2 Lint passes: `npm run lint` — 386011c
+- [x] 1.3 Build succeeds: `npm run build` — 386011c
 
 #### Manual
 
@@ -380,9 +380,9 @@ No data migration. Existing users without a `theme` cookie get system preference
 
 #### Automated
 
-- [ ] 2.1 Type check passes: `npx astro check`
-- [ ] 2.2 Lint passes: `npm run lint`
-- [ ] 2.3 Build succeeds: `npm run build`
+- [x] 2.1 Type check passes: `npx astro check`
+- [x] 2.2 Lint passes: `npm run lint`
+- [x] 2.3 Build succeeds: `npm run build`
 
 #### Manual
 

@@ -8,12 +8,34 @@ interface Props {
 }
 
 const { title = "Unstuck" } = Astro.props;
+const theme = Astro.locals.theme;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" class={theme === "dark" ? "dark" : undefined}>
   <head>
     <meta charset="UTF-8" />
+    {
+      /* No-FOUC theme bootstrap: runs synchronously before paint. Honors the
+        `theme` cookie; on first visit (no cookie) falls back to the OS
+        prefers-color-scheme and persists it so SSR matches next request. The
+        server already rendered the cookie-based class on <html>, so for
+        returning visitors this is a confirming no-op. */
+    }
+    <script is:inline>
+      (function () {
+        try {
+          var m = document.cookie.match(/(?:^|; )theme=(light|dark)/);
+          var t = m
+            ? m[1]
+            : window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches
+              ? "light"
+              : "dark";
+          document.documentElement.classList.toggle("dark", t === "dark");
+          if (!m) document.cookie = "theme=" + t + "; path=/; max-age=31536000; SameSite=Lax";
+        } catch (e) {}
+      })();
+    </script>
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <title>{title}</title>

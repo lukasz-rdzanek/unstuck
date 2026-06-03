@@ -214,8 +214,48 @@
     radial-gradient(circle, hsl(var(--star-color) / var(--star-opacity)) 1px, transparent 1px),
     radial-gradient(circle, hsl(var(--star-color) / calc(var(--star-opacity) * 0.67)) 1px, transparent 1px),
     radial-gradient(circle, hsl(var(--star-color) / calc(var(--star-opacity) * 0.47)) 1px, transparent 1px);
-  background-size: 200px 200px, 150px 150px, 100px 100px;
-  background-position: 0 0, 40px 60px, 80px 30px;
+  background-size:
+    200px 200px,
+    150px 150px,
+    100px 100px;
+  background-position:
+    0 0,
+    40px 60px,
+    80px 30px;
+}
+
+/* Theme cross-fade — only present for ~250ms while the toggle flips the root
+   class, so it never fires on initial load, hover, or focus state changes.
+   Honors reduced-motion. */
+.theme-anim,
+.theme-anim *:not(svg):not(path) {
+  transition:
+    background-color 250ms ease,
+    border-color 250ms ease,
+    color 250ms ease,
+    fill 250ms ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .theme-anim,
+  .theme-anim * {
+    transition: none !important;
+  }
+}
+
+/* ThemeToggle icon visibility is CSS-driven by the root .dark class, so the
+   toggle island needs no React state and never mismatches on hydration.
+   Default (light, no .dark) shows the moon; under .dark shows the sun. */
+.theme-toggle__sun {
+  display: none;
+}
+.theme-toggle__moon {
+  display: inline-flex;
+}
+.dark .theme-toggle__sun {
+  display: inline-flex;
+}
+.dark .theme-toggle__moon {
+  display: none;
 }
 
 @layer base {
@@ -233,7 +273,6 @@
   a[href] {
     cursor: pointer;
   }
-
 }
 
 /* 1.B: cosmic thin scrollbar applied at top-level (outside @layer base) so

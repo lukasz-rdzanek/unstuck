@@ -1,8 +1,9 @@
 ---
+import AlpacaHero from "@/components/AlpacaHero.astro";
 import Topbar from "@/components/Topbar.astro";
 ---
 
-<div class="dark bg-cosmic relative min-h-screen w-full overflow-hidden">
+<div class="bg-cosmic relative min-h-screen w-full overflow-hidden">
   <!-- Cosmic orbs -->
   <div
     class="pointer-events-none absolute top-1/4 -left-24 h-[350px] w-[350px] rounded-full bg-purple-500/20 blur-[120px]"
@@ -25,11 +26,12 @@ import Topbar from "@/components/Topbar.astro";
 
     <!-- Hero section -->
     <div class="mx-auto flex max-w-4xl flex-col items-center justify-center px-4 py-24 text-center sm:py-32 lg:py-40">
-      <h1 class="text-cosmic-gradient mb-6 text-5xl leading-tight font-bold tracking-tight sm:text-6xl lg:text-7xl">
-        Unstuck
-      </h1>
+      <div class="mb-6">
+        <AlpacaHero />
+      </div>
       <p class="mb-10 max-w-2xl text-lg text-blue-100/70 sm:text-xl">
-        Lesson-scoped peer chat that gets you unblocked without leaving the page.
+        Project-based technical courses with a community built into every lesson — the moment you hit a wall, peers and
+        proven answers are already there.
       </p>
       <div class="flex flex-col gap-4 sm:flex-row">
         <a

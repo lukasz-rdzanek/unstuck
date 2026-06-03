@@ -1,6 +1,7 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import SignInForm from "@/components/auth/SignInForm";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const error = Astro.url.searchParams.get("error");
 const next = Astro.url.searchParams.get("next");
@@ -9,6 +10,7 @@ const unconfirmedEmail = Astro.url.searchParams.get("unconfirmed_email");
 
 <Layout title="Sign in">
   <div class="bg-cosmic flex min-h-screen items-center justify-center p-4">
+    <ThemeToggle floating client:load />
     <div class="w-full max-w-sm rounded-2xl border border-white/10 bg-white/10 p-8 text-white backdrop-blur-xl">
       <h1
         class="mb-6 bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-center text-2xl font-bold text-transparent"

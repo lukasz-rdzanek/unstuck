@@ -3,7 +3,7 @@ change_id: site-wide-light-theme
 title: Site-wide light theme with sun/moon toggle
 status: implementing
 created: 2026-06-02
-updated: 2026-06-02
+updated: 2026-06-03
 archived_at: null
 ---
 

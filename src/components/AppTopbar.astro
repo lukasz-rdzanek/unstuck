@@ -7,6 +7,7 @@
 // (Astro.locals.displayName) so we don't issue a duplicate profiles
 // query here. We never render the raw email — privacy: avoid leaks
 // during screen-sharing / demos.
+import ThemeToggle from "@/components/ThemeToggle";
 const { user, displayName } = Astro.locals;
 ---
 
@@ -17,6 +18,7 @@ const { user, displayName } = Astro.locals;
   {
     user ? (
       <div class="flex items-center gap-3">
+        <ThemeToggle client:load />
         <span class="text-muted-foreground">{displayName ?? "Learner"}</span>
         <a href="/dashboard" class="text-primary transition-opacity hover:opacity-80">
           Dashboard
@@ -28,7 +30,8 @@ const { user, displayName } = Astro.locals;
         </form>
       </div>
     ) : (
-      <div class="flex gap-3">
+      <div class="flex items-center gap-3">
+        <ThemeToggle client:load />
         <a href="/auth/signin" class="text-primary transition-opacity hover:opacity-80">
           Sign in
         </a>

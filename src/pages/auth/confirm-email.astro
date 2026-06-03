@@ -1,5 +1,6 @@
 ---
 import Layout from "@/layouts/Layout.astro";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const emailParam = Astro.url.searchParams.get("email") ?? "";
 const errorParam = Astro.url.searchParams.get("error");
@@ -16,6 +17,7 @@ const errorMessage = errorParam ? (errorCopy[errorParam] ?? "Couldn't verify. Tr
 
 <Layout title="Confirm your email">
   <div class="bg-cosmic flex min-h-screen items-center justify-center p-4">
+    <ThemeToggle floating client:load />
     <div
       class="w-full max-w-sm rounded-2xl border border-white/10 bg-white/10 p-8 text-center text-white backdrop-blur-xl"
     >
