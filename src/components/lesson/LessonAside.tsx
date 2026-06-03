@@ -275,7 +275,7 @@ export default function LessonAside({
               <span>Lessons</span>
               {showIndicator && (
                 <span
-                  className="ml-1 h-1.5 w-1.5 rounded-full bg-cyan-400"
+                  className="bg-info ml-1 h-1.5 w-1.5 rounded-full"
                   aria-label="Course has new content since your last visit"
                 />
               )}
@@ -347,13 +347,13 @@ export default function LessonAside({
         {activeTab === "lessons" && (
           <div className="flex min-h-0 flex-1 flex-col gap-3">
             {showIndicator && (
-              <div className="flex items-start gap-2 rounded-lg border border-cyan-400/30 bg-cyan-400/10 p-3 text-xs text-cyan-100">
-                <Sparkles className="mt-0.5 size-4 shrink-0 text-cyan-300" aria-hidden="true" />
+              <div className="border-info/30 bg-info/10 text-info flex items-start gap-2 rounded-lg border p-3 text-xs">
+                <Sparkles className="text-info mt-0.5 size-4 shrink-0" aria-hidden="true" />
                 <p className="flex-1">This course has new content since your last visit.</p>
                 <button
                   type="button"
                   onClick={dismissUpdateIndicator}
-                  className="text-cyan-300 transition-colors hover:text-cyan-100"
+                  className="text-info hover:text-info/80 transition-colors"
                   aria-label="Dismiss course-updated notice"
                 >
                   <X className="size-3.5" />

@@ -373,8 +373,8 @@ No data migration. Existing users without a `theme` cookie get system preference
 
 #### Manual
 
-- [ ] 1.4 Dark theme visually unchanged
-- [ ] 1.5 Removing `.dark` from a wrapper shows legible cosmic-dawn light (spot check)
+- [x] 1.4 Dark theme visually unchanged
+- [x] 1.5 Removing `.dark` from a wrapper shows legible cosmic-dawn light (spot check)
 
 ### Phase 2: Root-level theme control + persistence
 
@@ -386,39 +386,39 @@ No data migration. Existing users without a `theme` cookie get system preference
 
 #### Manual
 
-- [ ] 2.4 Toggle appears beside account controls on every view (+ standalone on auth pages)
-- [ ] 2.5 Toggle flips whole site; persists across reload + navigation
-- [ ] 2.6 Returning visitor themed correctly with JS disabled
-- [ ] 2.7 First visit honors system preference with no flash (throttled)
-- [ ] 2.8 No hydration warning; class not flipped on hydrate
-- [ ] 2.9 Cross-fade plays on toggle only
+- [x] 2.4 Toggle appears beside account controls on every view (+ standalone on auth pages)
+- [x] 2.5 Toggle flips whole site; persists across reload + navigation
+- [x] 2.6 Returning visitor themed correctly with JS disabled
+- [x] 2.7 First visit honors system preference with no flash (throttled)
+- [x] 2.8 No hydration warning; class not flipped on hydrate
+- [x] 2.9 Cross-fade plays on toggle only
 
 ### Phase 3: Convert landing / auth / dashboard surfaces
 
 #### Automated
 
-- [x] 3.1 Type check passes: `npx astro check`
-- [x] 3.2 Lint passes: `npm run lint`
-- [x] 3.3 Build succeeds: `npm run build`
-- [x] 3.4 No hardcoded dark-only classes remain in this group (grep guard)
+- [x] 3.1 Type check passes: `npx astro check` — ca412f4
+- [x] 3.2 Lint passes: `npm run lint` — ca412f4
+- [x] 3.3 Build succeeds: `npm run build` — ca412f4
+- [x] 3.4 No hardcoded dark-only classes remain in this group (grep guard) — ca412f4
 
 #### Manual
 
-- [ ] 3.5 Landing/signin/signup/confirm/dashboard correct in both themes
-- [ ] 3.6 Alpaca hero + wordmark read well on light cosmic-dawn
+- [x] 3.5 Landing/signin/signup/confirm/dashboard correct in both themes
+- [x] 3.6 Alpaca hero + wordmark read well on light cosmic-dawn
 
 ### Phase 4: Convert in-app surfaces + status tokens + banners
 
 #### Automated
 
-- [ ] 4.1 Type check passes: `npx astro check`
-- [ ] 4.2 Lint passes: `npm run lint`
-- [ ] 4.3 Build succeeds: `npm run build`
-- [ ] 4.4 No hardcoded dark-only classes remain site-wide (grep guard, documented exceptions)
+- [x] 4.1 Type check passes: `npx astro check`
+- [x] 4.2 Lint passes: `npm run lint`
+- [x] 4.3 Build succeeds: `npm run build`
+- [x] 4.4 No hardcoded dark-only classes remain site-wide (grep guard, documented exceptions)
 
 #### Manual
 
-- [ ] 4.5 Catalog/course/lesson/chat/aside/mark-complete correct in both themes
-- [ ] 4.6 Status colors legible + on-brand in both themes
-- [ ] 4.7 Banners correct in both themes
-- [ ] 4.8 Full regression (sign in, post chat, mark complete, navigate) in both themes
+- [x] 4.5 Catalog/course/lesson/chat/aside/mark-complete correct in both themes
+- [x] 4.6 Status colors legible + on-brand in both themes
+- [x] 4.7 Banners correct in both themes
+- [x] 4.8 Full regression (sign in, post chat, mark complete, navigate) in both themes

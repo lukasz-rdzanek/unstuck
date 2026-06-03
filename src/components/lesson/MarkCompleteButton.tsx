@@ -148,7 +148,7 @@ export default function MarkCompleteButton({ lessonId, initialCompleted }: Props
 
   const baseClasses =
     "inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60";
-  const completedClasses = "border border-green-400/40 bg-green-400/10 text-green-200 hover:bg-green-400/20";
+  const completedClasses = "border border-success/40 bg-success/10 text-success hover:bg-success/20";
   const incompleteClasses = "shadow-cosmic-glow bg-primary text-primary-foreground hover:bg-primary/90";
 
   return (
@@ -163,7 +163,7 @@ export default function MarkCompleteButton({ lessonId, initialCompleted }: Props
         <CheckCircle2 className="size-4" />
         {completed ? "Completed (click to unmark)" : "Mark as complete"}
       </button>
-      {error ? <p className="text-xs text-red-300">{error}</p> : null}
+      {error ? <p className="text-destructive text-xs">{error}</p> : null}
     </div>
   );
 }

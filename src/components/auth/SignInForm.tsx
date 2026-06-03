@@ -160,27 +160,27 @@ export default function SignInForm({ serverError, next, unconfirmedEmail }: Prop
       />
 
       {isUnconfirmedFlow ? (
-        <div className="space-y-2 rounded-lg border border-yellow-400/30 bg-yellow-400/10 p-3 text-sm text-yellow-100">
+        <div className="border-warning/30 bg-warning/10 text-warning space-y-2 rounded-lg border p-3 text-sm">
           <p>Your email isn&apos;t confirmed yet. Enter the 6-digit code from your inbox, or request a new one.</p>
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
               onClick={handleResend}
               disabled={resendDisabled}
-              className="inline-flex items-center gap-2 rounded-md bg-yellow-400/20 px-3 py-1.5 text-xs font-medium text-yellow-50 transition hover:bg-yellow-400/30 disabled:cursor-not-allowed disabled:opacity-50"
+              className="bg-warning/20 text-warning hover:bg-warning/30 inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-xs font-medium transition disabled:cursor-not-allowed disabled:opacity-50"
             >
               <Send className="size-3" />
               {resendLabel}
             </button>
             <a
               href={`/auth/confirm-email?email=${encodeURIComponent(email)}`}
-              className="inline-flex items-center gap-2 rounded-md bg-yellow-400/20 px-3 py-1.5 text-xs font-medium text-yellow-50 transition hover:bg-yellow-400/30"
+              className="bg-warning/20 text-warning hover:bg-warning/30 inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-xs font-medium transition"
             >
               Enter code
               <ArrowRight className="size-3" />
             </a>
           </div>
-          {resendMessage ? <p className="text-xs text-yellow-100/80">{resendMessage}</p> : null}
+          {resendMessage ? <p className="text-warning/80 text-xs">{resendMessage}</p> : null}
         </div>
       ) : (
         <ServerError message={serverError} />

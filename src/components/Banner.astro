@@ -39,4 +39,19 @@ const { variant = "info" } = Astro.props;
     color: #7f1d1d;
     border-color: #dc2626;
   }
+
+  /* Dark-theme variants — the light banners above wash out on the cosmic dark
+     background, so use translucent tinted fills with light text. */
+  :global(.dark) .banner--info {
+    background: rgba(59, 130, 246, 0.15);
+    color: #bfdbfe;
+  }
+  :global(.dark) .banner--warning {
+    background: rgba(245, 158, 11, 0.15);
+    color: #fde68a;
+  }
+  :global(.dark) .banner--error {
+    background: rgba(220, 38, 38, 0.18);
+    color: #fecaca;
+  }
 </style>

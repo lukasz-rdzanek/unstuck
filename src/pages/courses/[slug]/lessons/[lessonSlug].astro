@@ -79,7 +79,7 @@ const nextLesson = currentIndex >= 0 && currentIndex < totalLessons - 1 ? allLes
                     {prevLesson ? (
                       <a
                         href={`/courses/${course.slug}/lessons/${prevLesson.slug}`}
-                        class="inline-flex size-9 items-center justify-center rounded-xl border border-cyan-400/30 bg-cyan-400/10 text-cyan-200 backdrop-blur-xl transition-colors hover:bg-cyan-400/20"
+                        class="border-info/30 bg-info/10 text-info hover:bg-info/20 inline-flex size-9 items-center justify-center rounded-xl border backdrop-blur-xl transition-colors"
                         aria-label={`Previous lesson: ${prevLesson.title}`}
                         title={`Previous: ${prevLesson.title}`}
                       >
@@ -101,7 +101,7 @@ const nextLesson = currentIndex >= 0 && currentIndex < totalLessons - 1 ? allLes
                     {nextLesson ? (
                       <a
                         href={`/courses/${course.slug}/lessons/${nextLesson.slug}`}
-                        class="inline-flex size-9 items-center justify-center rounded-xl border border-cyan-400/30 bg-cyan-400/10 text-cyan-200 backdrop-blur-xl transition-colors hover:bg-cyan-400/20"
+                        class="border-info/30 bg-info/10 text-info hover:bg-info/20 inline-flex size-9 items-center justify-center rounded-xl border backdrop-blur-xl transition-colors"
                         aria-label={`Next lesson: ${nextLesson.title}`}
                         title={`Next: ${nextLesson.title}`}
                       >
@@ -143,7 +143,7 @@ const nextLesson = currentIndex >= 0 && currentIndex < totalLessons - 1 ? allLes
                   )}
                 </div>
               ) : (
-                <div class="mb-6 inline-flex items-center gap-2 rounded-full border border-purple-400/30 bg-purple-400/10 px-3 py-1 text-xs font-medium tracking-wide text-purple-200 uppercase">
+                <div class="border-primary/30 bg-primary/10 text-primary mb-6 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium tracking-wide uppercase">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
@@ -162,9 +162,9 @@ const nextLesson = currentIndex >= 0 && currentIndex < totalLessons - 1 ? allLes
               )}
 
               {currentIndex !== -1 && totalLessons > 0 && (
-                <div class="mb-3 inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-400/10 px-3 py-1 text-xs font-medium tracking-wide text-cyan-200 uppercase">
+                <div class="border-info/30 bg-info/10 text-info mb-3 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium tracking-wide uppercase">
                   <span class="font-mono">{currentIndex + 1}</span>
-                  <span class="text-cyan-200/60">/</span>
+                  <span class="text-info/60">/</span>
                   <span class="font-mono">{totalLessons}</span>
                   <span class="ml-0.5">Lesson</span>
                 </div>
@@ -176,10 +176,10 @@ const nextLesson = currentIndex >= 0 && currentIndex < totalLessons - 1 ? allLes
                   Operator-trusted markdown: lessons.INSERT/UPDATE reserved to
                   service_role by F-01 RLS. Trust boundary documented in
                   src/lib/markdown.ts. */}
-              <article class="prose prose-invert max-w-none" set:html={html} />
+              <article class="prose max-w-none" set:html={html} />
 
               {userId && (
-                <div class="mt-8 border-t border-white/10 pt-6">
+                <div class="border-border mt-8 border-t pt-6">
                   <MarkCompleteButton client:load lessonId={lesson.id} initialCompleted={isCompleted} />
                 </div>
               )}

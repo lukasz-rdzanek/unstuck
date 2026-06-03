@@ -99,7 +99,7 @@ export default function LessonsNav({ courseSlug, chapters, completedLessonIds, c
                       )}
                     >
                       {done ? (
-                        <CheckCircle2 className="size-4 shrink-0 text-green-400" aria-label="Completed" />
+                        <CheckCircle2 className="text-success size-4 shrink-0" aria-label="Completed" />
                       ) : (
                         <span className="text-muted-foreground w-4 shrink-0 text-center font-mono text-xs">
                           {String(lesson.position).padStart(2, "0")}

@@ -258,6 +258,29 @@
   display: none;
 }
 
+/* Lesson markdown (Tailwind Typography) — drive every prose color from the
+   theme tokens so content matches the rest of the site and stays legible in
+   BOTH themes. This replaces the old `prose-invert` (which hardcoded light text
+   and was unreadable on the light background). */
+.prose {
+  --tw-prose-body: hsl(var(--foreground) / 0.9);
+  --tw-prose-headings: hsl(var(--foreground));
+  --tw-prose-lead: hsl(var(--muted-foreground));
+  --tw-prose-links: hsl(var(--primary));
+  --tw-prose-bold: hsl(var(--foreground));
+  --tw-prose-counters: hsl(var(--muted-foreground));
+  --tw-prose-bullets: hsl(var(--border));
+  --tw-prose-hr: hsl(var(--border));
+  --tw-prose-quotes: hsl(var(--foreground));
+  --tw-prose-quote-borders: hsl(var(--border));
+  --tw-prose-captions: hsl(var(--muted-foreground));
+  --tw-prose-code: hsl(var(--foreground));
+  --tw-prose-pre-code: hsl(var(--foreground) / 0.9);
+  --tw-prose-pre-bg: hsl(var(--muted));
+  --tw-prose-th-borders: hsl(var(--border));
+  --tw-prose-td-borders: hsl(var(--border));
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
