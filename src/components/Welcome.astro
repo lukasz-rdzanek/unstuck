@@ -6,15 +6,15 @@ import Topbar from "@/components/Topbar.astro";
 <div class="bg-cosmic relative min-h-screen w-full overflow-hidden">
   <!-- Cosmic orbs -->
   <div
-    class="pointer-events-none absolute top-1/4 -left-24 h-[350px] w-[350px] rounded-full bg-purple-500/20 blur-[120px]"
+    class="pointer-events-none absolute top-1/4 -left-24 h-[350px] w-[350px] rounded-full bg-[hsl(var(--orb-1))] blur-[120px]"
   >
   </div>
   <div
-    class="pointer-events-none absolute top-2/3 -right-16 h-[250px] w-[250px] rounded-full bg-blue-500/15 blur-[100px]"
+    class="pointer-events-none absolute top-2/3 -right-16 h-[250px] w-[250px] rounded-full bg-[hsl(var(--orb-2))] blur-[100px]"
   >
   </div>
   <div
-    class="pointer-events-none absolute top-0 left-1/2 h-[300px] w-[300px] -translate-x-1/2 rounded-full bg-indigo-400/10 blur-[140px]"
+    class="pointer-events-none absolute top-0 left-1/2 h-[300px] w-[300px] -translate-x-1/2 rounded-full bg-[hsl(var(--orb-3))] blur-[140px]"
   >
   </div>
 
@@ -29,7 +29,7 @@ import Topbar from "@/components/Topbar.astro";
       <div class="mb-6">
         <AlpacaHero />
       </div>
-      <p class="mb-10 max-w-2xl text-lg text-blue-100/70 sm:text-xl">
+      <p class="text-muted-foreground mb-10 max-w-2xl text-lg sm:text-xl">
         Project-based technical courses with a community built into every lesson — the moment you hit a wall, peers and
         proven answers are already there.
       </p>
@@ -42,7 +42,7 @@ import Topbar from "@/components/Topbar.astro";
         </a>
         <a
           href="/auth/signin"
-          class="inline-flex items-center justify-center rounded-lg border border-white/20 px-6 py-3 text-base font-medium text-white transition-colors hover:bg-white/10"
+          class="border-border text-foreground hover:bg-muted inline-flex items-center justify-center rounded-lg border px-6 py-3 text-base font-medium transition-colors"
         >
           Sign in
         </a>
@@ -51,7 +51,7 @@ import Topbar from "@/components/Topbar.astro";
 
     <!-- Feature cards -->
     <div class="mx-auto grid max-w-4xl grid-cols-1 gap-6 px-4 pb-24 sm:grid-cols-3">
-      <div class="rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl">
+      <div class="border-glass bg-glass rounded-xl border p-6 backdrop-blur-xl">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -62,17 +62,17 @@ import Topbar from "@/components/Topbar.astro";
           stroke-width="2"
           stroke-linecap="round"
           stroke-linejoin="round"
-          class="mb-4 text-purple-300"
+          class="text-primary mb-4"
         >
           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
         </svg>
-        <h3 class="mb-2 text-lg font-semibold text-white">Lesson-scoped chat</h3>
-        <p class="text-sm leading-relaxed text-blue-100/60">
+        <h3 class="text-foreground mb-2 text-lg font-semibold">Lesson-scoped chat</h3>
+        <p class="text-muted-foreground text-sm leading-relaxed">
           Peer help arrives in the same surface you're already working in — no Discord detour, no abandoned tab.
         </p>
       </div>
 
-      <div class="rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl">
+      <div class="border-glass bg-glass rounded-xl border p-6 backdrop-blur-xl">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -83,17 +83,17 @@ import Topbar from "@/components/Topbar.astro";
           stroke-width="2"
           stroke-linecap="round"
           stroke-linejoin="round"
-          class="mb-4 text-purple-300"
+          class="text-primary mb-4"
         >
           <path d="M12 2 4 6v6c0 5 3.5 9.5 8 10 4.5-.5 8-5 8-10V6l-8-4z"></path>
         </svg>
-        <h3 class="mb-2 text-lg font-semibold text-white">Operator-seeded solutions</h3>
-        <p class="text-sm leading-relaxed text-blue-100/60">
+        <h3 class="text-foreground mb-2 text-lg font-semibold">Operator-seeded solutions</h3>
+        <p class="text-muted-foreground text-sm leading-relaxed">
           Curated answers to the most common blockers sit pinned at the top of every lesson chat from day one.
         </p>
       </div>
 
-      <div class="rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl">
+      <div class="border-glass bg-glass rounded-xl border p-6 backdrop-blur-xl">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -104,13 +104,13 @@ import Topbar from "@/components/Topbar.astro";
           stroke-width="2"
           stroke-linecap="round"
           stroke-linejoin="round"
-          class="mb-4 text-purple-300"
+          class="text-primary mb-4"
         >
           <circle cx="12" cy="12" r="10"></circle>
           <polyline points="12 6 12 12 16 14"></polyline>
         </svg>
-        <h3 class="mb-2 text-lg font-semibold text-white">Stay in flow</h3>
-        <p class="text-sm leading-relaxed text-blue-100/60">
+        <h3 class="text-foreground mb-2 text-lg font-semibold">Stay in flow</h3>
+        <p class="text-muted-foreground text-sm leading-relaxed">
           Posting and reading chat never pauses the video or steals focus from the lesson body.
         </p>
       </div>

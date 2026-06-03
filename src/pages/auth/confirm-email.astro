@@ -19,19 +19,17 @@ const errorMessage = errorParam ? (errorCopy[errorParam] ?? "Couldn't verify. Tr
   <div class="bg-cosmic flex min-h-screen items-center justify-center p-4">
     <ThemeToggle floating client:load />
     <div
-      class="w-full max-w-sm rounded-2xl border border-white/10 bg-white/10 p-8 text-center text-white backdrop-blur-xl"
+      class="border-glass bg-glass text-foreground w-full max-w-sm rounded-2xl border p-8 text-center backdrop-blur-xl"
     >
       <div class="mb-4 text-5xl">📧</div>
-      <h1 class="mb-3 bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-2xl font-bold text-transparent">
-        Confirm your email
-      </h1>
-      <p class="mb-5 text-sm text-blue-100/80">
+      <h1 class="text-cosmic-gradient mb-3 text-2xl font-bold">Confirm your email</h1>
+      <p class="text-muted-foreground mb-5 text-sm">
         We sent a 6-digit code to your inbox. Enter it below to activate your account.
       </p>
 
       {
         errorMessage && (
-          <div class="mb-4 rounded-lg border border-red-400/30 bg-red-400/10 p-3 text-sm text-red-100">
+          <div class="border-destructive/30 bg-destructive/10 text-destructive mb-4 rounded-lg border p-3 text-sm">
             {errorMessage}
           </div>
         )
@@ -39,7 +37,7 @@ const errorMessage = errorParam ? (errorCopy[errorParam] ?? "Couldn't verify. Tr
 
       <form method="POST" action="/api/auth/verify-otp" class="space-y-3 text-left">
         <div>
-          <label for="email" class="mb-1 block text-xs font-medium text-blue-100/80">Email</label>
+          <label for="email" class="text-muted-foreground mb-1 block text-xs font-medium">Email</label>
           <input
             id="email"
             type="email"
@@ -47,13 +45,13 @@ const errorMessage = errorParam ? (errorCopy[errorParam] ?? "Couldn't verify. Tr
             value={emailParam}
             readonly={emailParam !== ""}
             required
-            class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-blue-100/40 read-only:cursor-not-allowed read-only:opacity-70 focus:border-purple-400 focus:outline-none"
+            class="border-input bg-glass text-foreground placeholder:text-muted-foreground focus:border-ring w-full rounded-md border px-3 py-2 text-sm read-only:cursor-not-allowed read-only:opacity-70 focus:outline-none"
             placeholder="you@example.com"
           />
         </div>
 
         <div>
-          <label for="token" class="mb-1 block text-xs font-medium text-blue-100/80">6-digit code</label>
+          <label for="token" class="text-muted-foreground mb-1 block text-xs font-medium">6-digit code</label>
           {
             /* pattern + maxlength match Supabase's auth.email.otp_length in supabase/config.toml.
               Keep in lockstep with the regex on src/pages/api/auth/verify-otp.ts. */
@@ -67,36 +65,36 @@ const errorMessage = errorParam ? (errorCopy[errorParam] ?? "Couldn't verify. Tr
             maxlength="6"
             autocomplete="one-time-code"
             required
-            class="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-center font-mono text-lg tracking-[0.5em] text-white placeholder:text-blue-100/30 focus:border-purple-400 focus:outline-none"
+            class="border-input bg-glass text-foreground placeholder:text-muted-foreground focus:border-ring w-full rounded-md border px-3 py-2 text-center font-mono text-lg tracking-[0.5em] focus:outline-none"
             placeholder="123456"
           />
         </div>
 
         <button
           type="submit"
-          class="w-full rounded-md bg-gradient-to-r from-blue-500 to-purple-500 px-4 py-2 text-sm font-medium text-white transition hover:opacity-90"
+          class="bg-primary text-primary-foreground hover:bg-primary/90 w-full rounded-md px-4 py-2 text-sm font-medium transition"
         >
           Confirm and sign in
         </button>
       </form>
 
-      <div class="mt-6 border-t border-white/10 pt-4 text-xs text-blue-100/60">
+      <div class="border-border text-muted-foreground mt-6 border-t pt-4 text-xs">
         <p class="mb-2">Didn&apos;t get the code?</p>
         <form id="resend-form" method="POST" action="/api/auth/resend" class="flex items-center justify-center gap-2">
           <input type="hidden" name="email" value={emailParam} />
           <button
             id="resend-button"
             type="submit"
-            class="rounded-md bg-white/10 px-3 py-1.5 text-xs text-blue-100 transition hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-50"
+            class="bg-glass text-foreground hover:bg-muted rounded-md px-3 py-1.5 text-xs transition disabled:cursor-not-allowed disabled:opacity-50"
           >
             Resend code
           </button>
         </form>
-        <p id="resend-status" class="mt-2 hidden text-blue-100/80"></p>
+        <p id="resend-status" class="text-muted-foreground mt-2 hidden"></p>
       </div>
 
-      <p class="mt-5 text-xs text-blue-100/50">
-        <a href="/auth/signin" class="text-purple-300 hover:underline">Back to sign in</a>
+      <p class="text-muted-foreground mt-5 text-xs">
+        <a href="/auth/signin" class="text-primary hover:underline">Back to sign in</a>
       </p>
     </div>
   </div>

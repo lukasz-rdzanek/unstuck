@@ -380,9 +380,9 @@ No data migration. Existing users without a `theme` cookie get system preference
 
 #### Automated
 
-- [x] 2.1 Type check passes: `npx astro check`
-- [x] 2.2 Lint passes: `npm run lint`
-- [x] 2.3 Build succeeds: `npm run build`
+- [x] 2.1 Type check passes: `npx astro check` — 9802d5e
+- [x] 2.2 Lint passes: `npm run lint` — 9802d5e
+- [x] 2.3 Build succeeds: `npm run build` — 9802d5e
 
 #### Manual
 
@@ -397,10 +397,10 @@ No data migration. Existing users without a `theme` cookie get system preference
 
 #### Automated
 
-- [ ] 3.1 Type check passes: `npx astro check`
-- [ ] 3.2 Lint passes: `npm run lint`
-- [ ] 3.3 Build succeeds: `npm run build`
-- [ ] 3.4 No hardcoded dark-only classes remain in this group (grep guard)
+- [x] 3.1 Type check passes: `npx astro check`
+- [x] 3.2 Lint passes: `npm run lint`
+- [x] 3.3 Build succeeds: `npm run build`
+- [x] 3.4 No hardcoded dark-only classes remain in this group (grep guard)
 
 #### Manual
 
