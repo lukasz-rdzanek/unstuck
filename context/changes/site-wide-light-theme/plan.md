@@ -411,10 +411,10 @@ No data migration. Existing users without a `theme` cookie get system preference
 
 #### Automated
 
-- [x] 4.1 Type check passes: `npx astro check`
-- [x] 4.2 Lint passes: `npm run lint`
-- [x] 4.3 Build succeeds: `npm run build`
-- [x] 4.4 No hardcoded dark-only classes remain site-wide (grep guard, documented exceptions)
+- [x] 4.1 Type check passes: `npx astro check` — 92e59da
+- [x] 4.2 Lint passes: `npm run lint` — 92e59da
+- [x] 4.3 Build succeeds: `npm run build` — 92e59da
+- [x] 4.4 No hardcoded dark-only classes remain site-wide (grep guard, documented exceptions) — 92e59da
 
 #### Manual
 
