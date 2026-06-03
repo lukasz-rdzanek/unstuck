@@ -191,9 +191,9 @@
   background-image: var(--cosmic-bg);
 }
 
-/* Headline gradient — primary → accent, both cosmic tokens.
-   Only meaningful inside .dark scope (where --primary is magenta/violet and
-   --accent is cobalt). Outside .dark resolves to neutral gray-to-gray. */
+/* Headline gradient — primary → accent. Both tokens are defined in :root
+   (light: deepened violet → cobalt) and .dark (cosmic violet → cobalt), so the
+   gradient resolves to brand colors in BOTH themes. */
 @utility text-cosmic-gradient {
   background-image: linear-gradient(to right, hsl(var(--primary)), hsl(var(--accent)));
   background-clip: text;
@@ -226,14 +226,23 @@
 
 /* Theme cross-fade — only present for ~250ms while the toggle flips the root
    class, so it never fires on initial load, hover, or focus state changes.
-   Honors reduced-motion. */
-.theme-anim,
+   Text + borders fade everywhere; background-color fades only on the page
+   surfaces (html / body / the cosmic wrapper). Transitioning background-color
+   on backdrop-blur panels and scroll containers repaints them every frame,
+   which made the scrollbar flicker during the toggle — so descendants are
+   deliberately excluded from the background-color transition. Reduced-motion
+   disables all of it. */
 .theme-anim *:not(svg):not(path) {
   transition:
-    background-color 250ms ease,
-    border-color 250ms ease,
     color 250ms ease,
-    fill 250ms ease;
+    border-color 250ms ease;
+}
+.theme-anim,
+.theme-anim body,
+.theme-anim .bg-cosmic {
+  transition:
+    background-color 250ms ease,
+    color 250ms ease;
 }
 @media (prefers-reduced-motion: reduce) {
   .theme-anim,

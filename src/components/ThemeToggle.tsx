@@ -7,7 +7,8 @@ type Theme = "light" | "dark";
 // private mode throws on write, so guard it (same pattern as LessonAside).
 function persist(theme: Theme): void {
   try {
-    document.cookie = `theme=${theme}; path=/; max-age=31536000; SameSite=Lax`;
+    const secure = location.protocol === "https:" ? "; Secure" : "";
+    document.cookie = `theme=${theme}; path=/; max-age=31536000; SameSite=Lax${secure}`;
   } catch {
     /* ignore */
   }

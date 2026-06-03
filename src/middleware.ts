@@ -40,7 +40,11 @@ export const onRequest = defineMiddleware(async (context, next) => {
   // Resolve the active theme from the `theme` cookie so Layout can render the
   // matching class on <html> server-side (no flash for returning visitors).
   // Default dark (brand); first-visit prefers-color-scheme is handled by the
-  // inline head script in Layout.astro.
+  // inline head script in Layout.astro. Intentional asymmetry: on a cookieless
+  // first visit the SSR class is dark and the head script may switch it to
+  // light pre-paint (no visible flash). True SSR OS-detection would need
+  // Sec-CH-Prefers-Color-Scheme client hints — out of scope; don't "fix" this
+  // by trying to read the OS preference here (the server can't).
   const themeCookie = context.cookies.get("theme")?.value;
   context.locals.theme = themeCookie === "light" ? "light" : "dark";
 

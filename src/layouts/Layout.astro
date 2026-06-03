@@ -32,7 +32,12 @@ const theme = Astro.locals.theme;
               ? "light"
               : "dark";
           document.documentElement.classList.toggle("dark", t === "dark");
-          if (!m) document.cookie = "theme=" + t + "; path=/; max-age=31536000; SameSite=Lax";
+          if (!m)
+            document.cookie =
+              "theme=" +
+              t +
+              "; path=/; max-age=31536000; SameSite=Lax" +
+              (location.protocol === "https:" ? "; Secure" : "");
         } catch (e) {}
       })();
     </script>
