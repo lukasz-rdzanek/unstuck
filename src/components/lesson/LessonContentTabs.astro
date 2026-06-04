@@ -1,0 +1,124 @@
+---
+// LessonContentTabs — Content / Autodescription tab strip for the lesson page
+// (UNS-20). Renders two operator-authored markdown panels (already converted to
+// trusted HTML by the caller via renderMarkdown) and toggles between them with a
+// tiny inline script. Content is the default.
+//
+// Why Astro + a script instead of a React island: both panels are trusted,
+// server-rendered HTML. Keeping them in Astro (`set:html`) avoids
+// dangerouslySetInnerHTML and any hydration cost — only the ~10-line visibility
+// toggle ships to the client. The button styling mirrors the aside tabs
+// (LessonAside.tsx) for consistency; active state is driven by aria-selected via
+// the Tailwind `aria-selected:` variant, so the script only flips attributes.
+interface Props {
+  contentHtml: string;
+  autodescriptionHtml: string;
+}
+
+const { contentHtml, autodescriptionHtml } = Astro.props;
+---
+
+<div data-lesson-content-tabs>
+  {
+    /* eslint-disable astro/no-set-html-directive --
+      This component renders operator-authored markdown that the caller already
+      converted via renderMarkdown. lessons.INSERT/UPDATE is reserved to
+      service_role by F-01 RLS — same trust boundary as lesson content_md
+      (src/lib/markdown.ts). File-scoped because both panels below use set:html. */
+  }
+  <div class="border-border mb-4 flex items-center gap-1 border-b pb-2" role="tablist" aria-label="Lesson content tabs">
+    <button
+      type="button"
+      role="tab"
+      data-tab="content"
+      id="lct-tab-content"
+      aria-controls="lct-panel-content"
+      aria-selected="true"
+      class="text-muted-foreground hover:text-foreground hover:bg-card/60 aria-selected:bg-primary/15 aria-selected:text-primary inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-colors"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="size-3.5"
+        aria-hidden="true"
+      >
+        <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"></path>
+        <path d="M14 2v5h5"></path>
+        <path d="M16 13H8"></path>
+        <path d="M16 17H8"></path>
+        <path d="M10 9H8"></path>
+      </svg>
+      <span>Content</span>
+    </button>
+    <button
+      type="button"
+      role="tab"
+      data-tab="auto"
+      id="lct-tab-auto"
+      aria-controls="lct-panel-auto"
+      aria-selected="false"
+      class="text-muted-foreground hover:text-foreground hover:bg-card/60 aria-selected:bg-primary/15 aria-selected:text-primary inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-colors"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="size-3.5"
+        aria-hidden="true"
+      >
+        <path d="M17 6.1H3"></path>
+        <path d="M21 12.1H3"></path>
+        <path d="M15.1 18H3"></path>
+      </svg>
+      <span>Autodescription</span>
+    </button>
+  </div>
+
+  <article
+    role="tabpanel"
+    id="lct-panel-content"
+    aria-labelledby="lct-tab-content"
+    data-tabpanel="content"
+    class="prose max-w-none"
+    set:html={contentHtml}
+  />
+  <article
+    role="tabpanel"
+    id="lct-panel-auto"
+    aria-labelledby="lct-tab-auto"
+    data-tabpanel="auto"
+    class="prose max-w-none"
+    hidden
+    set:html={autodescriptionHtml}
+  />
+</div>
+
+<script>
+  // Toggle visibility + aria-selected between the two panels. Active styling is
+  // CSS-driven (aria-selected: variant), so this only flips attributes — no
+  // class juggling, no React state.
+  document.querySelectorAll<HTMLElement>("[data-lesson-content-tabs]").forEach((root) => {
+    const tabs = root.querySelectorAll<HTMLButtonElement>("[role='tab']");
+    const panels = root.querySelectorAll<HTMLElement>("[data-tabpanel]");
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        const target = tab.dataset.tab;
+        tabs.forEach((t) => {
+          t.setAttribute("aria-selected", String(t === tab));
+        });
+        panels.forEach((panel) => {
+          panel.hidden = panel.dataset.tabpanel !== target;
+        });
+      });
+    });
+  });
+</script>

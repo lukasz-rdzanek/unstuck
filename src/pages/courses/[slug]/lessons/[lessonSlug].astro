@@ -7,6 +7,7 @@ import { getCourseLastSeenAt, getCourseLatestUpdatedAt, upsertCourseView } from 
 import { renderMarkdown } from "@/lib/markdown";
 import { parseVideoUrl } from "@/lib/video-embed";
 import LessonAside from "@/components/lesson/LessonAside";
+import LessonContentTabs from "@/components/lesson/LessonContentTabs.astro";
 import MarkCompleteButton from "@/components/lesson/MarkCompleteButton";
 
 const { slug, lessonSlug } = Astro.params;
@@ -20,6 +21,9 @@ if (!result) {
 const lesson = result?.lesson;
 const course = result?.course;
 const html = lesson ? renderMarkdown(lesson.content_md) : "";
+// UNS-20: render the operator-authored autodescription when present; an empty
+// string means "no summary" → no tab strip (lesson renders as before).
+const autoHtml = lesson?.autodescription_md ? renderMarkdown(lesson.autodescription_md) : "";
 const video = lesson?.video_url ? parseVideoUrl(lesson.video_url) : null;
 const pageTitle = lesson ? `${lesson.title} — Unstuck` : "Lesson not found — Unstuck";
 
@@ -172,11 +176,15 @@ const nextLesson = currentIndex >= 0 && currentIndex < totalLessons - 1 ? allLes
 
               <h1 class="text-cosmic-gradient mb-6 text-3xl font-bold tracking-tight sm:text-4xl">{lesson.title}</h1>
 
-              {/* eslint-disable-next-line astro/no-set-html-directive --
-                  Operator-trusted markdown: lessons.INSERT/UPDATE reserved to
-                  service_role by F-01 RLS. Trust boundary documented in
-                  src/lib/markdown.ts. */}
-              <article class="prose max-w-none" set:html={html} />
+              {autoHtml ? (
+                <LessonContentTabs contentHtml={html} autodescriptionHtml={autoHtml} />
+              ) : (
+                /* eslint-disable-next-line astro/no-set-html-directive --
+                    Operator-trusted markdown: lessons.INSERT/UPDATE reserved to
+                    service_role by F-01 RLS. Trust boundary documented in
+                    src/lib/markdown.ts. */
+                <article class="prose max-w-none" set:html={html} />
+              )}
 
               {userId && (
                 <div class="border-border mt-8 border-t pt-6">

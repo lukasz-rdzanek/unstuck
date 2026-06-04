@@ -207,30 +207,30 @@ Additive nullable column; no backfill, no data migration, no RLS change. Rollbac
 
 #### Automated
 
-- [x] 1.1 Migration applies on reset (`npx supabase db reset`)
-- [x] 1.2 Type check passes: `npx astro check`
-- [x] 1.3 Lint passes: `npm run lint`
-- [x] 1.4 Build succeeds: `npm run build`
-- [x] 1.5 `autodescription_md` present in `database.types.ts` (grep)
+- [x] 1.1 Migration applies on reset (`npx supabase db reset`) — 33398c6
+- [x] 1.2 Type check passes: `npx astro check` — 33398c6
+- [x] 1.3 Lint passes: `npm run lint` — 33398c6
+- [x] 1.4 Build succeeds: `npm run build` — 33398c6
+- [x] 1.5 `autodescription_md` present in `database.types.ts` (grep) — 33398c6
 
 #### Manual
 
-- [x] 1.6 Seeded lesson has non-null autodescription_md; others NULL
+- [x] 1.6 Seeded lesson has non-null autodescription_md; others NULL — 33398c6
 
 ### Phase 2: UI — LessonContentTabs.astro + lesson-page wiring
 
 #### Automated
 
-- [ ] 2.1 Type check passes: `npx astro check`
-- [ ] 2.2 Lint passes: `npm run lint`
-- [ ] 2.3 Build succeeds: `npm run build`
+- [x] 2.1 Type check passes: `npx astro check`
+- [x] 2.2 Lint passes: `npm run lint`
+- [x] 2.3 Build succeeds: `npm run build`
 
 #### Manual
 
-- [ ] 2.4 Seeded lesson: tabs show, Content default, switch works (mouse + keyboard)
-- [ ] 2.5 Un-seeded lesson: no tab strip, article unchanged
-- [ ] 2.6 Tabs match aside styling in light + dark
-- [ ] 2.7 Reading-only lesson with autodescription shows tabs
+- [x] 2.4 Seeded lesson: tabs show, Content default, switch works (mouse + keyboard)
+- [x] 2.5 Un-seeded lesson: no tab strip, article unchanged
+- [x] 2.6 Tabs match aside styling in light + dark
+- [x] 2.7 Reading-only lesson with autodescription shows tabs
 
 ### Phase 3: Prod deploy
 
