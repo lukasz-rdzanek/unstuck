@@ -221,24 +221,24 @@ Additive nullable column; no backfill, no data migration, no RLS change. Rollbac
 
 #### Automated
 
-- [x] 2.1 Type check passes: `npx astro check`
-- [x] 2.2 Lint passes: `npm run lint`
-- [x] 2.3 Build succeeds: `npm run build`
+- [x] 2.1 Type check passes: `npx astro check` — 45b247b
+- [x] 2.2 Lint passes: `npm run lint` — 45b247b
+- [x] 2.3 Build succeeds: `npm run build` — 45b247b
 
 #### Manual
 
-- [x] 2.4 Seeded lesson: tabs show, Content default, switch works (mouse + keyboard)
-- [x] 2.5 Un-seeded lesson: no tab strip, article unchanged
-- [x] 2.6 Tabs match aside styling in light + dark
-- [x] 2.7 Reading-only lesson with autodescription shows tabs
+- [x] 2.4 Seeded lesson: tabs show, Content default, switch works (mouse + keyboard) — 45b247b
+- [x] 2.5 Un-seeded lesson: no tab strip, article unchanged — 45b247b
+- [x] 2.6 Tabs match aside styling in light + dark — 45b247b
+- [x] 2.7 Reading-only lesson with autodescription shows tabs — 45b247b
 
 ### Phase 3: Prod deploy
 
 #### Automated
 
-- [ ] 3.1 `supabase db push` applies the migration without error
+- [x] 3.1 `supabase db push` applies the migration without error
 
 #### Manual
 
-- [ ] 3.2 Prod `lessons` has `autodescription_md` (SQL probe)
-- [ ] 3.3 Existing prod lesson pages still load
+- [x] 3.2 Prod `lessons` has `autodescription_md` (SQL probe)
+- [x] 3.3 Existing prod lesson pages still load
