@@ -182,6 +182,7 @@ export type Database = {
       }
       lessons: {
         Row: {
+          autodescription_md: string | null
           chapter_id: string
           content_md: string
           course_id: string
@@ -194,6 +195,7 @@ export type Database = {
           video_url: string | null
         }
         Insert: {
+          autodescription_md?: string | null
           chapter_id: string
           content_md?: string
           course_id: string
@@ -206,6 +208,7 @@ export type Database = {
           video_url?: string | null
         }
         Update: {
+          autodescription_md?: string | null
           chapter_id?: string
           content_md?: string
           course_id?: string
