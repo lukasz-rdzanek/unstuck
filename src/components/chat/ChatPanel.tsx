@@ -9,13 +9,6 @@ interface Props {
   userId: string | null;
   userDisplayName: string | null;
   /**
-   * When true, the scroll area sizes to fill its parent container
-   * (`h-full`). When false, it gets the desktop / mobile-collapsed
-   * default heights. Set by the wrapper (ChatPanelChrome / LessonAside)
-   * based on whether the mobile drawer is expanded.
-   */
-  fillHeight?: boolean;
-  /**
    * Called whenever the messages array length changes. Used by the
    * wrapper to track "new since I last looked" pulse signals (e.g.
    * pulse the Chat tab when LessonAside has the Lessons tab active
@@ -46,13 +39,7 @@ const SCROLL_BOTTOM_THRESHOLD = 50;
  *   S-02 Phase 4: + mobile bottom-drawer (now extracted to chrome wrapper).
  *   S-07 Phase 1: chrome extracted; this file becomes pure content.
  */
-export default function ChatPanel({
-  lessonId,
-  userId,
-  userDisplayName,
-  fillHeight = false,
-  onMessageCountChange,
-}: Props) {
+export default function ChatPanel({ lessonId, userId, userDisplayName, onMessageCountChange }: Props) {
   const {
     messages,
     isLoading,
@@ -144,11 +131,12 @@ export default function ChatPanel({
           ref={scrollRef}
           onScroll={handleScroll}
           className={cn(
-            "chat-scroll flex flex-col gap-3 overflow-y-auto",
-            // Wrapper-controlled height: fill when parent says so
-            // (mobile drawer expanded), default heights otherwise.
-            fillHeight ? "h-full" : "h-[60vh]",
-            "lg:h-[calc(100vh-16rem)]",
+            // Absolutely fill the `relative min-h-0 flex-1` wrapper so the list
+            // scrolls INSIDE the panel regardless of percentage-height
+            // resolution. The wrapper is flex-bounded by the surface
+            // (mobile drawer = fixed; desktop = lg:h-[calc(100vh-9rem)]), and
+            // the Composer is a flow sibling below, so it stays pinned/visible.
+            "chat-scroll absolute inset-0 flex flex-col gap-3 overflow-y-auto",
           )}
         >
           {error ? (

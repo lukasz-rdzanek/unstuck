@@ -220,8 +220,12 @@ export default function LessonAside({
         "fixed inset-x-0 bottom-0 z-40 rounded-t-2xl border-t",
         // Mobile expanded: near-full-screen overlay (topbar at top-16 stays visible).
         isExpanded && "top-16 z-50 flex flex-col",
-        // Desktop: revert to inline card inside <aside>.
-        "lg:shadow-cosmic-glow lg:bg-card/40 lg:relative lg:inset-auto lg:top-auto lg:z-auto lg:flex lg:flex-col lg:rounded-2xl lg:border",
+        // Desktop: revert to inline card inside <aside>. Definite height tied
+        // to the viewport (the aside is `lg:sticky lg:top-8`) with a ~9rem
+        // allowance for the topbar + page padding + a >=20px bottom gap, so the
+        // panel always fits on screen and the chat/lessons lists scroll INSIDE
+        // it. flex-col + overflow-hidden keep the Composer pinned and visible.
+        "lg:shadow-cosmic-glow lg:bg-card/40 lg:relative lg:inset-auto lg:top-auto lg:z-auto lg:flex lg:h-[calc(100vh-9rem)] lg:flex-col lg:overflow-hidden lg:rounded-2xl lg:border",
       )}
     >
       {/* Mobile collapsed bar — tap target with pulse indicator. */}
@@ -340,7 +344,6 @@ export default function LessonAside({
             lessonId={lessonId}
             userId={userId}
             userDisplayName={userDisplayName}
-            fillHeight={isExpanded}
             onMessageCountChange={handleChatMessageCount}
           />
         </div>

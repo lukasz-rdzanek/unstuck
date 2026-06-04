@@ -68,7 +68,7 @@ export default function LessonsNav({ courseSlug, chapters, completedLessonIds, c
   }
 
   return (
-    <nav aria-label="Course lessons" className="space-y-5 overflow-y-auto pr-1">
+    <nav aria-label="Course lessons" className="min-h-0 flex-1 space-y-5 overflow-y-auto pr-1">
       {chapters.map((chapter) => (
         <section key={chapter.id}>
           <h3 className="text-foreground mb-2 text-sm font-semibold">

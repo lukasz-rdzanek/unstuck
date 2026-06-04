@@ -1,6 +1,8 @@
 ---
 import AlpacaHero from "@/components/AlpacaHero.astro";
 import Topbar from "@/components/Topbar.astro";
+
+const { user } = Astro.locals;
 ---
 
 <div class="bg-cosmic relative min-h-screen w-full overflow-hidden">
@@ -25,11 +27,11 @@ import Topbar from "@/components/Topbar.astro";
     <Topbar />
 
     <!-- Hero section -->
-    <div class="mx-auto flex max-w-4xl flex-col items-center justify-center px-4 py-24 text-center sm:py-32 lg:py-40">
-      <div class="mb-6">
+    <div class="mx-auto flex max-w-4xl flex-col items-center justify-center px-4 py-10 text-center sm:py-14 lg:py-16">
+      <div class="mb-4">
         <AlpacaHero />
       </div>
-      <p class="text-muted-foreground mb-10 max-w-2xl text-lg sm:text-xl">
+      <p class="text-muted-foreground mb-8 max-w-2xl text-lg sm:text-xl">
         Project-based technical courses with a community built into every lesson — the moment you hit a wall, peers and
         proven answers are already there.
       </p>
@@ -40,12 +42,16 @@ import Topbar from "@/components/Topbar.astro";
         >
           View courses
         </a>
-        <a
-          href="/auth/signin"
-          class="border-border text-foreground hover:bg-muted inline-flex items-center justify-center rounded-lg border px-6 py-3 text-base font-medium transition-colors"
-        >
-          Sign in
-        </a>
+        {
+          !user && (
+            <a
+              href="/auth/signin"
+              class="border-border text-foreground hover:bg-muted inline-flex items-center justify-center rounded-lg border px-6 py-3 text-base font-medium transition-colors"
+            >
+              Sign in
+            </a>
+          )
+        }
       </div>
     </div>
 
