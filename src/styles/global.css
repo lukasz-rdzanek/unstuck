@@ -290,6 +290,21 @@
   --tw-prose-td-borders: hsl(var(--border));
 }
 
+/* Plyr video player (UNS-19) — map Plyr's CSS vars to the cosmic tokens so the
+   control bar, menus, and tooltips match the brand in both light and dark.
+   Scoped to `.plyr` (more specific than plyr.css's :root defaults), so this
+   wins regardless of stylesheet order. */
+.plyr {
+  --plyr-color-main: hsl(var(--primary));
+  --plyr-focus-visible-color: hsl(var(--ring));
+  --plyr-badge-background: hsl(var(--primary));
+  --plyr-badge-text-color: hsl(var(--primary-foreground));
+  --plyr-menu-background: hsl(var(--popover));
+  --plyr-menu-color: hsl(var(--popover-foreground));
+  --plyr-tooltip-background: hsl(var(--popover));
+  --plyr-tooltip-color: hsl(var(--popover-foreground));
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

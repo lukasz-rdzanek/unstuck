@@ -185,25 +185,25 @@ No data/schema changes. New client dependency (`plyr`); visible in prod after th
 ### Phase 1: Dependency + embed id
 
 #### Automated
-- [x] 1.1 Type check passes: `npx astro check`
-- [x] 1.2 Lint passes: `npm run lint`
-- [x] 1.3 Build succeeds: `npm run build`
-- [x] 1.4 `plyr` present in package.json (grep)
+- [x] 1.1 Type check passes: `npx astro check` — 2c1a7c5
+- [x] 1.2 Lint passes: `npm run lint` — 2c1a7c5
+- [x] 1.3 Build succeeds: `npm run build` — 2c1a7c5
+- [x] 1.4 `plyr` present in package.json (grep) — 2c1a7c5
 #### Manual
-- [x] 1.5 `parseVideoUrl` returns correct id for YouTube + Vimeo URL variants
+- [x] 1.5 `parseVideoUrl` returns correct id for YouTube + Vimeo URL variants — 2c1a7c5
 
 ### Phase 2: Player island + theming + wiring
 
 #### Automated
-- [ ] 2.1 Type check passes: `npx astro check`
-- [ ] 2.2 Lint passes: `npm run lint`
-- [ ] 2.3 Build succeeds: `npm run build`
+- [x] 2.1 Type check passes: `npx astro check`
+- [x] 2.2 Lint passes: `npm run lint`
+- [x] 2.3 Build succeeds: `npm run build`
 #### Manual
-- [ ] 2.4 YouTube: all controls work, no autoplay
-- [ ] 2.5 Vimeo: all controls work
-- [ ] 2.6 Volume + speed persist across lessons
-- [ ] 2.7 Control bar matches cosmic theme in light + dark
-- [ ] 2.8 Unknown-provider fallback + reading-only lesson unchanged
+- [x] 2.4 YouTube: all controls work, no autoplay
+- [x] 2.5 Vimeo: all controls work
+- [x] 2.6 Volume + speed persist across lessons
+- [x] 2.7 Control bar matches cosmic theme in light + dark
+- [x] 2.8 Unknown-provider fallback + reading-only lesson unchanged
 
 ### Phase 3: Expand ↔ aside cross-island sync
 

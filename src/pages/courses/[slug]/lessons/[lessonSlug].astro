@@ -8,6 +8,7 @@ import { renderMarkdown } from "@/lib/markdown";
 import { parseVideoUrl } from "@/lib/video-embed";
 import LessonAside from "@/components/lesson/LessonAside";
 import LessonContentTabs from "@/components/lesson/LessonContentTabs.astro";
+import LessonVideoPlayer from "@/components/lesson/LessonVideoPlayer";
 import MarkCompleteButton from "@/components/lesson/MarkCompleteButton";
 import SaveLessonButton from "@/components/lesson/SaveLessonButton";
 
@@ -130,24 +131,15 @@ const nextLesson = currentIndex >= 0 && currentIndex < totalLessons - 1 ? allLes
                 ) : null}
               </div>
               {lesson.video_url !== null ? (
-                <div class="bg-card/40 border-border relative mb-6 aspect-video w-full overflow-hidden rounded-2xl border backdrop-blur-xl">
-                  {video?.embedSrc ? (
-                    <iframe
-                      src={video.embedSrc}
-                      class="absolute inset-0 h-full w-full"
-                      allowfullscreen
-                      referrerpolicy="strict-origin"
-                      loading="lazy"
-                      sandbox="allow-scripts allow-same-origin allow-presentation"
-                      allow="autoplay; fullscreen; picture-in-picture"
-                      title={lesson.title}
-                    />
-                  ) : (
+                video && video.provider !== "unknown" && video.id ? (
+                  <LessonVideoPlayer client:load provider={video.provider} videoId={video.id} title={lesson.title} />
+                ) : (
+                  <div class="bg-card/40 border-border relative mb-6 aspect-video w-full overflow-hidden rounded-2xl border backdrop-blur-xl">
                     <div class="text-muted-foreground absolute inset-0 flex items-center justify-center p-8 text-center text-sm">
                       Video preview unavailable for this URL.
                     </div>
-                  )}
-                </div>
+                  </div>
+                )
               ) : (
                 <div class="border-primary/30 bg-primary/10 text-primary mb-6 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium tracking-wide uppercase">
                   <svg
