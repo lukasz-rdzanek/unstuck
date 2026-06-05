@@ -119,14 +119,14 @@ No DB or schema changes. The feature is client-side; it becomes visible in prod 
 
 #### Automated
 
-- [x] 1.1 Type check passes: `npx astro check`
-- [x] 1.2 Lint passes: `npm run lint`
-- [x] 1.3 Build succeeds: `npm run build`
-- [x] 1.4 No new dependencies added (`git diff --stat package.json` clean)
+- [x] 1.1 Type check passes: `npx astro check` — 091f90b
+- [x] 1.2 Lint passes: `npm run lint` — 091f90b
+- [x] 1.3 Build succeeds: `npm run build` — 091f90b
+- [x] 1.4 No new dependencies added (`git diff --stat package.json` clean) — 091f90b
 
 #### Manual
 
-- [x] 1.5 Save button appears next to Mark-Complete (both themes)
-- [x] 1.6 Click downloads `<course-slug>-<lesson-slug>.md` with title/course/body/video/footer
-- [x] 1.7 Reading-only lesson omits the video line
-- [x] 1.8 No Mark-Complete regression
+- [x] 1.5 Save button appears next to Mark-Complete (both themes) — 091f90b
+- [x] 1.6 Click downloads `<course-slug>-<lesson-slug>.md` with title/course/body/video/footer — 091f90b
+- [x] 1.7 Reading-only lesson omits the video line — 091f90b
+- [x] 1.8 No Mark-Complete regression — 091f90b
