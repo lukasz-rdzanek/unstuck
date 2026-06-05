@@ -21,9 +21,10 @@ if (!result) {
 const lesson = result?.lesson;
 const course = result?.course;
 const html = lesson ? renderMarkdown(lesson.content_md) : "";
-// UNS-20: render the operator-authored autodescription when present; an empty
-// string means "no summary" → no tab strip (lesson renders as before).
-const autoHtml = lesson?.autodescription_md ? renderMarkdown(lesson.autodescription_md) : "";
+// UNS-20: render the operator-authored autodescription when present; null,
+// empty, or whitespace-only means "no summary" → no tab strip (lesson renders
+// as before). .trim() collapses a whitespace-only value to the no-tab path.
+const autoHtml = lesson?.autodescription_md?.trim() ? renderMarkdown(lesson.autodescription_md) : "";
 const video = lesson?.video_url ? parseVideoUrl(lesson.video_url) : null;
 const pageTitle = lesson ? `${lesson.title} — Unstuck` : "Lesson not found — Unstuck";
 
