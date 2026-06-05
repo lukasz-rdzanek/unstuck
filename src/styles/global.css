@@ -305,6 +305,24 @@
   --plyr-tooltip-color: hsl(var(--popover-foreground));
 }
 
+/* The cinema toggle uses a stroked (outline) icon. Plyr fills control SVGs by
+   default (.plyr__control svg { fill: currentColor }), and CSS beats our inline
+   fill="none" — without this the screen-rectangle renders as a solid square that
+   hides the arrows. Force stroke-only so the outline + arrows show. */
+.plyr__control.unstuck-cinema-toggle svg {
+  fill: none;
+  stroke: currentColor;
+}
+
+/* Cinema-mode toggle (UNS-19) is desktop-only: collapsing the aside only
+   reflows the lg grid, and the re-open pill handle is lg-only too — showing it
+   on mobile would hide the bottom drawer with no way to bring it back. */
+@media (max-width: 1023px) {
+  .plyr__control.unstuck-cinema-toggle {
+    display: none;
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
