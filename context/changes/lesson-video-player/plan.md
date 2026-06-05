@@ -208,18 +208,18 @@ No data/schema changes. New client dependency (`plyr`); visible in prod after th
 ### Phase 3: Expand ↔ aside cross-island sync
 
 #### Automated
-- [x] 3.1 Type check passes: `npx astro check`
-- [x] 3.2 Lint passes: `npm run lint`
-- [x] 3.3 Build succeeds: `npm run build`
+- [x] 3.1 Type check passes: `npx astro check` — d7cd45c
+- [x] 3.2 Lint passes: `npm run lint` — d7cd45c
+- [x] 3.3 Build succeeds: `npm run build` — d7cd45c
 #### Manual
-- [x] 3.4 Expand collapses the aside + grid widens; Restore reverts
-- [x] 3.5 Aside's own collapse toggle updates the player icon (two-way, no loop)
-- [x] 3.6 Collapsed state persists across reload
+- [x] 3.4 Expand collapses the aside + grid widens; Restore reverts — d7cd45c
+- [x] 3.5 Aside's own collapse toggle updates the player icon (two-way, no loop) — d7cd45c
+- [x] 3.6 Collapsed state persists across reload — d7cd45c
 
 ### Phase 4: Prod deploy
 
 #### Automated
-- [ ] 4.1 Build leak-check: zero 127.0.0.1 in dist/
-- [ ] 4.2 `wrangler deploy` succeeds
+- [x] 4.1 Build leak-check: zero 127.0.0.1 in dist/
+- [x] 4.2 `wrangler deploy` succeeds
 #### Manual
-- [ ] 4.3 Prod lesson page: Plyr player + controls + Expand work; `/` + `/courses` → 200
+- [x] 4.3 Prod lesson page: Plyr player + controls + Expand work; `/` + `/courses` → 200
