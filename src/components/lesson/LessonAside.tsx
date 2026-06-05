@@ -3,6 +3,7 @@ import { MessageSquare, ListTree, PanelRightClose, PanelLeftOpen, Sparkles, X } 
 import { cn } from "@/lib/utils";
 import ChatPanel from "@/components/chat/ChatPanel";
 import LessonsNav from "./LessonsNav";
+import { readCollapsed, setCollapsedAndBroadcast, onCollapsedChange } from "./aside-collapse";
 import type { ChapterWithLessons } from "@/types";
 
 type Tab = "chat" | "lessons";
@@ -34,7 +35,8 @@ interface Props {
 
 const MOBILE_MEDIA = "(max-width: 1023px)";
 const TAB_STORAGE_KEY = "unstuck.lesson-aside.tab";
-const COLLAPSED_STORAGE_KEY = "unstuck.lesson-aside.collapsed";
+// Collapse state (key + event + helpers) lives in ./aside-collapse — shared
+// with LessonVideoPlayer's Expand button (UNS-19 P3).
 
 /** Per-course dismiss key for the UNS-14 "course updated" banner. Stores
  *  the ISO timestamp of the courseUpdatedAt that was dismissed; a NEWER
@@ -70,10 +72,6 @@ function loadTab(): Tab {
   // else (no key, malformed value, "lessons" itself) lands on Lessons.
   const stored = readLocalStorage(TAB_STORAGE_KEY);
   return stored === "chat" ? "chat" : "lessons";
-}
-
-function loadCollapsed(): boolean {
-  return readLocalStorage(COLLAPSED_STORAGE_KEY) === "true";
 }
 
 /**
@@ -120,7 +118,7 @@ export default function LessonAside({
     writeLocalStorage(courseUpdateDismissedKey(courseId), courseUpdatedAt);
     setDismissedAt(courseUpdatedAt);
   }, [courseId, courseUpdatedAt]);
-  const [collapsed, setCollapsedState] = useState<boolean>(() => loadCollapsed());
+  const [collapsed, setCollapsedState] = useState<boolean>(() => readCollapsed());
 
   // Mobile drawer expansion (ephemeral — not persisted).
   const [isExpanded, setIsExpanded] = useState(false);
@@ -151,8 +149,12 @@ export default function LessonAside({
 
   const setCollapsed = useCallback((value: boolean) => {
     setCollapsedState(value);
-    writeLocalStorage(COLLAPSED_STORAGE_KEY, value ? "true" : "false");
+    setCollapsedAndBroadcast(value); // persist + notify the video player's Expand button
   }, []);
+
+  // Reflect player-initiated Expand/Restore: apply the broadcast value to local
+  // state only — no re-broadcast (echo-loop guard lives in ./aside-collapse).
+  useEffect(() => onCollapsedChange(setCollapsedState), []);
 
   // Body scroll-lock while the mobile drawer is expanded.
   useEffect(() => {

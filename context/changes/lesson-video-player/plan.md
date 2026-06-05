@@ -195,26 +195,26 @@ No data/schema changes. New client dependency (`plyr`); visible in prod after th
 ### Phase 2: Player island + theming + wiring
 
 #### Automated
-- [x] 2.1 Type check passes: `npx astro check`
-- [x] 2.2 Lint passes: `npm run lint`
-- [x] 2.3 Build succeeds: `npm run build`
+- [x] 2.1 Type check passes: `npx astro check` — c3fa062
+- [x] 2.2 Lint passes: `npm run lint` — c3fa062
+- [x] 2.3 Build succeeds: `npm run build` — c3fa062
 #### Manual
-- [x] 2.4 YouTube: all controls work, no autoplay
-- [x] 2.5 Vimeo: all controls work
-- [x] 2.6 Volume + speed persist across lessons
-- [x] 2.7 Control bar matches cosmic theme in light + dark
-- [x] 2.8 Unknown-provider fallback + reading-only lesson unchanged
+- [x] 2.4 YouTube: all controls work, no autoplay — c3fa062
+- [x] 2.5 Vimeo: all controls work — c3fa062
+- [x] 2.6 Volume + speed persist across lessons — c3fa062
+- [x] 2.7 Control bar matches cosmic theme in light + dark — c3fa062
+- [x] 2.8 Unknown-provider fallback + reading-only lesson unchanged — c3fa062
 
 ### Phase 3: Expand ↔ aside cross-island sync
 
 #### Automated
-- [ ] 3.1 Type check passes: `npx astro check`
-- [ ] 3.2 Lint passes: `npm run lint`
-- [ ] 3.3 Build succeeds: `npm run build`
+- [x] 3.1 Type check passes: `npx astro check`
+- [x] 3.2 Lint passes: `npm run lint`
+- [x] 3.3 Build succeeds: `npm run build`
 #### Manual
-- [ ] 3.4 Expand collapses the aside + grid widens; Restore reverts
-- [ ] 3.5 Aside's own collapse toggle updates the player icon (two-way, no loop)
-- [ ] 3.6 Collapsed state persists across reload
+- [x] 3.4 Expand collapses the aside + grid widens; Restore reverts
+- [x] 3.5 Aside's own collapse toggle updates the player icon (two-way, no loop)
+- [x] 3.6 Collapsed state persists across reload
 
 ### Phase 4: Prod deploy
 

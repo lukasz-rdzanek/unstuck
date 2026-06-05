@@ -1,6 +1,8 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Maximize2, Minimize2 } from "lucide-react";
 import type PlyrType from "plyr";
 import "plyr/dist/plyr.css";
+import { readCollapsed, setCollapsedAndBroadcast, onCollapsedChange } from "./aside-collapse";
 
 interface Props {
   provider: "youtube" | "vimeo";
@@ -23,6 +25,19 @@ interface Props {
  */
 export default function LessonVideoPlayer({ provider, videoId, title }: Props) {
   const hostRef = useRef<HTMLDivElement | null>(null);
+
+  // Expand button ↔ lesson aside (UNS-19 P3). `collapsed` mirrors the shared
+  // aside state: true → aside collapsed, video stage maximized. Initial value
+  // from the shared localStorage key; kept in sync with aside-initiated toggles
+  // via the broadcast listener (which never re-broadcasts → no echo loop).
+  const [collapsed, setCollapsed] = useState<boolean>(() => readCollapsed());
+  useEffect(() => onCollapsedChange(setCollapsed), []);
+
+  const toggleExpand = () => {
+    const next = !collapsed;
+    setCollapsed(next);
+    setCollapsedAndBroadcast(next); // persist + notify the aside
+  };
 
   useEffect(() => {
     const host = hostRef.current;
@@ -76,11 +91,23 @@ export default function LessonVideoPlayer({ provider, videoId, title }: Props) {
       // (100vh − chrome): W = H · 16/9. ~13rem ≈ topbar + page/lesson padding +
       // breadcrumb row. mx-auto centers the capped player in the wide column so
       // toggling the panel is jitter-free and never needs a scroll to see it.
-      className="border-border bg-card/40 mx-auto mb-6 w-full max-w-[min(100%,calc((100vh-13rem)*16/9))] overflow-hidden rounded-2xl border backdrop-blur-xl"
+      className="border-border bg-card/40 relative mx-auto mb-6 w-full max-w-[min(100%,calc((100vh-13rem)*16/9))] overflow-hidden rounded-2xl border backdrop-blur-xl"
       role="region"
       aria-label={title}
     >
       <div ref={hostRef} data-plyr-provider={provider} data-plyr-embed-id={videoId} />
+      {/* Expand/Restore — desktop only (the aside-collapse grid rule is lg+).
+          Top-left so it never overlaps Plyr's bottom-right control cluster.
+          z-10 sits above the embed; Plyr's own UI manages its own stacking. */}
+      <button
+        type="button"
+        onClick={toggleExpand}
+        aria-label={collapsed ? "Restore lesson panel" : "Expand video — collapse lesson panel"}
+        title={collapsed ? "Restore panel" : "Expand video"}
+        className="bg-card/60 border-border text-foreground/90 hover:bg-card/90 absolute top-3 left-3 z-10 hidden size-9 items-center justify-center rounded-xl border backdrop-blur-xl transition-colors lg:inline-flex"
+      >
+        {collapsed ? <Minimize2 className="size-4" /> : <Maximize2 className="size-4" />}
+      </button>
     </div>
   );
 }
