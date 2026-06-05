@@ -219,7 +219,7 @@ No data/schema changes. New client dependency (`plyr`); visible in prod after th
 ### Phase 4: Prod deploy
 
 #### Automated
-- [x] 4.1 Build leak-check: zero 127.0.0.1 in dist/
-- [x] 4.2 `wrangler deploy` succeeds
+- [x] 4.1 Build leak-check: zero 127.0.0.1 in dist/ — 98b1f0c
+- [x] 4.2 `wrangler deploy` succeeds — 98b1f0c
 #### Manual
-- [x] 4.3 Prod lesson page: Plyr player + controls + Expand work; `/` + `/courses` → 200
+- [x] 4.3 Prod lesson page: Plyr player + controls + Expand work; `/` + `/courses` → 200 — 98b1f0c

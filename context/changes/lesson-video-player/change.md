@@ -1,7 +1,7 @@
 ---
 change_id: lesson-video-player
 title: Rich custom video player controls for the lesson page
-status: implementing
+status: implemented
 created: 2026-06-05
 updated: 2026-06-05
 archived_at: null
