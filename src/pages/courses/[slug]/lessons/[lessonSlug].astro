@@ -9,6 +9,7 @@ import { parseVideoUrl } from "@/lib/video-embed";
 import LessonAside from "@/components/lesson/LessonAside";
 import LessonContentTabs from "@/components/lesson/LessonContentTabs.astro";
 import MarkCompleteButton from "@/components/lesson/MarkCompleteButton";
+import SaveLessonButton from "@/components/lesson/SaveLessonButton";
 
 const { slug, lessonSlug } = Astro.params;
 const supabase = createClient(Astro.request.headers, Astro.cookies);
@@ -188,8 +189,17 @@ const nextLesson = currentIndex >= 0 && currentIndex < totalLessons - 1 ? allLes
               )}
 
               {userId && (
-                <div class="border-border mt-8 border-t pt-6">
+                <div class="border-border mt-8 flex flex-wrap items-center gap-3 border-t pt-6">
                   <MarkCompleteButton client:load lessonId={lesson.id} initialCompleted={isCompleted} />
+                  <SaveLessonButton
+                    client:load
+                    title={lesson.title}
+                    courseTitle={course.title}
+                    contentMd={lesson.content_md}
+                    videoUrl={lesson.video_url}
+                    courseSlug={course.slug}
+                    lessonSlug={lesson.slug}
+                  />
                 </div>
               )}
             </div>
