@@ -28,7 +28,9 @@ export function buildLessonMarkdown({
   if (videoUrl) {
     parts.push(`Watch the video: ${videoUrl}`, "");
   }
-  parts.push(`_Saved from Unstuck — ${lessonUrl} — for personal use._`, "");
+  // Angle-bracket autolink so a crafted URL can't distort the footer when the
+  // .md is opened in a markdown viewer (treated literally).
+  parts.push(`_Saved from Unstuck — <${lessonUrl}> — for personal use._`, "");
   return parts.join("\n");
 }
 

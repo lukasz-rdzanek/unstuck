@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { CheckCircle2 } from "lucide-react";
 import confetti from "canvas-confetti";
+import { cn } from "@/lib/utils";
 
 interface Props {
   lessonId: string;
@@ -159,7 +160,7 @@ export default function MarkCompleteButton({ lessonId, initialCompleted }: Props
         ref={buttonRef}
         type="button"
         onClick={handleClick}
-        className={`${baseClasses} ${completed ? completedClasses : incompleteClasses}`}
+        className={cn(baseClasses, completed ? completedClasses : incompleteClasses)}
         aria-pressed={completed}
         title={completed ? "Click to unmark" : undefined}
       >
