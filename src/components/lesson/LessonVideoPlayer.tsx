@@ -125,6 +125,9 @@ export default function LessonVideoPlayer({ provider, videoId, title }: Props) {
 
     return () => {
       cancelled = true;
+      // Explicitly remove the injected button (and its click listener) rather
+      // than relying on Plyr's destroy() to GC the orphan.
+      cinemaBtnRef.current?.remove();
       cinemaBtnRef.current = null;
       player?.destroy();
     };

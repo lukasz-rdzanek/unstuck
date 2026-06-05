@@ -30,7 +30,7 @@ export function readCollapsed(): boolean {
   }
 }
 
-export function writeCollapsed(collapsed: boolean): void {
+function writeCollapsed(collapsed: boolean): void {
   if (typeof window === "undefined") return;
   try {
     window.localStorage.setItem(COLLAPSED_STORAGE_KEY, collapsed ? "true" : "false");

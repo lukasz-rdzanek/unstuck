@@ -17,6 +17,11 @@ export interface VideoEmbed {
 
 const UNKNOWN: VideoEmbed = { embedSrc: null, provider: "unknown", id: null };
 
+// YouTube video ids are exactly 11 chars from [A-Za-z0-9_-] — validate for
+// symmetry with Vimeo's numeric check so a malformed URL falls through to
+// UNKNOWN rather than producing a junk embed id.
+const YOUTUBE_ID = /^[A-Za-z0-9_-]{11}$/;
+
 export function parseVideoUrl(url: string): VideoEmbed {
   let parsed: URL;
   try {
@@ -31,19 +36,21 @@ export function parseVideoUrl(url: string): VideoEmbed {
   if (host === "youtube.com" || host === "m.youtube.com") {
     if (parsed.pathname === "/watch") {
       const id = parsed.searchParams.get("v");
-      if (id) return { embedSrc: `https://www.youtube.com/embed/${id}`, provider: "youtube", id };
+      if (id && YOUTUBE_ID.test(id))
+        return { embedSrc: `https://www.youtube.com/embed/${id}`, provider: "youtube", id };
     }
     // Already-embed: youtube.com/embed/ID
     if (parsed.pathname.startsWith("/embed/")) {
       const id = parsed.pathname.slice("/embed/".length).split("/")[0];
-      if (id) return { embedSrc: `https://www.youtube.com${parsed.pathname}`, provider: "youtube", id };
+      if (id && YOUTUBE_ID.test(id))
+        return { embedSrc: `https://www.youtube.com${parsed.pathname}`, provider: "youtube", id };
     }
   }
 
   // YouTube short URL: youtu.be/ID
   if (host === "youtu.be") {
     const id = parsed.pathname.slice(1).split("/")[0];
-    if (id) return { embedSrc: `https://www.youtube.com/embed/${id}`, provider: "youtube", id };
+    if (id && YOUTUBE_ID.test(id)) return { embedSrc: `https://www.youtube.com/embed/${id}`, provider: "youtube", id };
   }
 
   // Vimeo watch: vimeo.com/<numeric-id>
