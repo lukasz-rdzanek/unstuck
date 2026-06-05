@@ -1,10 +1,10 @@
 ---
 change_id: lesson-autodescription-tabs
 title: Content / Autodescription tabs under the lesson video
-status: impl_reviewed
+status: archived
 created: 2026-06-03
 updated: 2026-06-05
-archived_at: null
+archived_at: 2026-06-05T12:22:08Z
 ---
 
 ## Notes
