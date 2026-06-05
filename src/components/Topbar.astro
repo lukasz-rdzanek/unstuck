@@ -4,7 +4,10 @@
 // by in-app routes (catalog/course/lesson). Keep these two in sync when the
 // cosmic system absorbs the landing as well.
 import ThemeToggle from "@/components/ThemeToggle";
-const { user } = Astro.locals;
+// displayName is resolved by middleware once per request (Astro.locals); render
+// it instead of the raw email — privacy parity with AppTopbar (UNS-17). Falls
+// back to the email local-part so there's always an identity label.
+const { user, displayName } = Astro.locals;
 ---
 
 <div
@@ -13,7 +16,7 @@ const { user } = Astro.locals;
   {
     user ? (
       <>
-        <span class="text-muted-foreground">{user.email}</span>
+        <span class="text-muted-foreground">{displayName ?? user.email?.split("@")[0] ?? "Account"}</span>
         <div class="flex items-center gap-3">
           <ThemeToggle client:load />
           <a href="/dashboard" class="text-primary transition-colors hover:underline">
