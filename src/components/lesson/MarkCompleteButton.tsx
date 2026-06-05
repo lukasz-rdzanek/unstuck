@@ -146,8 +146,10 @@ export default function MarkCompleteButton({ lessonId, initialCompleted }: Props
     }
   }
 
+  // min-w + justify-center so the button stays the same size across the
+  // "Mark as complete" / "Completed" label swap (no width jump on toggle).
   const baseClasses =
-    "inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60";
+    "inline-flex min-w-[12rem] items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60";
   const completedClasses = "border border-success/40 bg-success/10 text-success hover:bg-success/20";
   const incompleteClasses = "shadow-cosmic-glow bg-primary text-primary-foreground hover:bg-primary/90";
 
@@ -159,9 +161,10 @@ export default function MarkCompleteButton({ lessonId, initialCompleted }: Props
         onClick={handleClick}
         className={`${baseClasses} ${completed ? completedClasses : incompleteClasses}`}
         aria-pressed={completed}
+        title={completed ? "Click to unmark" : undefined}
       >
         <CheckCircle2 className="size-4" />
-        {completed ? "Completed (click to unmark)" : "Mark as complete"}
+        {completed ? "Completed" : "Mark as complete"}
       </button>
       {error ? <p className="text-destructive text-xs">{error}</p> : null}
     </div>
