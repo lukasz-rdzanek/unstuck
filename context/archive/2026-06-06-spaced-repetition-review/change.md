@@ -1,10 +1,10 @@
 ---
 change_id: spaced-repetition-review
 title: Spaced-repetition review for lessons (FSRS-6 via ts-fsrs)
-status: implementing
+status: archived
 created: 2026-06-06
 updated: 2026-06-07
-archived_at: null
+archived_at: 2026-06-06T23:15:00Z
 ---
 
 ## Notes
