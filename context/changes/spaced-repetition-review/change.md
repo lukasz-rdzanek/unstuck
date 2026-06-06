@@ -24,3 +24,5 @@ Supports scheduling **lesson-derived flashcards and/or whole-lesson re-review** 
 **Caveats:** cold-start uses default FSRS params until ~1000+ reviews/user (still > SM-2, just not personalized). ts-fsrs package semver (5.x) ≠ algorithm version (FSRS-6) — confirm at integration. Edge-runtime compatibility is inferred (zero deps + pure-JS bundles), not yet deploy-verified.
 
 Full research report (verified, cited): deep-research run `wccs2i36q` (2026-06-06).
+
+**PAUSED 2026-06-06 (Phase 4 ship not done).** Product decision: "Review" is being re-scoped to mean a content **summary**, with a separate **Tests** (A/B/C/D) feature; the FSRS engine (`srs_review_state` + `ts-fsrs` + `/rate`) will be re-pointed at quiz questions rather than whole lessons. Phases 1–3 are committed (`2c1a7c5`, `c3fa062`, `ff2235f`). The lesson-review UI may be superseded by the learning-loop work — see the new `learning-loop` change.

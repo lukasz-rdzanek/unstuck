@@ -283,18 +283,18 @@ One additive migration (`srs_review_state`); no changes to existing tables. Roll
 ### Phase 3: Course-scoped, author-controlled review
 
 #### Automated
-- [x] 3.1 Migration applies: `supabase migration up`
-- [x] 3.2 Types regenerated with no further diff
-- [x] 3.3 Type check passes: `npx astro check`
-- [x] 3.4 Lint passes: `npm run lint`
-- [x] 3.5 Build succeeds: `npm run build`
-- [x] 3.6 `/courses/<slug>/review` gated (unauth → redirect)
+- [x] 3.1 Migration applies: `supabase migration up` — ff2235f
+- [x] 3.2 Types regenerated with no further diff — ff2235f
+- [x] 3.3 Type check passes: `npx astro check` — ff2235f
+- [x] 3.4 Lint passes: `npm run lint` — ff2235f
+- [x] 3.5 Build succeeds: `npm run build` — ff2235f
+- [x] 3.6 `/courses/<slug>/review` gated (unauth → redirect) — ff2235f
 
 #### Manual
-- [x] 3.7 Review-enabled course shows "Review N due" button; disabled course shows none + no enrol
-- [x] 3.8 Session honors per-lesson format (video / text / title)
-- [x] 3.9 Grade advances; Again→sooner, Easy→later; caught-up; count drops on reload
-- [x] 3.10 Light+dark + responsive (13" + mobile)
+- [x] 3.7 Review-enabled course shows "Review N due" button; disabled course shows none + no enrol — ff2235f
+- [x] 3.8 Session honors per-lesson format (video / text / title) — ff2235f
+- [x] 3.9 Grade advances; Again→sooner, Easy→later; caught-up; count drops on reload — ff2235f
+- [x] 3.10 Light+dark + responsive (13" + mobile) — ff2235f
 
 ### Phase 4: Ship
 
