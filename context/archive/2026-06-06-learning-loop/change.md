@@ -1,10 +1,10 @@
 ---
 change_id: learning-loop
 title: Course learning loop — summary review + A/B/C/D tests + spaced re-quizzing
-status: impl_reviewed
+status: archived
 created: 2026-06-06
 updated: 2026-06-07
-archived_at: null
+archived_at: 2026-06-06T23:11:49Z
 ---
 
 ## Notes
