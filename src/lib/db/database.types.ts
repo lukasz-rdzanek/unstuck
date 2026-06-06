@@ -403,6 +403,62 @@ export type Database = {
           },
         ]
       }
+      srs_question_state: {
+        Row: {
+          created_at: string
+          difficulty: number
+          due: string
+          lapses: number
+          last_review: string | null
+          learning_steps: number
+          question_id: string
+          reps: number
+          scheduled_days: number
+          stability: number
+          state: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          difficulty?: number
+          due: string
+          lapses?: number
+          last_review?: string | null
+          learning_steps?: number
+          question_id: string
+          reps?: number
+          scheduled_days?: number
+          stability?: number
+          state?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          difficulty?: number
+          due?: string
+          lapses?: number
+          last_review?: string | null
+          learning_steps?: number
+          question_id?: string
+          reps?: number
+          scheduled_days?: number
+          stability?: number
+          state?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "srs_question_state_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       srs_review_state: {
         Row: {
           created_at: string
@@ -550,7 +606,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_due_practice_questions: {
+        Args: { p_course_id: string }
+        Returns: Json
+      }
       get_test_questions: { Args: { p_test_id: string }; Returns: Json }
+      grade_question: {
+        Args: { p_question_id: string; p_selected: string[] }
+        Returns: Json
+      }
       has_course_access: { Args: { p_course_id: string }; Returns: boolean }
       submit_test_attempt: {
         Args: { p_answers: Json; p_test_id: string }

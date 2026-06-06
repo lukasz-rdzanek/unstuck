@@ -1,0 +1,41 @@
+---
+import AppLayout from "@/layouts/AppLayout.astro";
+import { createClient } from "@/lib/supabase";
+import { getCourseBySlug } from "@/lib/services/courses";
+import { getDuePracticeQuestions } from "@/lib/services/tests";
+import PracticeSession from "@/components/test/PracticeSession";
+
+// Gated by middleware (/courses/<slug>/practice). A user is present.
+const { slug } = Astro.params;
+const supabase = createClient(Astro.request.headers, Astro.cookies);
+const course = supabase && slug ? await getCourseBySlug(supabase, slug) : null;
+// get_due_practice_questions resolves auth.uid() internally (server client carries the session).
+const questions = course && supabase ? await getDuePracticeQuestions(supabase, course.id) : [];
+---
+
+<AppLayout title={course ? `Practice — ${course.title}` : "Practice — Unstuck"}>
+  <div class="mx-auto max-w-3xl px-4 py-8">
+    {
+      course ? (
+        <>
+          <a
+            href={`/courses/${course.slug}`}
+            class="text-primary mb-4 inline-block text-sm transition-opacity hover:opacity-80"
+          >
+            ← {course.title}
+          </a>
+          <h1 class="text-cosmic-gradient mb-2 text-3xl font-bold tracking-tight sm:text-4xl">Practice</h1>
+          <p class="text-muted-foreground mb-6 text-sm">Spaced re-quizzing of questions you've missed.</p>
+          <PracticeSession client:load questions={questions} />
+        </>
+      ) : (
+        <div class="bg-card/40 border-border rounded-2xl border p-12 text-center backdrop-blur-xl">
+          <h1 class="text-cosmic-gradient mb-4 text-3xl font-bold tracking-tight">Course not found</h1>
+          <a href="/courses" class="text-primary inline-block text-sm font-medium transition-opacity hover:opacity-80">
+            ← Back to courses
+          </a>
+        </div>
+      )
+    }
+  </div>
+</AppLayout>

@@ -34,6 +34,7 @@ export type Test = Tables["tests"]["Row"];
 export type Question = Tables["questions"]["Row"];
 export type QuestionOption = Tables["question_options"]["Row"];
 export type TestAttempt = Tables["test_attempts"]["Row"];
+export type SrsQuestionState = Tables["srs_question_state"]["Row"];
 
 /**
  * Composite view for course-detail rendering (S-05 / FR-004 chapters):

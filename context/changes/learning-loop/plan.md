@@ -252,16 +252,16 @@ Additive: `tests`, `questions`, `question_options`, `test_attempts`, `attempt_an
 ### Phase 3: Spaced re-quizzing
 
 #### Automated
-- [ ] 3.1 Migration applies: `supabase migration up`
-- [ ] 3.2 Types regenerated with no further diff
-- [ ] 3.3 Type check passes: `npx astro check`
-- [ ] 3.4 Lint passes: `npm run lint`
-- [ ] 3.5 Build succeeds: `npm run build`
-- [ ] 3.6 `/courses/<slug>/practice` gated
+- [x] 3.1 Migration applies: `supabase migration up`
+- [x] 3.2 Types regenerated with no further diff
+- [x] 3.3 Type check passes: `npx astro check`
+- [x] 3.4 Lint passes: `npm run lint`
+- [x] 3.5 Build succeeds: `npm run build`
+- [x] 3.6 `/courses/<slug>/practice` gated
 
 #### Manual
-- [ ] 3.7 Missed questions enter the course practice queue; correct→scheduled forward, wrong→near-term
-- [ ] 3.8 Interim lesson `/review` retired with no dangling links/errors
+- [x] 3.7 Missed questions enter the course practice queue; correct→scheduled forward, wrong→near-term
+- [x] 3.8 Interim lesson `/review` retired with no dangling links/errors
 
 ### Phase 4: Ship
 

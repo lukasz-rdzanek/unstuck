@@ -57,3 +57,36 @@ export async function getTakingQuestions(supabase: SupabaseClient, testId: strin
   }
   return (data as TakingQuestion[] | null) ?? [];
 }
+
+/** A due practice question (no `position`; ordered by due via the RPC). */
+export type PracticeQuestion = Omit<TakingQuestion, "position">;
+
+/** Due re-quiz questions for one course (options WITHOUT is_correct) via the definer RPC. */
+export async function getDuePracticeQuestions(supabase: SupabaseClient, courseId: string): Promise<PracticeQuestion[]> {
+  const { data, error } = await supabase.rpc("get_due_practice_questions", { p_course_id: courseId });
+  if (error) {
+    console.error("[tests] getDuePracticeQuestions failed:", error.message);
+    return [];
+  }
+  return (data as PracticeQuestion[] | null) ?? [];
+}
+
+/** Count of re-quiz questions due now for one user in one course. 0 on error. */
+export async function getDuePracticeCount(
+  supabase: SupabaseClient,
+  userId: string,
+  courseId: string,
+  now: Date,
+): Promise<number> {
+  const { count, error } = await supabase
+    .from("srs_question_state")
+    .select("question_id, questions!inner(tests!inner(course_id))", { count: "exact", head: true })
+    .eq("user_id", userId)
+    .lte("due", now.toISOString())
+    .eq("questions.tests.course_id", courseId);
+  if (error) {
+    console.error("[tests] getDuePracticeCount failed:", error.message);
+    return 0;
+  }
+  return count ?? 0;
+}

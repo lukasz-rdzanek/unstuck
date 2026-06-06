@@ -1,6 +1,5 @@
 import type { APIRoute } from "astro";
 import { createClient } from "@/lib/supabase";
-import { emptyCardFields } from "@/lib/srs";
 
 export const prerender = false;
 
@@ -50,33 +49,6 @@ export const POST: APIRoute = async (context) => {
     // eslint-disable-next-line no-console
     console.error("[completions] POST failed:", { code: error.code, message: error.message });
     return jsonResponse({ error: "save_failed" }, { status: 500 });
-  }
-
-  // Enrol the lesson for spaced-repetition review — only if its course has
-  // review enabled (course-author switch). Best-effort + idempotent:
-  // ignoreDuplicates preserves an existing card's schedule on re-completion,
-  // and any failure here is logged but never fails the completion itself
-  // (completion is the user's primary action). RLS (srs_review_state_insert_own)
-  // enforces user_id = auth.uid().
-  const { data: lessonRow, error: lookupError } = await supabase
-    .from("lessons")
-    .select("courses!inner(review_enabled)")
-    .eq("id", lessonId)
-    .maybeSingle();
-  if (lookupError) {
-    // eslint-disable-next-line no-console
-    console.error("[srs] review lookup failed:", { code: lookupError.code, message: lookupError.message });
-  } else if (lessonRow?.courses.review_enabled) {
-    const { error: enrolError } = await supabase
-      .from("srs_review_state")
-      .upsert(
-        { user_id: userId, lesson_id: lessonId, ...emptyCardFields() },
-        { onConflict: "user_id,lesson_id", ignoreDuplicates: true },
-      );
-    if (enrolError) {
-      // eslint-disable-next-line no-console
-      console.error("[srs] enrol failed:", { code: enrolError.code, message: enrolError.message });
-    }
   }
 
   return jsonResponse({ ok: true }, { status: 200 });

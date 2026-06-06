@@ -1,6 +1,10 @@
 import type { APIRoute } from "astro";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase";
+import { applyRating, emptyCardFields } from "@/lib/srs";
+
+const CARD_COLUMNS =
+  "question_id, due, stability, difficulty, scheduled_days, learning_steps, reps, lapses, state, last_review";
 
 export const prerender = false;
 
@@ -15,10 +19,13 @@ function jsonResponse(body: unknown, { status }: JsonResponseInit): Response {
   });
 }
 
-// answers: { [questionId]: optionId[] }. Option ids are uuid-validated so the
-// SQL ::uuid casts inside submit_test_attempt can't throw on bad input.
+// answers: { [questionId]: optionId[] }. Option ids are validated for uuid
+// SYNTAX (Postgres-lenient — accepts any 8-4-4-4-12 hex, unlike strict RFC
+// z.uuid() which rejects non-v4 ids like operator-authored/seed ids) so the SQL
+// ::uuid casts inside submit_test_attempt can't throw on bad input.
+const UUID_RE = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
 const submitSchema = z.object({
-  answers: z.record(z.string(), z.array(z.uuid())),
+  answers: z.record(z.string(), z.array(z.string().regex(UUID_RE))),
 });
 
 /**
@@ -64,5 +71,54 @@ export const POST: APIRoute = async (context) => {
     return jsonResponse({ error: "grade_failed" }, { status: 500 });
   }
 
-  return jsonResponse(data, { status: 200 });
+  const result = data as {
+    score: number;
+    passed: boolean;
+    perQuestion: { questionId: string; isCorrect: boolean; correctOptionIds: string[] }[];
+  };
+
+  // Spaced re-quizzing (learning-loop P3): schedule missed questions. Wrong →
+  // enrol + Again; correct-with-an-existing-card → Good (advances it). Correct
+  // first-timers are not enrolled. Best-effort/non-fatal — never fails grading.
+  try {
+    const questionIds = result.perQuestion.map((p) => p.questionId);
+    const { data: existing } = await supabase
+      .from("srs_question_state")
+      .select(CARD_COLUMNS)
+      .eq("user_id", userId)
+      .in("question_id", questionIds);
+    const byQuestion = new Map((existing ?? []).map((row) => [row.question_id, row]));
+    const now = new Date();
+    const rows = result.perQuestion.flatMap((p) => {
+      const card = byQuestion.get(p.questionId);
+      if (!p.isCorrect) {
+        return [
+          {
+            user_id: userId,
+            question_id: p.questionId,
+            ...applyRating(card ?? emptyCardFields(now), 1, now),
+            updated_at: now.toISOString(),
+          },
+        ];
+      }
+      if (card) {
+        return [
+          { user_id: userId, question_id: p.questionId, ...applyRating(card, 3, now), updated_at: now.toISOString() },
+        ];
+      }
+      return [];
+    });
+    if (rows.length > 0) {
+      const { error: scheduleError } = await supabase
+        .from("srs_question_state")
+        .upsert(rows, { onConflict: "user_id,question_id" });
+      if (scheduleError) {
+        console.error("[reviews] requiz schedule failed:", scheduleError.message);
+      }
+    }
+  } catch (scheduleError) {
+    console.error("[reviews] requiz schedule error:", scheduleError);
+  }
+
+  return jsonResponse(result, { status: 200 });
 };
