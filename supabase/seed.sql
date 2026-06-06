@@ -169,3 +169,32 @@ insert into public.messages (id, lesson_id, author_id, body, is_seeded) values
     true
   )
 on conflict (id) do nothing;
+
+
+-- ----------------------------------------------------------------------------
+-- 7. spaced-repetition-review — enable review on the test course + per-lesson
+--    formats so the review session demonstrates all three options (video / text
+--    / title). Lesson 3 is title-only (no video / no autodescription).
+-- ----------------------------------------------------------------------------
+update public.courses set review_enabled = true
+  where id = 'a0000000-0000-0000-0000-000000000001';
+
+update public.lessons set review_format = 'text'
+  where id = 'b0000000-0000-0000-0000-000000000001';
+update public.lessons set review_format = 'video'
+  where id = 'b0000000-0000-0000-0000-000000000002';
+
+insert into public.lessons (id, course_id, chapter_id, slug, title, position, video_url, content_md, autodescription_md, review_format) values
+  (
+    'b0000000-0000-0000-0000-000000000003',
+    'a0000000-0000-0000-0000-000000000001',
+    'e0000000-0000-0000-0000-000000000001',
+    'title-only-review-demo',
+    'Title-only Review Demo',
+    3,
+    null,
+    E'## Title-only review demo\n\nExists so the review session can demonstrate the **title-only** format (a bare recall cue, no answer body). Local-seed-only.',
+    null,
+    'title'
+  )
+on conflict (id) do nothing;

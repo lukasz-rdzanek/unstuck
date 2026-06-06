@@ -101,6 +101,7 @@ export type Database = {
           description: string | null
           id: string
           is_free: boolean
+          review_enabled: boolean
           slug: string
           title: string
           updated_at: string
@@ -110,6 +111,7 @@ export type Database = {
           description?: string | null
           id?: string
           is_free?: boolean
+          review_enabled?: boolean
           slug: string
           title: string
           updated_at?: string
@@ -119,6 +121,7 @@ export type Database = {
           description?: string | null
           id?: string
           is_free?: boolean
+          review_enabled?: boolean
           slug?: string
           title?: string
           updated_at?: string
@@ -189,6 +192,7 @@ export type Database = {
           created_at: string
           id: string
           position: number
+          review_format: string
           slug: string
           title: string
           updated_at: string
@@ -202,6 +206,7 @@ export type Database = {
           created_at?: string
           id?: string
           position: number
+          review_format?: string
           slug: string
           title: string
           updated_at?: string
@@ -215,6 +220,7 @@ export type Database = {
           created_at?: string
           id?: string
           position?: number
+          review_format?: string
           slug?: string
           title?: string
           updated_at?: string

@@ -1,0 +1,68 @@
+---
+import AppLayout from "@/layouts/AppLayout.astro";
+import { createClient } from "@/lib/supabase";
+import { getCourseBySlug } from "@/lib/services/courses";
+import { getDueReviewQueue } from "@/lib/services/reviews";
+import { renderMarkdown } from "@/lib/markdown";
+import { parseVideoUrl } from "@/lib/video-embed";
+import ReviewSession from "@/components/review/ReviewSession";
+
+// Gated by middleware (/courses/<slug>/review). A user is present here.
+const { slug } = Astro.params;
+const userId = Astro.locals.user?.id ?? null;
+const supabase = createClient(Astro.request.headers, Astro.cookies);
+const course = supabase && slug ? await getCourseBySlug(supabase, slug) : null;
+
+// Review only exists for courses the author enabled it on. (No early return —
+// Astro frontmatter top-level `return` crashes the Astro ESLint parser — so we
+// render a fallback below instead.)
+const dueItems =
+  course && course.review_enabled && supabase && userId
+    ? await getDueReviewQueue(supabase, userId, course.id, new Date())
+    : [];
+
+// Prepare each card per its lesson's review format: text → render the
+// autodescription server-side (keeps the markdown lib off the client); video →
+// resolve the provider embed URL; title → no answer body.
+const queue = dueItems.map((item) => {
+  const video = item.reviewFormat === "video" && item.videoUrl ? parseVideoUrl(item.videoUrl) : null;
+  return {
+    lessonId: item.lessonId,
+    title: item.title,
+    format: item.reviewFormat,
+    answerHtml:
+      item.reviewFormat === "text" && item.autodescriptionMd?.trim() ? renderMarkdown(item.autodescriptionMd) : null,
+    embedSrc: video && video.provider !== "unknown" ? video.embedSrc : null,
+    courseSlug: item.courseSlug,
+    lessonSlug: item.lessonSlug,
+  };
+});
+---
+
+{
+  course?.review_enabled ? (
+    <AppLayout title={`Review — ${course.title}`}>
+      <div class="mx-auto max-w-3xl px-4 py-8">
+        <a
+          href={`/courses/${course.slug}`}
+          class="text-primary mb-4 inline-block text-sm transition-opacity hover:opacity-80"
+        >
+          ← {course.title}
+        </a>
+        <h1 class="text-cosmic-gradient mb-2 text-3xl font-bold tracking-tight sm:text-4xl">Review</h1>
+        <p class="text-muted-foreground mb-6 text-sm">Spaced-repetition review for this course.</p>
+        <ReviewSession client:load queue={queue} />
+      </div>
+    </AppLayout>
+  ) : (
+    <AppLayout title="Review — Unstuck">
+      <div class="bg-card/40 border-border mx-auto mt-12 max-w-md rounded-2xl border p-8 text-center backdrop-blur-xl">
+        <h1 class="text-cosmic-gradient mb-4 text-2xl font-bold">Review unavailable</h1>
+        <p class="text-muted-foreground mb-6 text-sm">Review isn't enabled for this course.</p>
+        <a href={slug ? `/courses/${slug}` : "/courses"} class="text-primary text-sm font-medium hover:opacity-80">
+          ← Back to the course
+        </a>
+      </div>
+    </AppLayout>
+  )
+}

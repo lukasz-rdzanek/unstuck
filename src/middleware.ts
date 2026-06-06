@@ -3,9 +3,11 @@ import { createClient } from "@/lib/supabase";
 import { getDisplayNameOrFallback } from "@/lib/services/profiles";
 
 const LESSON_ROUTE_RE = /^\/courses\/[^/]+\/lessons\//;
+const COURSE_REVIEW_RE = /^\/courses\/[^/]+\/review\/?$/;
 
 function isProtectedRoute(pathname: string): boolean {
   if (pathname.startsWith("/dashboard")) return true;
+  if (COURSE_REVIEW_RE.test(pathname)) return true;
   if (LESSON_ROUTE_RE.test(pathname)) return true;
   return false;
 }

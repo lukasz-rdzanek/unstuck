@@ -3,6 +3,7 @@ import AppLayout from "@/layouts/AppLayout.astro";
 import { createClient } from "@/lib/supabase";
 import { getCourseBySlug, listChaptersWithLessonsForCourse } from "@/lib/services/courses";
 import { getCompletedLessonIdsForCourse } from "@/lib/services/completions";
+import { getDueReviewCount } from "@/lib/services/reviews";
 
 const { slug } = Astro.params;
 const supabase = createClient(Astro.request.headers, Astro.cookies);
@@ -17,11 +18,14 @@ const isSignedIn = userId !== null;
 // Run both queries in parallel — they share no data dependency, both
 // only need course.id and (for completions) userId. Saves one Worker→
 // Supabase round-trip on every course detail render.
-const [chapters, completedLessonIds] = await Promise.all([
+const [chapters, completedLessonIds, dueReviewCount] = await Promise.all([
   course && supabase ? listChaptersWithLessonsForCourse(supabase, course.id) : Promise.resolve([]),
   isSignedIn && supabase && course && userId
     ? getCompletedLessonIdsForCourse(supabase, course.id, userId)
     : Promise.resolve(new Set<string>()),
+  isSignedIn && supabase && course && userId && course.review_enabled
+    ? getDueReviewCount(supabase, userId, course.id, new Date())
+    : Promise.resolve(0),
 ]);
 const pageTitle = course ? `${course.title} — Unstuck` : "Course not found — Unstuck";
 ---
@@ -37,6 +41,14 @@ const pageTitle = course ? `${course.title} — Unstuck` : "Course not found —
             </a>
             <h1 class="text-cosmic-gradient mb-4 text-4xl font-bold tracking-tight sm:text-5xl">{course.title}</h1>
             {course.description && <p class="text-muted-foreground text-lg leading-relaxed">{course.description}</p>}
+            {course.review_enabled && isSignedIn ? (
+              <a
+                href={`/courses/${course.slug}/review`}
+                class="border-info/30 bg-info/10 text-info hover:bg-info/20 mt-6 inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-sm font-semibold transition-colors"
+              >
+                {dueReviewCount > 0 ? `Review this course — ${dueReviewCount} due →` : "Review this course →"}
+              </a>
+            ) : null}
           </header>
 
           {chapters.length === 0 ? (

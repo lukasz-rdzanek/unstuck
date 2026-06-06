@@ -128,46 +128,63 @@ A read-only due-queue service and a server-side rating endpoint that computes th
 
 ---
 
-## Phase 3: Review UI
+## Phase 3: Course-scoped, author-controlled review
 
 ### Overview
-A protected `/review` page with a one-card-at-a-time session island, plus a dashboard due-count entry point.
+Review becomes course-scoped and author-controlled — via operator-set data, since there is no author UI (PRD: instructor role deferred). A config migration adds a course on/off switch + a per-lesson review format; enrolment is gated to review-enabled courses; a per-course session honors each lesson's format (video re-watch / text recall / title-only), entered from the course page. The global `/review` page + topbar link are removed.
 
 ### Changes Required:
 
-#### 1. Protect the /review route
-**File**: `src/middleware.ts`
-**Intent**: Gate `/review` behind auth like `/dashboard`.
-**Contract**: Extend `isProtectedRoute` to return true for `/review` (exact + subpaths). Unauthenticated users get the existing `?next=` redirect.
+#### 1. Author-config migration
+**File**: `supabase/migrations/<ts>_srs_author_config.sql` (new)
+**Intent**: Give the course author (operator) control over review.
+**Contract**: `courses` gains `review_enabled boolean not null default false`; `lessons` gains `review_format text not null default 'text' check (review_format in ('video','text','title'))`. Regen `database.types.ts` (Course/Lesson Row pick up the columns). Operator-set; existing service_role-only write RLS covers them — no new policy. Apply with `supabase migration up` (never `db reset`).
 
-#### 2. Review page (server-rendered shell)
-**File**: `src/pages/review.astro` (new)
-**Intent**: Load the due queue server-side, render autodescription markdown to HTML, hand the queue to the session island.
-**Contract**: Mirror `dashboard.astro` structure under `AppLayout`. Resolve `userId` + supabase server-side; call `getDueReviewQueue`; for each item render `autodescriptionMd` via `renderMarkdown` (server-side, reusing `src/lib/markdown.ts`) into `answerHtml`; pass the array (dates as ISO strings) to `<ReviewSession client:load queue={...} />`. Empty queue still renders the island (it shows the caught-up state).
+#### 2. Seed the test course with all options
+**File**: `supabase/seed.sql`
+**Intent**: Showcase every review option in the seeded course.
+**Contract**: Set the test course `review_enabled = true`; set its lessons to a mix of `review_format` = `video` / `text` / `title`.
 
-#### 3. Review session island
-**File**: `src/components/review/ReviewSession.tsx` (new)
-**Intent**: Drive a review session: prompt → reveal → grade → next.
-**Contract**: Props `{ queue: ReviewCard[] }` where `ReviewCard = { lessonId, title, answerHtml, courseSlug, lessonSlug, due }`. State: current index + "revealed" flag. Front shows `Recall: <title>`; "Show answer" reveals `answerHtml` (rendered via `dangerouslySetInnerHTML` on operator-trusted content, matching the lesson page's trusted-markdown boundary) + a link to `/courses/<courseSlug>/lessons/<lessonSlug>`. Four grade buttons (Again/Hard/Good/Easy) `POST /api/reviews/<lessonId>/rate` with the mapped rating; on `ok`, advance to the next card (optimistic: remove from local queue; on non-OK, surface an inline error and don't advance). When the queue is exhausted, show an "All caught up" empty state. Cosmic-themed via tokens + `cn()`; feature-scoped island under `src/components/review/`.
+#### 3. Gate enrolment to review-enabled courses
+**File**: `src/pages/api/lessons/[lessonId]/complete.ts`
+**Intent**: Only enrol completed lessons whose course has review on.
+**Contract**: Before the srs upsert, look up the lesson's course `review_enabled`; skip the enrol (still return `{ ok: true }`) when false. Best-effort/non-fatal as before.
 
-#### 4. Dashboard due-count entry
-**File**: `src/pages/dashboard.astro`
-**Intent**: Surface due reviews and link into `/review`.
-**Contract**: Server-side call `getDueReviewCount(supabase, userId, now)`; render a themed card/link "You have N lessons to review → /review" (suppressed or "You're all caught up" when 0). No new island — static server-rendered link.
+#### 4. Course-scoped review service
+**File**: `src/lib/services/reviews.ts`
+**Intent**: Scope the due queue + count to one course; carry per-lesson format + video.
+**Contract**: `getDueReviewQueue(supabase, userId, courseId, now)` → due cards for that course joined to lesson `title, slug, autodescription_md, video_url, review_format` + course `slug`. `getDueReviewCount(supabase, userId, courseId, now)`. (Replaces the all-courses signatures.)
+
+#### 5. Course review route
+**File**: `src/pages/courses/[slug]/review.astro` (new)
+**Intent**: Per-course review session.
+**Contract**: Protected. Load course by slug; missing or `review_enabled = false` → 404 / redirect to the course. Load the course-scoped due queue; per item compute `answerHtml` (text → `renderMarkdown`) and `embedSrc` (video → `parseVideoUrl`); pass `{ …, format }` to `<ReviewSession client:load>`.
+
+#### 6. Format-aware review session
+**File**: `src/components/review/ReviewSession.tsx`
+**Intent**: Render the reveal per the lesson's format.
+**Contract**: `ReviewCard` gains `format: 'video' | 'text' | 'title'` + `embedSrc: string | null`. On reveal: `video` → responsive iframe of `embedSrc`; `text` → `answerHtml`; `title` → just the lesson link. Grade flow unchanged.
+
+#### 7. Course-page entry + remove global entry
+**Files**: `src/pages/courses/[slug]/index.astro`, `src/components/AppTopbar.astro`, `src/pages/review.astro` (delete), `src/middleware.ts`
+**Intent**: Move entry into the course; drop the global surface.
+**Contract**: Course page: when `course.review_enabled && user`, render a "Review this course — N due" button (via `getDueReviewCount`) → `/courses/<slug>/review`. Revert the AppTopbar Review link. Delete `src/pages/review.astro`. Middleware: replace the `/review` gate with `/courses/[^/]+/review`.
 
 ### Success Criteria:
 
 #### Automated Verification:
+- Migration applies cleanly: `supabase migration up`
+- Types regenerated with no further diff
 - Type check passes: `npx astro check`
 - Lint passes: `npm run lint`
 - Build succeeds: `npm run build`
-- `/review` is gated: unauthenticated request redirects (verify `isProtectedRoute` covers it)
+- `/courses/<slug>/review` gated: unauthenticated request redirects
 
 #### Manual Verification:
-- Complete 2–3 lessons → dashboard shows the due count → `/review` presents them one at a time; Show answer reveals the autodescription + working lesson link.
-- Grading advances through the queue; Again brings a card back sooner than Good/Easy; finishing shows "All caught up".
-- Reloading `/review` reflects the new due dates (graded cards no longer appear until due).
-- Control surfaces read correctly in light + dark; layout holds on a 13" laptop and mobile width.
+- Review-enabled test course shows a "Review N due" button on its course page; a review-disabled course shows none, and completing its lessons does not enrol them.
+- The session honors each lesson's format: video re-watch plays the embed, text shows the summary, title-only shows just the cue + link.
+- Grading advances; Again→sooner, Easy→later; finishing shows "All caught up"; the button count drops on reload.
+- Light + dark + responsive (13" + mobile) correct.
 
 **Implementation Note**: After automated verification passes, pause for manual confirmation before Phase 4.
 
@@ -254,27 +271,30 @@ One additive migration (`srs_review_state`); no changes to existing tables. Roll
 ### Phase 2: Review service + rating API
 
 #### Automated
-- [x] 2.1 Type check passes: `npx astro check`
-- [x] 2.2 Lint passes: `npm run lint`
-- [x] 2.3 Build succeeds: `npm run build`
+- [x] 2.1 Type check passes: `npx astro check` — 117ae87
+- [x] 2.2 Lint passes: `npm run lint` — 117ae87
+- [x] 2.3 Build succeeds: `npm run build` — 117ae87
 
 #### Manual
-- [x] 2.4 Again→near due, Easy→far due; reps/state advance
-- [x] 2.5 RLS: a second user cannot read/rate another's card
-- [x] 2.6 Rating a card with no existing row initializes rather than errors
+- [x] 2.4 Again→near due, Easy→far due; reps/state advance — 117ae87
+- [x] 2.5 RLS: a second user cannot read/rate another's card — 117ae87
+- [x] 2.6 Rating a card with no existing row initializes rather than errors — 117ae87
 
-### Phase 3: Review UI
+### Phase 3: Course-scoped, author-controlled review
 
 #### Automated
-- [ ] 3.1 Type check passes: `npx astro check`
-- [ ] 3.2 Lint passes: `npm run lint`
-- [ ] 3.3 Build succeeds: `npm run build`
-- [ ] 3.4 `/review` gated by isProtectedRoute (unauth → redirect)
+- [x] 3.1 Migration applies: `supabase migration up`
+- [x] 3.2 Types regenerated with no further diff
+- [x] 3.3 Type check passes: `npx astro check`
+- [x] 3.4 Lint passes: `npm run lint`
+- [x] 3.5 Build succeeds: `npm run build`
+- [x] 3.6 `/courses/<slug>/review` gated (unauth → redirect)
 
 #### Manual
-- [ ] 3.5 Dashboard count → /review session: prompt → reveal → grade → next → caught-up
-- [ ] 3.6 Graded cards leave today's queue; due dates reflect grades on reload
-- [ ] 3.7 Theme (light+dark) + responsive (13" + mobile) correct
+- [x] 3.7 Review-enabled course shows "Review N due" button; disabled course shows none + no enrol
+- [x] 3.8 Session honors per-lesson format (video / text / title)
+- [x] 3.9 Grade advances; Again→sooner, Easy→later; caught-up; count drops on reload
+- [x] 3.10 Light+dark + responsive (13" + mobile)
 
 ### Phase 4: Ship
 
