@@ -297,6 +297,62 @@ export type Database = {
         }
         Relationships: []
       }
+      srs_review_state: {
+        Row: {
+          created_at: string
+          difficulty: number
+          due: string
+          lapses: number
+          last_review: string | null
+          learning_steps: number
+          lesson_id: string
+          reps: number
+          scheduled_days: number
+          stability: number
+          state: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          difficulty?: number
+          due: string
+          lapses?: number
+          last_review?: string | null
+          learning_steps?: number
+          lesson_id: string
+          reps?: number
+          scheduled_days?: number
+          stability?: number
+          state?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          difficulty?: number
+          due?: string
+          lapses?: number
+          last_review?: string | null
+          learning_steps?: number
+          lesson_id?: string
+          reps?: number
+          scheduled_days?: number
+          stability?: number
+          state?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "srs_review_state_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "lessons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

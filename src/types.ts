@@ -29,6 +29,7 @@ export type Lesson = Tables["lessons"]["Row"];
 export type Enrollment = Tables["enrollments"]["Row"];
 export type Message = Tables["messages"]["Row"];
 export type LessonCompletion = Tables["lesson_completions"]["Row"];
+export type SrsReviewState = Tables["srs_review_state"]["Row"];
 
 /**
  * Composite view for course-detail rendering (S-05 / FR-004 chapters):
