@@ -3,7 +3,7 @@ change_id: spaced-repetition-review
 title: Spaced-repetition review for lessons (FSRS-6 via ts-fsrs)
 status: implementing
 created: 2026-06-06
-updated: 2026-06-06
+updated: 2026-06-07
 archived_at: null
 ---
 
@@ -26,3 +26,5 @@ Supports scheduling **lesson-derived flashcards and/or whole-lesson re-review** 
 Full research report (verified, cited): deep-research run `wccs2i36q` (2026-06-06).
 
 **PAUSED 2026-06-06 (Phase 4 ship not done).** Product decision: "Review" is being re-scoped to mean a content **summary**, with a separate **Tests** (A/B/C/D) feature; the FSRS engine (`srs_review_state` + `ts-fsrs` + `/rate`) will be re-pointed at quiz questions rather than whole lessons. Phases 1–3 are committed (`2c1a7c5`, `c3fa062`, `ff2235f`). The lesson-review UI may be superseded by the learning-loop work — see the new `learning-loop` change.
+
+**CLOSED — SUPERSEDED BY `learning-loop` (2026-06-07).** Done-by-absorption, not by completion. The FSRS engine built here (Phases 1–2: `srs_review_state` + `ts-fsrs` helper + `/api/reviews/rate`) was kept and re-pointed by `learning-loop` onto quiz questions (`srs_question_state`, `/api/practice/[questionId]/grade`, per-course `/practice`). The interim lesson-review UI (Phase 3) was **retired** in `learning-loop` Phase 3 (3.8). Phase 4 (ship) was never executed under this change — it shipped as part of `learning-loop` (prod Worker `b3de4030`, 2026-06-07). No further work planned here; archived without an impl-review because it was never completed as an independent change. See `context/archive/2026-06-06-learning-loop/` for the superseding work.
