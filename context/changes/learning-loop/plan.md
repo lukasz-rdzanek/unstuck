@@ -238,16 +238,16 @@ Additive: `tests`, `questions`, `question_options`, `test_attempts`, `attempt_an
 ### Phase 2: Tests — quiz UI + Review summary
 
 #### Automated
-- [x] 2.1 Type check passes: `npx astro check`
-- [x] 2.2 Lint passes: `npm run lint`
-- [x] 2.3 Build succeeds: `npm run build`
-- [x] 2.4 `/courses/<slug>/tests/<slug>` gated (unauth → redirect)
-- [x] 2.5 Client payload contains no `is_correct`
+- [x] 2.1 Type check passes: `npx astro check` — 3ae1371
+- [x] 2.2 Lint passes: `npm run lint` — 3ae1371
+- [x] 2.3 Build succeeds: `npm run build` — 3ae1371
+- [x] 2.4 `/courses/<slug>/tests/<slug>` gated (unauth → redirect) — 3ae1371
+- [x] 2.5 Client payload contains no `is_correct` — 3ae1371
 
 #### Manual
-- [x] 2.6 Single/multi render (radio/checkbox); correct score + pass/fail; per-question feedback; retake works
-- [x] 2.7 Summary shows before the test (when authored), skippable
-- [x] 2.8 Entry points on course + chapter; light/dark + responsive
+- [x] 2.6 Single/multi render (radio/checkbox); correct score + pass/fail; per-question feedback; retake works — 3ae1371
+- [x] 2.7 Summary shows before the test (when authored), skippable — 3ae1371
+- [x] 2.8 Entry points on course + chapter; light/dark + responsive — 3ae1371
 
 ### Phase 3: Spaced re-quizzing
 
