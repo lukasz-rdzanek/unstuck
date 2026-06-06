@@ -2,6 +2,7 @@
 import AppLayout from "@/layouts/AppLayout.astro";
 import { createClient } from "@/lib/supabase";
 import { getLessonBySlugs, listChaptersWithLessonsForCourse } from "@/lib/services/courses";
+import { listTestsForCourse } from "@/lib/services/tests";
 import { getCompletedLessonIdsForCourse, isLessonCompletedByUser } from "@/lib/services/completions";
 import { getCourseLastSeenAt, getCourseLatestUpdatedAt, upsertCourseView } from "@/lib/services/course-views";
 import { renderMarkdown } from "@/lib/markdown";
@@ -39,7 +40,7 @@ const userDisplayName = Astro.locals.displayName;
 // Run all three Supabase queries in parallel — they share no data
 // dependency (all need course.id and userId only). Saves two
 // Worker→Supabase round-trips on every lesson render vs sequential.
-const [isCompleted, chapters, completedLessonIds, lastSeenAt, courseUpdatedAt] =
+const [isCompleted, chapters, completedLessonIds, lastSeenAt, courseUpdatedAt, courseTests] =
   supabase && userId && lesson && course
     ? await Promise.all([
         isLessonCompletedByUser(supabase, lesson.id, userId),
@@ -47,8 +48,12 @@ const [isCompleted, chapters, completedLessonIds, lastSeenAt, courseUpdatedAt] =
         getCompletedLessonIdsForCourse(supabase, course.id, userId),
         getCourseLastSeenAt(supabase, course.id, userId),
         getCourseLatestUpdatedAt(supabase, course.id),
+        listTestsForCourse(supabase, course.id),
       ])
-    : [false, [], new Set<string>(), null, null];
+    : [false, [], new Set<string>(), null, null, []];
+
+// Slim test shape for the lesson-nav (chapter "boss" rows + final test).
+const navTests = courseTests.map((t) => ({ chapterId: t.chapter_id, slug: t.slug, title: t.title }));
 
 // UNS-14 (c): record this visit so the next render's lastSeenAt
 // reflects today. Awaited (~50ms) so the upsert lands before the
@@ -211,6 +216,7 @@ const nextLesson = currentIndex >= 0 && currentIndex < totalLessons - 1 ? allLes
                 chapters={chapters}
                 completedLessonIds={Array.from(completedLessonIds)}
                 currentLessonId={lesson.id}
+                tests={navTests}
                 courseUpdatedAt={courseUpdatedAt ? courseUpdatedAt.toISOString() : null}
                 lastSeenAt={lastSeenAt ? lastSeenAt.toISOString() : null}
               />

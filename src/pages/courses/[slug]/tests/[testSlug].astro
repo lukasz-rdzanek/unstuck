@@ -1,0 +1,57 @@
+---
+import AppLayout from "@/layouts/AppLayout.astro";
+import { createClient } from "@/lib/supabase";
+import { getCourseBySlug } from "@/lib/services/courses";
+import { getTestBySlug, getTakingQuestions } from "@/lib/services/tests";
+import { renderMarkdown } from "@/lib/markdown";
+import TestQuiz from "@/components/test/TestQuiz";
+
+// Gated by middleware (/courses/<slug>/tests/...). A user is present.
+const { slug, testSlug } = Astro.params;
+const supabase = createClient(Astro.request.headers, Astro.cookies);
+const course = supabase && slug ? await getCourseBySlug(supabase, slug) : null;
+const test = course && supabase && testSlug ? await getTestBySlug(supabase, course.id, testSlug) : null;
+const questions = test && supabase ? await getTakingQuestions(supabase, test.id) : [];
+const summaryHtml = test?.summary_md?.trim() ? renderMarkdown(test.summary_md) : null;
+---
+
+<AppLayout title={test ? `${test.title} — Unstuck` : "Test not found — Unstuck"}>
+  <div class="mx-auto max-w-3xl px-4 py-8">
+    {
+      course && test ? (
+        <>
+          <a
+            href={`/courses/${course.slug}`}
+            class="text-primary mb-4 inline-block text-sm transition-opacity hover:opacity-80"
+          >
+            ← {course.title}
+          </a>
+          <h1 class="text-cosmic-gradient mb-6 text-3xl font-bold tracking-tight sm:text-4xl">{test.title}</h1>
+
+          {summaryHtml ? (
+            <details open class="border-border bg-card/40 mb-6 rounded-2xl border p-5 backdrop-blur-xl">
+              <summary class="text-foreground cursor-pointer text-sm font-semibold">Review before you start</summary>
+              {/* eslint-disable-next-line astro/no-set-html-directive --
+                  Operator-trusted markdown (tests authored by service_role only),
+                  same trust boundary as the lesson page. */}
+              <article class="prose mt-4 max-w-none" set:html={summaryHtml} />
+            </details>
+          ) : null}
+
+          <TestQuiz client:load testId={test.id} questions={questions} passThreshold={test.pass_threshold} />
+        </>
+      ) : (
+        <div class="bg-card/40 border-border rounded-2xl border p-12 text-center backdrop-blur-xl">
+          <h1 class="text-cosmic-gradient mb-4 text-3xl font-bold tracking-tight">Test not found</h1>
+          <p class="text-muted-foreground mb-6">This test doesn't exist or has been removed.</p>
+          <a
+            href={course ? `/courses/${course.slug}` : "/courses"}
+            class="text-primary inline-block text-sm font-medium transition-opacity hover:opacity-80"
+          >
+            ← Back
+          </a>
+        </div>
+      )
+    }
+  </div>
+</AppLayout>

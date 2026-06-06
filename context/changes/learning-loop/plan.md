@@ -224,30 +224,30 @@ Additive: `tests`, `questions`, `question_options`, `test_attempts`, `attempt_an
 ### Phase 1: Tests — schema + grading (backend)
 
 #### Automated
-- [x] 1.1 Migration applies: `supabase migration up`
-- [x] 1.2 Types regenerated with no further diff
-- [x] 1.3 Type check passes: `npx astro check`
-- [x] 1.4 Lint passes: `npm run lint`
-- [x] 1.5 Build succeeds: `npm run build`
+- [x] 1.1 Migration applies: `supabase migration up` — cfed7bc
+- [x] 1.2 Types regenerated with no further diff — cfed7bc
+- [x] 1.3 Type check passes: `npx astro check` — cfed7bc
+- [x] 1.4 Lint passes: `npm run lint` — cfed7bc
+- [x] 1.5 Build succeeds: `npm run build` — cfed7bc
 
 #### Manual
-- [x] 1.6 `question_options.is_correct` unreadable by an authenticated/anon client (answer key protected)
-- [x] 1.7 `submit_test_attempt` grades correctly (single + all-or-nothing multi); writes own attempt + per-question rows
-- [x] 1.8 RLS: a second user cannot read another's test_attempts
+- [x] 1.6 `question_options.is_correct` unreadable by an authenticated/anon client (answer key protected) — cfed7bc
+- [x] 1.7 `submit_test_attempt` grades correctly (single + all-or-nothing multi); writes own attempt + per-question rows — cfed7bc
+- [x] 1.8 RLS: a second user cannot read another's test_attempts — cfed7bc
 
 ### Phase 2: Tests — quiz UI + Review summary
 
 #### Automated
-- [ ] 2.1 Type check passes: `npx astro check`
-- [ ] 2.2 Lint passes: `npm run lint`
-- [ ] 2.3 Build succeeds: `npm run build`
-- [ ] 2.4 `/courses/<slug>/tests/<slug>` gated (unauth → redirect)
-- [ ] 2.5 Client payload contains no `is_correct`
+- [x] 2.1 Type check passes: `npx astro check`
+- [x] 2.2 Lint passes: `npm run lint`
+- [x] 2.3 Build succeeds: `npm run build`
+- [x] 2.4 `/courses/<slug>/tests/<slug>` gated (unauth → redirect)
+- [x] 2.5 Client payload contains no `is_correct`
 
 #### Manual
-- [ ] 2.6 Single/multi render (radio/checkbox); correct score + pass/fail; per-question feedback; retake works
-- [ ] 2.7 Summary shows before the test (when authored), skippable
-- [ ] 2.8 Entry points on course + chapter; light/dark + responsive
+- [x] 2.6 Single/multi render (radio/checkbox); correct score + pass/fail; per-question feedback; retake works
+- [x] 2.7 Summary shows before the test (when authored), skippable
+- [x] 2.8 Entry points on course + chapter; light/dark + responsive
 
 ### Phase 3: Spaced re-quizzing
 

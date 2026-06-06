@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { MessageSquare, ListTree, PanelRightClose, PanelLeftOpen, Sparkles, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ChatPanel from "@/components/chat/ChatPanel";
-import LessonsNav from "./LessonsNav";
+import LessonsNav, { type NavTest } from "./LessonsNav";
 import { readCollapsed, setCollapsedAndBroadcast, onCollapsedChange } from "./aside-collapse";
 import type { ChapterWithLessons } from "@/types";
 
@@ -31,6 +31,8 @@ interface Props {
    * decision. UI consumes in Phase 4.
    */
   lastSeenAt: string | null;
+  /** Course tests (learning-loop) for the nav: chapter "boss" rows + final test. */
+  tests: NavTest[];
 }
 
 const MOBILE_MEDIA = "(max-width: 1023px)";
@@ -98,6 +100,7 @@ export default function LessonAside({
   currentLessonId,
   courseUpdatedAt,
   lastSeenAt,
+  tests,
 }: Props) {
   const [activeTab, setActiveTabState] = useState<Tab>(() => loadTab());
 
@@ -370,6 +373,7 @@ export default function LessonAside({
               chapters={chapters}
               completedLessonIds={completedLessonIds}
               currentLessonId={currentLessonId}
+              tests={tests}
             />
           </div>
         )}

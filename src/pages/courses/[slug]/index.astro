@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase";
 import { getCourseBySlug, listChaptersWithLessonsForCourse } from "@/lib/services/courses";
 import { getCompletedLessonIdsForCourse } from "@/lib/services/completions";
 import { getDueReviewCount } from "@/lib/services/reviews";
+import { listTestsForCourse } from "@/lib/services/tests";
 
 const { slug } = Astro.params;
 const supabase = createClient(Astro.request.headers, Astro.cookies);
@@ -18,7 +19,7 @@ const isSignedIn = userId !== null;
 // Run both queries in parallel — they share no data dependency, both
 // only need course.id and (for completions) userId. Saves one Worker→
 // Supabase round-trip on every course detail render.
-const [chapters, completedLessonIds, dueReviewCount] = await Promise.all([
+const [chapters, completedLessonIds, dueReviewCount, tests] = await Promise.all([
   course && supabase ? listChaptersWithLessonsForCourse(supabase, course.id) : Promise.resolve([]),
   isSignedIn && supabase && course && userId
     ? getCompletedLessonIdsForCourse(supabase, course.id, userId)
@@ -26,7 +27,10 @@ const [chapters, completedLessonIds, dueReviewCount] = await Promise.all([
   isSignedIn && supabase && course && userId && course.review_enabled
     ? getDueReviewCount(supabase, userId, course.id, new Date())
     : Promise.resolve(0),
+  isSignedIn && supabase && course ? listTestsForCourse(supabase, course.id) : Promise.resolve([]),
 ]);
+// Course-level test = no chapter; chapter-level tests are matched per chapter below.
+const courseTest = tests.find((t) => t.chapter_id === null) ?? null;
 const pageTitle = course ? `${course.title} — Unstuck` : "Course not found — Unstuck";
 ---
 
@@ -41,14 +45,16 @@ const pageTitle = course ? `${course.title} — Unstuck` : "Course not found —
             </a>
             <h1 class="text-cosmic-gradient mb-4 text-4xl font-bold tracking-tight sm:text-5xl">{course.title}</h1>
             {course.description && <p class="text-muted-foreground text-lg leading-relaxed">{course.description}</p>}
-            {course.review_enabled && isSignedIn ? (
-              <a
-                href={`/courses/${course.slug}/review`}
-                class="border-info/30 bg-info/10 text-info hover:bg-info/20 mt-6 inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-sm font-semibold transition-colors"
-              >
-                {dueReviewCount > 0 ? `Review this course — ${dueReviewCount} due →` : "Review this course →"}
-              </a>
-            ) : null}
+            <div class="mt-6 flex flex-wrap gap-3">
+              {course.review_enabled && isSignedIn ? (
+                <a
+                  href={`/courses/${course.slug}/review`}
+                  class="border-info/30 bg-info/10 text-info hover:bg-info/20 inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-sm font-semibold transition-colors"
+                >
+                  {dueReviewCount > 0 ? `Review this course — ${dueReviewCount} due →` : "Review this course →"}
+                </a>
+              ) : null}
+            </div>
           </header>
 
           {chapters.length === 0 ? (
@@ -57,68 +63,126 @@ const pageTitle = course ? `${course.title} — Unstuck` : "Course not found —
             </div>
           ) : (
             <div class="space-y-8">
-              {chapters.map((chapter) => (
-                <section>
-                  <h2 class="text-foreground mb-4 text-lg font-semibold">
-                    <span class="text-muted-foreground mr-2 font-mono text-sm">
-                      {String(chapter.position).padStart(2, "0")}
-                    </span>
-                    {chapter.title}
-                  </h2>
-                  {isSignedIn ? (
-                    chapter.lessons.length === 0 ? (
-                      <p class="text-muted-foreground bg-card/40 border-border rounded-xl border p-4 text-sm backdrop-blur-xl">
-                        No lessons in this chapter yet.
-                      </p>
-                    ) : (
-                      <ol class="space-y-3">
-                        {chapter.lessons.map((lesson) => {
-                          const done = completedLessonIds.has(lesson.id);
-                          return (
+              {chapters.map((chapter) => {
+                const chapterTest = tests.find((t) => t.chapter_id === chapter.id) ?? null;
+                return (
+                  <section>
+                    <h2 class="text-foreground mb-4 text-lg font-semibold">
+                      <span class="text-muted-foreground mr-2 font-mono text-sm">
+                        {String(chapter.position).padStart(2, "0")}
+                      </span>
+                      {chapter.title}
+                    </h2>
+                    {isSignedIn ? (
+                      chapter.lessons.length === 0 && !chapterTest ? (
+                        <p class="text-muted-foreground bg-card/40 border-border rounded-xl border p-4 text-sm backdrop-blur-xl">
+                          No lessons in this chapter yet.
+                        </p>
+                      ) : (
+                        <ol class="space-y-3">
+                          {chapter.lessons.map((lesson) => {
+                            const done = completedLessonIds.has(lesson.id);
+                            return (
+                              <li>
+                                <a
+                                  href={`/courses/${course.slug}/lessons/${lesson.slug}`}
+                                  class="bg-card/40 border-border hover:bg-card/60 flex items-center gap-4 rounded-xl border p-4 backdrop-blur-xl transition-colors"
+                                >
+                                  {done ? (
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      viewBox="0 0 24 24"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      stroke-width="2"
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      class="text-success size-4"
+                                      aria-label="Completed"
+                                    >
+                                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                      <path d="m9 11 3 3L22 4" />
+                                    </svg>
+                                  ) : (
+                                    <span class="text-muted-foreground font-mono text-sm">
+                                      {String(lesson.position).padStart(2, "0")}
+                                    </span>
+                                  )}
+                                  <span
+                                    class:list={done ? "text-foreground/60 font-medium" : "text-foreground font-medium"}
+                                  >
+                                    {lesson.title}
+                                  </span>
+                                  {lesson.video_url === null ? (
+                                    <span class="text-muted-foreground ml-auto text-xs tracking-wide uppercase">
+                                      Reading
+                                    </span>
+                                  ) : null}
+                                </a>
+                              </li>
+                            );
+                          })}
+                          {chapterTest ? (
                             <li>
                               <a
-                                href={`/courses/${course.slug}/lessons/${lesson.slug}`}
-                                class="bg-card/40 border-border hover:bg-card/60 flex items-center gap-4 rounded-xl border p-4 backdrop-blur-xl transition-colors"
+                                href={`/courses/${course.slug}/tests/${chapterTest.slug}`}
+                                class="border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 shadow-cosmic-glow flex items-center gap-4 rounded-xl border p-4 font-semibold backdrop-blur-xl transition-colors"
                               >
-                                {done ? (
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    class="text-success size-4"
-                                    aria-label="Completed"
-                                  >
-                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                                    <path d="m9 11 3 3L22 4" />
-                                  </svg>
-                                ) : (
-                                  <span class="text-muted-foreground font-mono text-sm">
-                                    {String(lesson.position).padStart(2, "0")}
-                                  </span>
-                                )}
-                                <span
-                                  class:list={done ? "text-foreground/60 font-medium" : "text-foreground font-medium"}
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  stroke-width="2"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  class="size-4 shrink-0"
+                                  aria-hidden="true"
                                 >
-                                  {lesson.title}
+                                  <circle cx="12" cy="12" r="10" />
+                                  <circle cx="12" cy="12" r="6" />
+                                  <circle cx="12" cy="12" r="2" />
+                                </svg>
+                                <span>{chapterTest.title}</span>
+                                <span class="border-primary/40 ml-auto rounded-full border px-2 py-0.5 text-xs tracking-wide uppercase">
+                                  Test
                                 </span>
-                                {lesson.video_url === null ? (
-                                  <span class="text-muted-foreground ml-auto text-xs tracking-wide uppercase">
-                                    Reading
-                                  </span>
-                                ) : null}
                               </a>
                             </li>
-                          );
-                        })}
-                      </ol>
-                    )
-                  ) : null}
-                </section>
-              ))}
+                          ) : null}
+                        </ol>
+                      )
+                    ) : null}
+                  </section>
+                );
+              })}
+
+              {isSignedIn && courseTest ? (
+                <a
+                  href={`/courses/${course.slug}/tests/${courseTest.slug}`}
+                  class="border-primary/50 bg-primary/15 text-primary hover:bg-primary/25 shadow-cosmic-glow flex items-center gap-4 rounded-2xl border p-5 text-base font-bold backdrop-blur-xl transition-colors"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="size-5 shrink-0"
+                    aria-hidden="true"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <circle cx="12" cy="12" r="6" />
+                    <circle cx="12" cy="12" r="2" />
+                  </svg>
+                  <span>Final test: {courseTest.title}</span>
+                  <span class="border-primary/50 ml-auto rounded-full border px-2.5 py-1 text-xs tracking-wide uppercase">
+                    Course test
+                  </span>
+                </a>
+              ) : null}
 
               {!isSignedIn ? (
                 <div class="bg-card/40 border-border rounded-2xl border p-8 text-center backdrop-blur-xl">
