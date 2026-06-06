@@ -252,23 +252,23 @@ Additive: `tests`, `questions`, `question_options`, `test_attempts`, `attempt_an
 ### Phase 3: Spaced re-quizzing
 
 #### Automated
-- [x] 3.1 Migration applies: `supabase migration up`
-- [x] 3.2 Types regenerated with no further diff
-- [x] 3.3 Type check passes: `npx astro check`
-- [x] 3.4 Lint passes: `npm run lint`
-- [x] 3.5 Build succeeds: `npm run build`
-- [x] 3.6 `/courses/<slug>/practice` gated
+- [x] 3.1 Migration applies: `supabase migration up` — 5633f4e
+- [x] 3.2 Types regenerated with no further diff — 5633f4e
+- [x] 3.3 Type check passes: `npx astro check` — 5633f4e
+- [x] 3.4 Lint passes: `npm run lint` — 5633f4e
+- [x] 3.5 Build succeeds: `npm run build` — 5633f4e
+- [x] 3.6 `/courses/<slug>/practice` gated — 5633f4e
 
 #### Manual
-- [x] 3.7 Missed questions enter the course practice queue; correct→scheduled forward, wrong→near-term
-- [x] 3.8 Interim lesson `/review` retired with no dangling links/errors
+- [x] 3.7 Missed questions enter the course practice queue; correct→scheduled forward, wrong→near-term — 5633f4e
+- [x] 3.8 Interim lesson `/review` retired with no dangling links/errors — 5633f4e
 
 ### Phase 4: Ship
 
 #### Automated
-- [ ] 4.1 `supabase db push` applies migrations to prod
-- [ ] 4.2 Build leak-check: zero 127.0.0.1 in dist/, prod ref present
-- [ ] 4.3 `wrangler deploy` succeeds
+- [x] 4.1 `supabase db push` applies migrations to prod
+- [x] 4.2 Build leak-check: zero 127.0.0.1 in dist/, prod ref present
+- [x] 4.3 `wrangler deploy` succeeds
 
 #### Manual
-- [ ] 4.4 Prod: take a seeded test (score + pass/fail) + practice surfaces misses; / + /courses → 200
+- [x] 4.4 Prod: take a seeded test (score + pass/fail) + practice surfaces misses; / + /courses → 200
