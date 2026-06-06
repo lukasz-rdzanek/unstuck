@@ -240,28 +240,28 @@ One additive migration (`srs_review_state`); no changes to existing tables. Roll
 ### Phase 1: Data model + ts-fsrs
 
 #### Automated
-- [x] 1.1 `ts-fsrs` present: `grep -q '"ts-fsrs"' package.json`
-- [x] 1.2 Migration applies cleanly: `supabase db reset`
-- [x] 1.3 Types regenerated with no further diff
-- [x] 1.4 Type check passes: `npx astro check`
-- [x] 1.5 Lint passes: `npm run lint`
-- [x] 1.6 Build succeeds: `npm run build`
+- [x] 1.1 `ts-fsrs` present: `grep -q '"ts-fsrs"' package.json` — 9fc2bc6
+- [x] 1.2 Migration applies cleanly: `supabase db reset` — 9fc2bc6
+- [x] 1.3 Types regenerated with no further diff — 9fc2bc6
+- [x] 1.4 Type check passes: `npx astro check` — 9fc2bc6
+- [x] 1.5 Lint passes: `npm run lint` — 9fc2bc6
+- [x] 1.6 Build succeeds: `npm run build` — 9fc2bc6
 
 #### Manual
-- [x] 1.7 Completing a lesson creates one srs_review_state row (state=0, due≈now); re-complete is idempotent
-- [x] 1.8 ts-fsrs imports cleanly in the built Worker output
+- [x] 1.7 Completing a lesson creates one srs_review_state row (state=0, due≈now); re-complete is idempotent — 9fc2bc6
+- [x] 1.8 ts-fsrs imports cleanly in the built Worker output — 9fc2bc6
 
 ### Phase 2: Review service + rating API
 
 #### Automated
-- [ ] 2.1 Type check passes: `npx astro check`
-- [ ] 2.2 Lint passes: `npm run lint`
-- [ ] 2.3 Build succeeds: `npm run build`
+- [x] 2.1 Type check passes: `npx astro check`
+- [x] 2.2 Lint passes: `npm run lint`
+- [x] 2.3 Build succeeds: `npm run build`
 
 #### Manual
-- [ ] 2.4 Again→near due, Easy→far due; reps/state advance
-- [ ] 2.5 RLS: a second user cannot read/rate another's card
-- [ ] 2.6 Rating a card with no existing row initializes rather than errors
+- [x] 2.4 Again→near due, Easy→far due; reps/state advance
+- [x] 2.5 RLS: a second user cannot read/rate another's card
+- [x] 2.6 Rating a card with no existing row initializes rather than errors
 
 ### Phase 3: Review UI
 
