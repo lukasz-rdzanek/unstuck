@@ -34,6 +34,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      attempt_answers: {
+        Row: {
+          attempt_id: string
+          is_correct: boolean
+          question_id: string
+          selected_option_ids: string[]
+        }
+        Insert: {
+          attempt_id: string
+          is_correct: boolean
+          question_id: string
+          selected_option_ids?: string[]
+        }
+        Update: {
+          attempt_id?: string
+          is_correct?: boolean
+          question_id?: string
+          selected_option_ids?: string[]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attempt_answers_attempt_id_fkey"
+            columns: ["attempt_id"]
+            isOneToOne: false
+            referencedRelation: "test_attempts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "attempt_answers_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       chapters: {
         Row: {
           course_id: string
@@ -303,6 +339,70 @@ export type Database = {
         }
         Relationships: []
       }
+      question_options: {
+        Row: {
+          body: string
+          id: string
+          is_correct: boolean
+          position: number
+          question_id: string
+        }
+        Insert: {
+          body: string
+          id?: string
+          is_correct?: boolean
+          position: number
+          question_id: string
+        }
+        Update: {
+          body?: string
+          id?: string
+          is_correct?: boolean
+          position?: number
+          question_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "question_options_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      questions: {
+        Row: {
+          id: string
+          multi: boolean
+          position: number
+          prompt: string
+          test_id: string
+        }
+        Insert: {
+          id?: string
+          multi?: boolean
+          position: number
+          prompt: string
+          test_id: string
+        }
+        Update: {
+          id?: string
+          multi?: boolean
+          position?: number
+          prompt?: string
+          test_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "questions_test_id_fkey"
+            columns: ["test_id"]
+            isOneToOne: false
+            referencedRelation: "tests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       srs_review_state: {
         Row: {
           created_at: string
@@ -359,12 +459,103 @@ export type Database = {
           },
         ]
       }
+      test_attempts: {
+        Row: {
+          created_at: string
+          id: string
+          passed: boolean
+          score: number
+          test_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          passed: boolean
+          score: number
+          test_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          passed?: boolean
+          score?: number
+          test_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "test_attempts_test_id_fkey"
+            columns: ["test_id"]
+            isOneToOne: false
+            referencedRelation: "tests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tests: {
+        Row: {
+          chapter_id: string | null
+          course_id: string
+          created_at: string
+          id: string
+          pass_threshold: number
+          slug: string
+          summary_md: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          chapter_id?: string | null
+          course_id: string
+          created_at?: string
+          id?: string
+          pass_threshold?: number
+          slug: string
+          summary_md?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          chapter_id?: string | null
+          course_id?: string
+          created_at?: string
+          id?: string
+          pass_threshold?: number
+          slug?: string
+          summary_md?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tests_chapter_id_fkey"
+            columns: ["chapter_id"]
+            isOneToOne: false
+            referencedRelation: "chapters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tests_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      get_test_questions: { Args: { p_test_id: string }; Returns: Json }
       has_course_access: { Args: { p_course_id: string }; Returns: boolean }
+      submit_test_attempt: {
+        Args: { p_answers: Json; p_test_id: string }
+        Returns: Json
+      }
     }
     Enums: {
       [_ in never]: never

@@ -198,3 +198,29 @@ insert into public.lessons (id, course_id, chapter_id, slug, title, position, vi
     'title'
   )
 on conflict (id) do nothing;
+
+
+-- ----------------------------------------------------------------------------
+-- 8. learning-loop — a sample chapter-level test (single + multi questions)
+--    on the seed course, so the quiz UI + grading + summary are exercisable.
+-- ----------------------------------------------------------------------------
+insert into public.tests (id, course_id, chapter_id, slug, title, summary_md, pass_threshold) values
+  ('f1000000-0000-0000-0000-000000000001','a0000000-0000-0000-0000-000000000001','e0000000-0000-0000-0000-000000000001',
+   'streaming-basics-test','Streaming Basics — Test',
+   E'## Quick recap\n\n- Stream the **shell** first; wrap only the genuinely slow leaf in `<Suspense>`.\n- A boundary placed too high collapses streaming into a single SSR fallback.\n- Keep the boundary close to the slow data.',
+   0.50)
+on conflict (id) do nothing;
+
+insert into public.questions (id, test_id, prompt, multi, position) values
+  ('f2000000-0000-0000-0000-000000000001','f1000000-0000-0000-0000-000000000001','Where should a Suspense boundary go?',false,1),
+  ('f2000000-0000-0000-0000-000000000002','f1000000-0000-0000-0000-000000000001','Which statements about streaming are true? (select all)',true,2)
+on conflict (id) do nothing;
+
+insert into public.question_options (id, question_id, body, is_correct, position) values
+  ('f3000000-0000-0000-0000-000000000001','f2000000-0000-0000-0000-000000000001','Close to the slow data',true,1),
+  ('f3000000-0000-0000-0000-000000000002','f2000000-0000-0000-0000-000000000001','At the application root',false,2),
+  ('f3000000-0000-0000-0000-000000000003','f2000000-0000-0000-0000-000000000001','Around the entire page',false,3),
+  ('f3000000-0000-0000-0000-000000000004','f2000000-0000-0000-0000-000000000002','Stream the shell first',true,1),
+  ('f3000000-0000-0000-0000-000000000005','f2000000-0000-0000-0000-000000000002','Suspend only the genuinely slow leaf',true,2),
+  ('f3000000-0000-0000-0000-000000000006','f2000000-0000-0000-0000-000000000002','Await everything at the top of the tree',false,3)
+on conflict (id) do nothing;
