@@ -6,6 +6,13 @@ on:
   pull_request:
     branches: [master]
 
+# Newest run per ref wins: a fresh push cancels an in-flight run (incl. a
+# mid-flight deploy) so prod reflects the latest master; PR runs are likewise
+# de-duped per branch.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   ci:
     runs-on: ubuntu-latest
@@ -31,5 +38,46 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+  # CD: deploy to Cloudflare on push to master, only after `ci` passes. Auto on
+  # green (no manual gate); DB migrations stay manual (run `supabase db push`
+  # before merging a migration-bearing change).
+  deploy:
+    needs: [ci]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx astro sync
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - run: npm run build
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      # Hard guard: never ship a localhost-pointing client bundle (the exact bug
+      # that broke the first MVP deploy). Require the prod Supabase ref present
+      # and zero local refs in dist/.
+      - name: Leak-check dist
+        run: |
+          if grep -rqE "127\.0\.0\.1:54321" dist/; then
+            echo "::error::localhost Supabase ref found in dist/ — refusing to deploy"; exit 1
+          fi
+          if ! grep -rq "rhcioqeawpbuylbmkxnr" dist/; then
+            echo "::error::prod Supabase ref NOT found in dist/ — build env likely wrong"; exit 1
+          fi
+          echo "leak-check passed: prod ref present, no localhost"
+      - run: npx wrangler deploy
+        env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
