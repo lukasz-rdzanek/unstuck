@@ -49,6 +49,37 @@ export interface RunFixture {
   enrolled: TestUser;
   /** NOT enrolled in the gated course (the R4 denial subject). */
   outsider: TestUser;
+
+  // ---- Phase 2 (grading & answer-matching) extensions ----------------------
+  /**
+   * R3: a course-level test (on the free embed course, NOT the gated test that
+   * course-access counts) whose single question has options ALL is_correct=false,
+   * to exercise the zero-correct grading guard (never correct, even on empty
+   * submission).
+   */
+  zeroCorrectTestId: string;
+  zeroCorrectQuestionId: string;
+  zeroCorrectOpt1Id: string;
+  zeroCorrectOpt2Id: string;
+
+  // R5(a) cross-course match isolation. Two FREE courses (any authed user has
+  // access via is_free), each with one embedded message authored by `enrolled`.
+  // The "trap" message is MORE similar to `matchQueryVec` than the courseA
+  // message, so a broken course fence would surface it.
+  matchQueryVec: string; // the query embedding literal (cosine 1.0 with the trap, 0.8 with courseA)
+  matchCourseAId: string;
+  matchLessonAId: string;
+  matchMessageAId: string; // cosine ≈ 0.8 to matchQueryVec
+  trapCourseId: string;
+  trapLessonId: string;
+  trapMessageId: string; // cosine ≈ 1.0 to matchQueryVec (the higher-ranked trap in another course)
+
+  // R5(b) embedding immutability. A FREE course/lesson holding one message with
+  // embedding NULL (to set) and one already embedded (to prove no-overwrite).
+  embedCourseId: string;
+  embedLessonId: string;
+  unembeddedMessageId: string; // embedding is NULL
+  embeddedMessageId: string; // embedding already set
 }
 
 /** Deterministic UUID-shaped id from (runId, key). Postgres `uuid` accepts any hex. */
@@ -59,6 +90,20 @@ function uid(runId: string, key: string): string {
 
 function uniqueEmail(runId: string, who: string): string {
   return `itest-${runId}-${who}-${randomUUID()}@unstuck.test`;
+}
+
+/**
+ * A 768-dim pgvector literal with the given leading components; the rest are
+ * zero-filled. `match_lesson_answers` computes similarity = 1 - (e <=> q) = the
+ * cosine similarity, so near-axis vectors give controlled, easy-to-reason cosines
+ * (e.g. q=[1,0,…] vs [1,0.75,0,…] → cosine 1/√1.5625 = 0.8). No Workers AI needed.
+ */
+function vec768(...components: number[]): string {
+  const arr = new Array<number>(768).fill(0);
+  components.forEach((v, i) => {
+    if (i < 768) arr[i] = v;
+  });
+  return `[${arr.join(",")}]`;
 }
 
 function check(res: { error: { message: string } | null }, context: string): void {
@@ -106,6 +151,24 @@ export async function createRunFixture(runId: string): Promise<RunFixture> {
     seededMessageId: uid(runId, "message"),
     enrolled: { id: enrolledId, email: enrolledEmail, password: PASSWORD },
     outsider: { id: outsiderId, email: outsiderEmail, password: PASSWORD },
+
+    zeroCorrectTestId: uid(runId, "test-zero"),
+    zeroCorrectQuestionId: uid(runId, "q-zero"),
+    zeroCorrectOpt1Id: uid(runId, "q-zero-opt1"),
+    zeroCorrectOpt2Id: uid(runId, "q-zero-opt2"),
+
+    matchQueryVec: vec768(1),
+    matchCourseAId: uid(runId, "match-course-a"),
+    matchLessonAId: uid(runId, "match-lesson-a"),
+    matchMessageAId: uid(runId, "match-msg-a"),
+    trapCourseId: uid(runId, "trap-course"),
+    trapLessonId: uid(runId, "trap-lesson"),
+    trapMessageId: uid(runId, "trap-msg"),
+
+    embedCourseId: uid(runId, "embed-course"),
+    embedLessonId: uid(runId, "embed-lesson"),
+    unembeddedMessageId: uid(runId, "embed-msg-null"),
+    embeddedMessageId: uid(runId, "embed-msg-set"),
   };
 
   check(
@@ -186,7 +249,174 @@ export async function createRunFixture(runId: string): Promise<RunFixture> {
     "insert enrollment",
   );
 
+  // ---- R5(a): two free courses with embedded messages ----------------------
+  // courseA message: cosine ≈ 0.8 to the query. trap message (other course):
+  // cosine 1.0 — higher-ranked, must never leak into a courseA match.
+  await insertFreeCourseWithMessage(svc, runId, {
+    courseId: fx.matchCourseAId,
+    lessonId: fx.matchLessonAId,
+    messageId: fx.matchMessageAId,
+    authorId: fx.enrolled.id,
+    label: "match-a",
+    body: "Course A candidate answer about streaming, Suspense boundaries, and where to place them.",
+    embedding: vec768(1, 0.75), // cosine 0.8 with vec768(1)
+  });
+  await insertFreeCourseWithMessage(svc, runId, {
+    courseId: fx.trapCourseId,
+    lessonId: fx.trapLessonId,
+    messageId: fx.trapMessageId,
+    authorId: fx.enrolled.id,
+    label: "trap",
+    body: "Trap answer in another course, nearly identical to the query embedding vector.",
+    embedding: vec768(1), // cosine 1.0 with the query — the higher-ranked trap
+  });
+
+  // ---- R5(b): a free course holding a NULL-embedding + a pre-set message ----
+  check(
+    await svc
+      .from("courses")
+      .insert({ id: fx.embedCourseId, slug: `itest-embed-${runId}`, title: `Embed course (${runId})`, is_free: true }),
+    "insert embed course",
+  );
+  const embedChapterId = uid(runId, "embed-chapter");
+  check(
+    await svc
+      .from("chapters")
+      .insert({ id: embedChapterId, course_id: fx.embedCourseId, slug: "intro", title: "Introduction", position: 1 }),
+    "insert embed chapter",
+  );
+  check(
+    await svc.from("lessons").insert({
+      id: fx.embedLessonId,
+      course_id: fx.embedCourseId,
+      chapter_id: embedChapterId,
+      slug: "embed-lesson",
+      title: "Embed lesson",
+      position: 1,
+      content_md: "Lesson for embedding-immutability integration tests.",
+    }),
+    "insert embed lesson",
+  );
+  check(
+    await svc.from("messages").insert([
+      {
+        id: fx.unembeddedMessageId,
+        lesson_id: fx.embedLessonId,
+        author_id: fx.enrolled.id,
+        body: "Message with a NULL embedding, used to verify set_message_embedding sets it once.",
+        is_seeded: false,
+        // embedding omitted → NULL
+      },
+      {
+        id: fx.embeddedMessageId,
+        lesson_id: fx.embedLessonId,
+        author_id: fx.enrolled.id,
+        body: "Message that already has an embedding, used to verify it is never overwritten.",
+        is_seeded: false,
+        embedding: vec768(1),
+      },
+    ]),
+    "insert embed messages",
+  );
+
+  // ---- R3: zero-correct test (course-level test on the free embed course) ---
+  check(
+    await svc.from("tests").insert({
+      id: fx.zeroCorrectTestId,
+      course_id: fx.embedCourseId,
+      chapter_id: null,
+      slug: "zero-correct-test",
+      title: "Zero-correct test",
+      pass_threshold: 0.5,
+    }),
+    "insert zero-correct test",
+  );
+  check(
+    await svc.from("questions").insert({
+      id: fx.zeroCorrectQuestionId,
+      test_id: fx.zeroCorrectTestId,
+      prompt: "Zero-correct question (no option is correct)?",
+      multi: false,
+      position: 1,
+    }),
+    "insert zero-correct question",
+  );
+  check(
+    await svc.from("question_options").insert([
+      {
+        id: fx.zeroCorrectOpt1Id,
+        question_id: fx.zeroCorrectQuestionId,
+        body: "Not correct A",
+        is_correct: false,
+        position: 1,
+      },
+      {
+        id: fx.zeroCorrectOpt2Id,
+        question_id: fx.zeroCorrectQuestionId,
+        body: "Not correct B",
+        is_correct: false,
+        position: 2,
+      },
+    ]),
+    "insert zero-correct options",
+  );
+
   return fx;
+}
+
+/** Insert a free course + chapter + lesson + one embedded message (R5 fixtures). */
+async function insertFreeCourseWithMessage(
+  svc: ReturnType<typeof serviceClient>,
+  runId: string,
+  opts: {
+    courseId: string;
+    lessonId: string;
+    messageId: string;
+    authorId: string;
+    label: string;
+    body: string;
+    embedding: string;
+  },
+): Promise<void> {
+  const chapterId = uid(runId, `${opts.label}-chapter`);
+  check(
+    await svc.from("courses").insert({
+      id: opts.courseId,
+      slug: `itest-${opts.label}-${runId}`,
+      title: `Match course ${opts.label} (${runId})`,
+      is_free: true,
+    }),
+    `insert ${opts.label} course`,
+  );
+  check(
+    await svc
+      .from("chapters")
+      .insert({ id: chapterId, course_id: opts.courseId, slug: "intro", title: "Introduction", position: 1 }),
+    `insert ${opts.label} chapter`,
+  );
+  check(
+    await svc.from("lessons").insert({
+      id: opts.lessonId,
+      course_id: opts.courseId,
+      chapter_id: chapterId,
+      slug: `${opts.label}-lesson`,
+      title: `Match lesson ${opts.label}`,
+      position: 1,
+      content_md: `Lesson for ${opts.label} match-isolation testing.`,
+    }),
+    `insert ${opts.label} lesson`,
+  );
+  check(
+    await svc.from("messages").insert({
+      id: opts.messageId,
+      lesson_id: opts.lessonId,
+      author_id: opts.authorId,
+      body: opts.body,
+      is_seeded: false,
+      embedding: opts.embedding,
+    }),
+    `insert ${opts.label} message`,
+  );
 }
 
 /**
@@ -200,8 +430,12 @@ export async function createRunFixture(runId: string): Promise<RunFixture> {
 export async function cleanup(runId: string, users: readonly TestUser[] = []): Promise<void> {
   const svc = serviceClient();
 
-  // One delete is enough — the FK cascades handle the children.
-  check(await svc.from("courses").delete().eq("id", uid(runId, "course")), "cleanup gated course");
+  // Delete every fixture course by id — each cascades its chapters/lessons/
+  // messages/tests/questions/options/enrollments/attempts. (Phase 2 added the
+  // match/trap/embed courses.)
+  for (const key of ["course", "match-course-a", "trap-course", "embed-course"]) {
+    check(await svc.from("courses").delete().eq("id", uid(runId, key)), `cleanup course ${key}`);
+  }
 
   for (const user of users) {
     const res = await svc.auth.admin.deleteUser(user.id);
