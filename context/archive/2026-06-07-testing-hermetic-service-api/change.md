@@ -1,10 +1,10 @@
 ---
 change_id: testing-hermetic-service-api
 title: Hermetic service/API contract tests (test-plan Phase 3)
-status: impl_reviewed
+status: archived
 created: 2026-06-07
 updated: 2026-06-07
-archived_at: null
+archived_at: 2026-06-07T16:55:34Z
 ---
 
 ## Notes
