@@ -50,13 +50,21 @@ export const POST: APIRoute = async (context) => {
   const supabase = createClient(context.request.headers, context.cookies);
   if (!supabase) return jsonResponse({ error: "supabase_not_configured" }, { status: 500 });
 
-  const { data: pending, error: listError } = await supabase.rpc("list_unembedded_messages", {
+  const { data, error: listError } = await supabase.rpc("list_unembedded_messages", {
     p_limit: batchSize,
   });
   if (listError) {
     console.error("[embeddings] list failed:", listError.message);
     return jsonResponse({ error: "list_failed" }, { status: 500 });
   }
+  // A `{ data: null, error: null }` list result must be treated as empty, not
+  // iterated (mirrors the `rest ?? []` guard below). Otherwise `for (const row
+  // of null)` throws and 500s a non-error, no-work case. The generated RPC types
+  // narrow `data` to non-null after the error guard, so the linter flags `?? []`
+  // as "unnecessary" — but PostgREST returns null for an empty SETOF at runtime
+  // (the F4 bug; backfill.test.ts pins it). The guard stays; the rule is wrong here.
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  const pending = data ?? [];
 
   let embedded = 0;
   let failed = 0;

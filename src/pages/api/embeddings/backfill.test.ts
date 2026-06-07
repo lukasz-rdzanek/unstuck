@@ -77,6 +77,17 @@ describe("R6 — backfill operator gate", () => {
     expect(b.remaining).toBe(0);
   });
 
+  it("null list result (data:null, error:null) → treated as empty, not a throw (F4 guard)", async () => {
+    // list_unembedded_messages can return { data: null, error: null } (no error,
+    // no rows). The `pending ?? []` guard must treat that as empty work, never
+    // iterate null. Both the batch list and the remaining-count list return null.
+    vi.mocked(createClient).mockReturnValue(makeFakeSupabase({ rpc: () => ({ data: null, error: null }) }).client);
+    const res = await POST(makeApiContext({ user: OP, body: {} }));
+    expect(res.status).toBe(200);
+    const b = await body(res);
+    expect(b).toEqual({ ok: true, embedded: 0, failed: 0, remaining: 0 });
+  });
+
   it("500 list_failed when the list RPC errors (fatal)", async () => {
     vi.mocked(createClient).mockReturnValue(
       makeFakeSupabase({ rpc: () => ({ data: null, error: { message: "boom" } }) }).client,

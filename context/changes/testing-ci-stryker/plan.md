@@ -242,8 +242,8 @@ No DB migrations. CI changes take effect only once pushed to GitHub. The one pro
 
 #### Automated
 
-- [x] 2.1 `npx stryker run --mutate "src/lib/safe-next.ts"` completes + emits reports/mutation/index.html
-- [x] 2.2 Unit run green + lint + type check pass
+- [x] 2.1 `npx stryker run --mutate "src/lib/safe-next.ts"` completes + emits reports/mutation/index.html — 121ae7c
+- [x] 2.2 Unit run green + lint + type check pass — 121ae7c
 
 #### Manual
 
@@ -253,8 +253,8 @@ No DB migrations. CI changes take effect only once pushed to GitHub. The one pro
 
 #### Automated
 
-- [ ] 3.1 Backfill tests pass: `npm run test -- backfill`
-- [ ] 3.2 Full unit run green + lint + type check
+- [x] 3.1 Backfill tests pass: `npm run test -- backfill`
+- [x] 3.2 Full unit run green + lint + type check
 
 #### Manual
 
