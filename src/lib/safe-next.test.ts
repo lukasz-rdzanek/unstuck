@@ -23,4 +23,13 @@ describe("isSafeNext (open-redirect guard)", () => {
     expect(isSafeNext(undefined)).toBe(false);
     expect(isSafeNext(123)).toBe(false);
   });
+
+  it("rejects a non-string that string-coerces to a path-like value (type-guard is load-bearing)", () => {
+    // The `typeof === "string"` check is not redundant: without it, a value
+    // whose String() coercion starts with a safe-looking "/foo" would pass the
+    // regex. `isSafeNext` is a `next is string` predicate — a non-string must
+    // never be treated as a safe redirect, even if it coerces to one.
+    expect(isSafeNext(["/dashboard"])).toBe(false);
+    expect(isSafeNext({ toString: () => "/dashboard" })).toBe(false);
+  });
 });

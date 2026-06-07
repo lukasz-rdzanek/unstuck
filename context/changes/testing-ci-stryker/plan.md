@@ -230,9 +230,9 @@ No DB migrations. CI changes take effect only once pushed to GitHub. The one pro
 
 #### Automated
 
-- [x] 1.1 Workflow YAML is valid (parses)
-- [x] 1.2 `npm run test:integration` green locally (commands the job runs)
-- [x] 1.3 `ci` + `deploy` jobs unchanged in the diff (only an added job + workflow_dispatch)
+- [x] 1.1 Workflow YAML is valid (parses) — 9f89c5b
+- [x] 1.2 `npm run test:integration` green locally (commands the job runs) — 9f89c5b
+- [x] 1.3 `ci` + `deploy` jobs unchanged in the diff (only an added job + workflow_dispatch) — 9f89c5b
 
 #### Manual
 
@@ -242,8 +242,8 @@ No DB migrations. CI changes take effect only once pushed to GitHub. The one pro
 
 #### Automated
 
-- [ ] 2.1 `npx stryker run --mutate "src/lib/safe-next.ts"` completes + emits reports/mutation/index.html
-- [ ] 2.2 Unit run green + lint + type check pass
+- [x] 2.1 `npx stryker run --mutate "src/lib/safe-next.ts"` completes + emits reports/mutation/index.html
+- [x] 2.2 Unit run green + lint + type check pass
 
 #### Manual
 
