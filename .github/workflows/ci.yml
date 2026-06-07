@@ -101,6 +101,9 @@ jobs:
       - run: npm ci
       - uses: supabase/setup-cli@v2
         with:
+          # Keep in sync with the `supabase` devDep in package.json (currently
+          # resolves to 2.98.2). They only match by lockfile today — bump both
+          # together so CI exercises the same migration/seed engine as local.
           version: 2.98.2
       - run: supabase start
       - run: npm run test:integration
