@@ -360,25 +360,25 @@ Deploy the feature to production: pgvector + migrations, the `ai` binding, prod 
 
 #### Automated
 
-- [x] 3.1 Type check passes: `npx astro check`
-- [x] 3.2 Lint passes: `npm run lint`
-- [x] 3.3 Build succeeds: `npm run build`
-- [x] 3.4 `/api/lessons/<id>/match-answer` gated (unauth → 401)
-- [x] 3.5 Client bundle has no `cloudflare:workers` import / secret string
+- [x] 3.1 Type check passes: `npx astro check` — 9ddfb83
+- [x] 3.2 Lint passes: `npm run lint` — 9ddfb83
+- [x] 3.3 Build succeeds: `npm run build` — 9ddfb83
+- [x] 3.4 `/api/lessons/<id>/match-answer` gated (unauth → 401) — 9ddfb83
+- [x] 3.5 Client bundle has no `cloudflare:workers` import / secret string — 9ddfb83
 
 #### Manual
 
-- [x] 3.6 Near-duplicate question → one card with correct "from lesson" label; dismiss works; light/dark + responsive
-- [x] 3.7 Novel/unrelated question → silent (below threshold)
-- [x] 3.8 No cross-course match leakage; existing chat (optimistic/Realtime/load-older/reconnect) unchanged
+- [x] 3.6 Near-duplicate question → one card with correct "from lesson" label; dismiss works; light/dark + responsive — 9ddfb83
+- [x] 3.7 Novel/unrelated question → silent (below threshold) — 9ddfb83
+- [x] 3.8 No cross-course match leakage; existing chat (optimistic/Realtime/load-older/reconnect) unchanged — 9ddfb83
 
 ### Phase 4: Ship to prod
 
 #### Automated
 
-- [ ] 4.1 `supabase db push` applies migrations to prod
-- [ ] 4.2 Build leak-check: zero 127.0.0.1 in dist/, prod ref present
-- [ ] 4.3 `wrangler deploy` succeeds
+- [x] 4.1 `supabase db push` applies migrations to prod
+- [x] 4.2 Build leak-check: zero 127.0.0.1 in dist/, prod ref present
+- [x] 4.3 `wrangler deploy` succeeds
 
 #### Manual
 
