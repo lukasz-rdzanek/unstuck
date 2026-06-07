@@ -22,6 +22,9 @@ export default defineConfig({
       // accessible from astro:env/client AND astro:env/server.
       SUPABASE_URL: envField.string({ context: "client", access: "public", optional: true }),
       SUPABASE_KEY: envField.string({ context: "client", access: "public", optional: true }),
+      // Server-only operator gate for the embedding backfill endpoint
+      // (ai-answer-matching). Unset → backfill is disabled (fail-closed).
+      OPERATOR_USER_ID: envField.string({ context: "server", access: "secret", optional: true }),
     },
   },
 });

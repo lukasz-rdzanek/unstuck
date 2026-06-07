@@ -329,32 +329,32 @@ Deploy the feature to production: pgvector + migrations, the `ai` binding, prod 
 
 #### Automated
 
-- [x] 1.1 Migration applies: `supabase migration up`
-- [x] 1.2 Types regenerated with no further diff
-- [x] 1.3 Type check passes: `npx astro check`
-- [x] 1.4 Lint passes: `npm run lint`
-- [x] 1.5 Build succeeds: `npm run build`
+- [x] 1.1 Migration applies: `supabase migration up` — 4b4e957
+- [x] 1.2 Types regenerated with no further diff — 4b4e957
+- [x] 1.3 Type check passes: `npx astro check` — 4b4e957
+- [x] 1.4 Lint passes: `npm run lint` — 4b4e957
+- [x] 1.5 Build succeeds: `npm run build` — 4b4e957
 
 #### Manual
 
-- [x] 1.6 `vector` extension + `messages.embedding` column + HNSW index exist
-- [x] 1.7 `match_lesson_answers` returns no rows for an inaccessible course (gating works)
-- [x] 1.8 `set_message_embedding` is null-only + column-scoped (cannot alter body)
+- [x] 1.6 `vector` extension + `messages.embedding` column + HNSW index exist — 4b4e957
+- [x] 1.7 `match_lesson_answers` returns no rows for an inaccessible course (gating works) — 4b4e957
+- [x] 1.8 `set_message_embedding` is null-only + column-scoped (cannot alter body) — 4b4e957
 
 ### Phase 2: Embedding pipeline (Workers AI + backfill)
 
 #### Automated
 
-- [ ] 2.1 Type check passes: `npx astro check`
-- [ ] 2.2 Lint passes: `npm run lint`
-- [ ] 2.3 Build succeeds: `npm run build`
-- [ ] 2.4 No `cloudflare:workers` import inlined into the client bundle
+- [x] 2.1 Type check passes: `npx astro check`
+- [x] 2.2 Lint passes: `npm run lint`
+- [x] 2.3 Build succeeds: `npm run build`
+- [x] 2.4 No `cloudflare:workers` import inlined into the client bundle
 
 #### Manual
 
-- [ ] 2.5 Backfill embeds existing messages; re-run drains `remaining` to 0 (idempotent)
-- [ ] 2.6 Operator gate: non-operator → 403, operator → 200 with counts
-- [ ] 2.7 `messages.embedding` populated (NULL count → 0)
+- [x] 2.5 Backfill embeds existing messages; re-run drains `remaining` to 0 (idempotent)
+- [x] 2.6 Operator gate: non-operator → 403, operator → 200 with counts
+- [x] 2.7 `messages.embedding` populated (NULL count → 0)
 
 ### Phase 3: Match endpoint + chat suggestion card (API + UI)
 

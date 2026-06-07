@@ -1,3 +1,9 @@
+// Workers runtime virtual module (provided by workerd at runtime; the adapter
+// doesn't ship a type for it). Minimal shape — `env` carries bindings like AI.
+declare module "cloudflare:workers" {
+  export const env: Record<string, unknown>;
+}
+
 declare namespace App {
   interface Locals {
     user: import("@supabase/supabase-js").User | null;
