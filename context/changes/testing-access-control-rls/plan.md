@@ -377,23 +377,23 @@ No DB migrations. Fixtures are runtime-created and cleaned up; nothing is commit
 
 #### Automated
 
-- [x] 4.1 R4 test passes: `npm run test:integration -- course-access`
-- [x] 4.2 Full integration suite green: `npm run test:integration`
-- [x] 4.3 Type check + lint pass
+- [x] 4.1 R4 test passes: `npm run test:integration -- course-access` — f3b5c56
+- [x] 4.2 Full integration suite green: `npm run test:integration` — f3b5c56
+- [x] 4.3 Type check + lint pass — f3b5c56
 
 #### Manual
 
-- [x] 4.4 Prove-it-fails: enrolling the non-enrolled user flips denials to allowed; un-enrolling restores denial
+- [x] 4.4 Prove-it-fails: enrolling the non-enrolled user flips denials to allowed; un-enrolling restores denial — f3b5c56
 
 ### Phase 5: Cookbook & close-out
 
 #### Automated
 
-- [ ] 5.1 Full integration suite still green: `npm run test:integration`
-- [ ] 5.2 Unit run + lint still green: `npm run test` && `npm run lint`
-- [ ] 5.3 `supabase/tests/rls_matrix.sql` removed: `test ! -f supabase/tests/rls_matrix.sql`
+- [x] 5.1 Full integration suite still green: `npm run test:integration`
+- [x] 5.2 Unit run + lint still green: `npm run test` && `npm run lint`
+- [x] 5.3 `supabase/tests/rls_matrix.sql` removed: `test ! -f supabase/tests/rls_matrix.sql`
 
 #### Manual
 
-- [ ] 5.4 §6 cookbook entry is concrete enough for Phase 2 to reuse without reading test source
-- [ ] 5.5 Every former `rls_matrix.sql` cell has a confirmed home in the Vitest suite
+- [x] 5.4 §6 cookbook entry is concrete enough for Phase 2 to reuse without reading test source
+- [x] 5.5 Every former `rls_matrix.sql` cell has a confirmed home in the Vitest suite

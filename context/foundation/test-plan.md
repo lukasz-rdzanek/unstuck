@@ -3,7 +3,7 @@ artifact: test-plan
 project: Unstuck
 created: 2026-06-07
 updated: 2026-06-07
-test_base_profile: sparse
+test_base_profile: growing
 status: rolling-out
 ---
 
@@ -54,7 +54,7 @@ Impact × Likelihood on a coarse High/Med/Low scale. Source column is **evidence
 
 | # | Phase | Goal (protection proven) | Risks | Test types | Status | Change folder |
 |---|---|---|---|---|---|---|
-| 1 | Access-control & answer-key integration | A learner can never see the answer key or another user's data; gated courses deny non-enrolled | R1, R2, R4 | integration (local Supabase, multi-user + gated-course fixtures) | change opened | context/changes/testing-access-control-rls/ |
+| 1 | Access-control & answer-key integration | A learner can never see the answer key or another user's data; gated courses deny non-enrolled | R1, R2, R4 | integration (local Supabase, multi-user + gated-course fixtures) | complete | context/changes/testing-access-control-rls/ |
 | 2 | Grading & SRS integration | Quiz scores match an independent oracle; SRS scheduling + message-embedding immutability hold | R3, R5, R2 (attempts/SRS own-only) | integration (local Supabase, RPC) | not started | — |
 | 3 | Hermetic service/API tests | Services + API routes honor their contracts (validation, auth/operator gating, graceful degradation) without a network | R6, R7, R5 (match endpoint) | hermetic unit (stubbed Supabase client + Workers AI binding) | not started | — |
 | 4 | CI integration + Stryker mutation testing | The new tests run in CI; mutation testing grades their quality against a threshold | quality gate over R1–R7 | CI wiring (local Supabase in CI / test DB) + Stryker mutation testing | not started | — |
@@ -64,7 +64,7 @@ Impact × Likelihood on a coarse High/Med/Low scale. Source column is **evidence
 ## §4 Stack & test infra
 
 - **Runners:** Vitest (unit/hermetic, `vitest.config.ts` — node env, `@/*` alias, `cloudflare:workers` stub) + Playwright (`playwright.config.ts`, e2e, local-only). Scripts: `test`, `test:watch`, `test:e2e`.
-- **Existing tests (sparse):** `src/lib/{srs,video-embed,safe-next,embeddings}.test.ts` (13 unit) + `e2e/test-taking.spec.ts`. Manual SQL probe: `supabase/tests/rls_matrix.sql` (not automated — a candidate to fold into Phase 1).
+- **Existing tests:** `src/lib/{srs,video-embed,safe-next,embeddings}.test.ts` (13 unit, `npm run test`) + `e2e/test-taking.spec.ts` + the **Phase 1 integration suite** `tests/integration/*.itest.ts` (`npm run test:integration`, local stack required). The old manual `supabase/tests/rls_matrix.sql` probe was ported into the integration suite and removed.
 - **Local Supabase:** Docker stack via `npx supabase start` (DB on `:54322`, REST on `:54321`). Integration tests run against it (REST as authenticated via gotrue tokens, or psql via the `supabase_db_*` container). NEVER `supabase db reset` ([[feedback-no-db-reset]]); use `migration up`.
 - **CI/CD:** `.github/workflows/ci.yml` runs lint + test + build on push/PR and auto-deploys on merge (`auto-deploy`). Integration tests are NOT in CI yet → Phase 4 wires them (needs a Supabase service/test DB in CI) + adds Stryker.
 
@@ -84,7 +84,13 @@ Impact × Likelihood on a coarse High/Med/Low scale. Source column is **evidence
 
 ## §6 Cookbook (filled as phases ship)
 
-- **Integration: multi-user RLS / answer-key probe** — TBD (Phase 1): how to seed two users + a gated course, get authed REST/JWT, and assert denial. See §3 Phase 1 for the R1/R2/R4 patterns.
+- **Integration: multi-user RLS / answer-key probe** — SHIPPED (Phase 1, change `testing-access-control-rls`). Harness lives in `tests/integration/`; run with `npm run test:integration` (local stack must be up: `npx supabase start`). `npm run test` stays unit-only/hermetic. Recipe:
+  - **Env**: `tests/integration/setup/supabase-env.ts` shells `npx supabase status -o json` and returns `{ url, anonKey, serviceRoleKey }` (nothing secret committed). `global-setup.ts` fails fast with a readable message if the stack is down.
+  - **Clients** (`setup/clients.ts`): `serviceClient()` (service_role — setup/teardown ONLY, bypasses RLS, never the client under assertion), `anonClient()` (anon role), `authedClientFor(email,password)` (real GoTrue password grant → JWT-carrying client = the RLS path under test). Build clients from `@supabase/supabase-js` directly; never import `src/lib/supabase.ts` (it reads `astro:env`).
+  - **Fixtures** (`setup/fixtures.ts`): `createRunFixture(runId)` mints two login-capable learners (`auth.admin.createUser({email_confirm:true})`) + a gated (`is_free=false`) course graph + enrolls one. Data-row ids are deterministic per `runId`; user **emails are unique per invocation** because the local GoTrue `admin.listUsers` is broken ("Database error finding users" on the sparse seed accounts) — so cleanup deletes users by captured id, never by lookup. `cleanup(runId, users)` deletes the gated course (FK-cascades its graph) + the users (cascades their own-only rows on any course). **Never `supabase db reset`.**
+  - **Oracle**: assert against hand-derived truth (the seed answer key Q1→`f3…001`, Q2→`f3…004/005`; the ownership/enrollment contract) — never re-read `is_correct` through the path under test.
+  - **Prove-it-fails**: because the code is already correct, each risk test is shown able to fail — temporarily break the invariant (add an `authenticated` SELECT policy via `docker exec supabase_db_<project> psql`; invert an assertion; or enroll the outsider) → red → revert. Demonstrated for R1/R2/R4.
+  - **Files**: `answer-key.itest.ts` (R1), `idor.itest.ts` (R2), `course-access.itest.ts` (R4), `role-matrix.itest.ts` (anon + ported cells), `smoke.itest.ts`. The old `supabase/tests/rls_matrix.sql` (`set role` probe) was ported into these and removed.
 - **Integration: definer-fn grading oracle** — TBD (Phase 2): how to call `submit_test_attempt` and assert against an independent truth table. See §3 Phase 2.
 - **Hermetic: stubbed Supabase client + Workers AI** — TBD (Phase 3): the stub seam for `createClient` / `env.AI` and asserting route contracts. See §3 Phase 3.
 - **CI integration + Stryker** — TBD (Phase 4): running integration tests in CI + the mutation-score config/threshold.
