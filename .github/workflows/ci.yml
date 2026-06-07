@@ -5,6 +5,7 @@ on:
     branches: [master]
   pull_request:
     branches: [master]
+  workflow_dispatch:
 
 # Newest run per ref wins: a fresh push cancels an in-flight run (incl. a
 # mid-flight deploy) so prod reflects the latest master; PR runs are likewise
@@ -81,3 +82,28 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+  # Integration tests against a real local Supabase stack (RLS + definer
+  # functions, Phases 1–2 of the test rollout). Boots Docker via `supabase
+  # start`, which applies migrations + seed. Deliberately ADDITIVE and isolated:
+  # PR-triggered (+ manual dispatch) only, NOT in `deploy.needs`, and carries no
+  # secrets (the local stack ships demo keys) — a Docker flake here must never
+  # wedge prod deploy or the fast `ci` gate.
+  integration:
+    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - uses: supabase/setup-cli@v2
+        with:
+          version: 2.98.2
+      - run: supabase start
+      - run: npm run test:integration
+      - name: Supabase status on failure
+        if: failure()
+        run: supabase status || true
