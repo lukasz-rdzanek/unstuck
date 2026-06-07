@@ -385,21 +385,21 @@ No DB migrations. The only non-test edits are an `export` keyword (middleware) a
 
 #### Automated
 
-- [x] 4.1 SRS tests pass: `npm run test -- submit grade rate`
-- [x] 4.2 Full unit run green: `npm run test`
-- [x] 4.3 Type check + lint pass
+- [x] 4.1 SRS tests pass: `npm run test -- submit grade rate` — 2140041
+- [x] 4.2 Full unit run green: `npm run test` — 2140041
+- [x] 4.3 Type check + lint pass — 2140041
 
 #### Manual
 
-- [x] 4.4 Prove-it-fails: submit correct-first-timer skip flips red when an upsert is expected; revert restores green
+- [x] 4.4 Prove-it-fails: submit correct-first-timer skip flips red when an upsert is expected; revert restores green — 2140041
 
 ### Phase 5: Cookbook, doc fix & close-out
 
 #### Automated
 
-- [ ] 5.1 Full unit run green: `npm run test`
-- [ ] 5.2 Lint + type check pass
+- [x] 5.1 Full unit run green: `npm run test`
+- [x] 5.2 Lint + type check pass
 
 #### Manual
 
-- [ ] 5.3 §6 cookbook entry is concrete enough for Phase 4 + contributors to reuse the harness
+- [x] 5.3 §6 cookbook entry is concrete enough for Phase 4 + contributors to reuse the harness

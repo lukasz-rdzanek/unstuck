@@ -27,7 +27,7 @@ Full server-side rendering (`output: "server"` in `astro.config.mjs`). All pages
 
 - `src/lib/supabase.ts` — Supabase SSR client (`@supabase/ssr`) using cookie-based sessions. Reads `SUPABASE_URL` / `SUPABASE_KEY` from `astro:env/client` (the vars are declared with `context: "client", access: "public"` in `astro.config.mjs` `env.schema` so they are accessible from BOTH `astro:env/client` and `astro:env/server`).
 - `src/lib/supabase-browser.ts` — Supabase **browser** client (`@supabase/ssr`'s `createBrowserClient`) used by React islands for Realtime subscriptions. Bridges the same cookie session as the SSR client, so the WebSocket handshake carries the auth JWT and RLS-gated postgres_changes deliveries reach the subscriber.
-- `src/middleware.ts` — runs on every request, resolves the current user, attaches to `context.locals.user`. Redirects unauthenticated users away from routes listed in `PROTECTED_ROUTES`. Extend this array to gate new routes.
+- `src/middleware.ts` — runs on every request, resolves the current user, attaches to `context.locals.user`. Redirects unauthenticated users away from protected routes, matched by `isProtectedRoute(pathname)` (a `/dashboard` prefix check plus the `LESSON_ROUTE_RE` / `COURSE_TEST_RE` / `COURSE_PRACTICE_RE` patterns). Extend that function / its regexes to gate new routes.
 - API endpoints: `src/pages/api/auth/{signin,signup,signout}.ts`
 - Auth pages: `src/pages/auth/{signin,signup,confirm-email}.astro`
 - Protected page example: `src/pages/dashboard.astro`
