@@ -10,9 +10,9 @@
 | --- | --- | --- |
 | 🚀 **10xBuilder** (mandatory) | **All mandatory items met** — incl. automated tests (Vitest + Playwright) running in CI as of `testing-baseline` (2026-06-07) | **Complete** |
 | 🔧 **10xArchitect** (ambitious) | **Strongly demonstrated** — iterative architecture, refactor/supersession, AI-at-scale, lessons register | **Essentially there**; package the evidence |
-| 🏆 **10xChampion** (ambitious) | **In progress** — CI now runs lint + tests + build (green); remaining: automated deploy/CD + AI-in-team-workflow | **Closer** — test-in-CI done; CD + AI-pipeline next |
+| 🏆 **10xChampion** (ambitious) | **In progress** — CI runs lint + tests + build **and auto-deploys to prod on merge** (CD live); remaining: AI-assisted PR pipeline | **Close** — only the AI team-workflow piece left |
 
-**Update (2026-06-07):** the `testing-baseline` change closed the one mandatory Builder gap — Vitest (13 unit tests over FSRS / video-embed / open-redirect guard / vector helpers) + a Playwright e2e (take-a-test → graded result) + a `npm run test` stage in CI. **CI is green** (lint + test + build, with the AI-binding remote proxy authenticated). Builder is now complete; the remaining Champion work is CD automation + an AI-assisted PR pipeline.
+**Update (2026-06-07):** `testing-baseline` closed the Builder test gap (Vitest 13 + Playwright e2e + `npm run test` in CI), and `auto-deploy` added **CD** — a `deploy` job that auto-ships to Cloudflare on merge to `master` (gated on green CI, hard leak-check, `wrangler deploy`; first live deploy = Worker `75b6d9cf`). Builder is complete; for Champion, only the **AI-assisted PR pipeline** remains (e.g. `/code-review ultra` as a PR gate + PR-based flow).
 
 ---
 
@@ -27,9 +27,9 @@
 | **Business logic** | App makes a domain decision | FSRS spaced-repetition scheduling, semantic answer-matching, all-or-nothing quiz grading, seed-boosted ranking | ✅✅ Strong |
 | **Stack** | Known, well-documented | Astro 6 + React 19 + Tailwind 4 + Supabase + Cloudflare Workers | ✅ Good |
 | **Test** | Can sensibly test the main flow | Vitest unit suite (13) + a Playwright e2e of the take-a-test flow | ✅ Good |
-| **CI/CD** | Build + tests run automatically | `ci.yml` runs lint + **test** + build on every push/PR (green); deploy still manual | ✅ Good (build+test); CD pending |
+| **CI/CD** | Build + tests run automatically | `ci.yml` runs lint + **test** + build on every push/PR (green) **and auto-deploys to prod on merge to master** (CD) | ✅✅ Strong |
 
-8 / 8 criteria land in "good project". CI/CD now runs build + tests automatically; the only remaining maturity step is automated **deploy** (CD), which is Champion-tier, not a Builder requirement.
+8 / 8 criteria land in "good project". CI/CD now runs build + tests automatically **and deploys automatically** on merge — the full pipeline.
 
 ---
 
@@ -70,13 +70,13 @@
 **Furthest from done — this is the work to do for the Champion badge.** Current state vs the bar:
 
 - **CI**: ✅ automated lint + **test** + build on push/PR (green as of `testing-baseline`).
-- **CD**: ❌ deploys are **manual** (`wrangler deploy` + the `.dev.vars`-aside ritual). No automated deploy on merge.
+- **CD**: ✅ **automated deploy** to Cloudflare on merge to `master` (`auto-deploy`: `deploy` job gated on green CI, leak-check, `wrangler deploy`; cancel-in-progress). Migrations stay a deliberate manual pre-merge step.
 - **Team workflow / AI-in-pipeline**: 🟡 AI is heavily used in *development* (10x skills, Exa/Context7 research, AI impl-reviews) but not yet wired into the **team CI/CD pipeline** (e.g. AI code review on PRs, automated quality gates, branch-protection + PR flow).
 
 **Champion gap list (remaining):**
 1. ~~A test stage in CI~~ — ✅ done (`testing-baseline`).
-2. **Automated deploy (CD)** to Cloudflare on merge to `master` (move the manual ritual into a GitHub Action; `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID` secrets already exist from the CI fix).
-3. **AI-assisted team pipeline** evidence — e.g. AI code review on PRs (the course's `/code-review ultra`), PR-based flow with branch protection, or an AI quality gate in CI.
+2. ~~Automated deploy (CD)~~ — ✅ done (`auto-deploy`).
+3. **AI-assisted team pipeline** evidence — e.g. AI code review on PRs (the course's `/code-review ultra`), PR-based flow with branch protection, or an AI quality gate in CI. ← **last remaining Champion piece**
 
 ---
 
@@ -84,8 +84,8 @@
 
 1. ~~**Close Builder #5** — add ≥1 user-perspective automated test.~~ ✅ **Done** (`testing-baseline`): Vitest unit suite + Playwright take-a-test e2e.
 2. ~~**Add a test stage to `ci.yml`**~~ ✅ **Done** (`testing-baseline`): `npm run test` runs in CI; pipeline green.
-3. **Automate deploy (CD)** — a GitHub Action that builds with prod env + `wrangler deploy` on merge to `master`. The `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID` secrets already exist (added for the CI remote-proxy fix); Supabase prod vars are already secrets. ← **next**
-4. **AI-in-team-workflow** — adopt PR-based flow + an AI review gate (e.g. `/code-review ultra` on the branch/PR) and document it; this is the distinctly *Champion* (Module 5) piece.
+3. ~~**Automate deploy (CD)**~~ ✅ **Done** (`auto-deploy`): `deploy` job auto-ships to Cloudflare on merge to master (gated on green CI + leak-check).
+4. **AI-in-team-workflow** — adopt PR-based flow + an AI review gate (e.g. `/code-review ultra` on the branch/PR) and document it; this is the distinctly *Champion* (Module 5) piece. ← **next**
 5. **Package Architect evidence** — the archives, lessons, impl-reviews, and refactor/supersession story are the Architect submission; point to them.
 
 **Carry-forward (independent of certification):** operator prod backfill for ai-answer-matching; the gated-course `## Blocked` cluster.
@@ -94,4 +94,4 @@
 
 ## Bottom line
 
-**Builder is complete** — all mandatory items met or exceeded (tests + CI test stage landed via `testing-baseline`), plus the optional public URL. **Architect** is strongly evidenced by the change history. For **Champion**, two pieces remain: **automated deploy (CD)** on merge, and an **AI-assisted PR pipeline** (e.g. `/code-review ultra` as a review gate). We are well-positioned to aim for all three badges; CD is the recommended next change.
+**Builder is complete** (tests + CI via `testing-baseline`) and **CD is live** (`auto-deploy` — full lint→test→build→deploy pipeline on merge). **Architect** is strongly evidenced by the change history. For **Champion**, **one piece remains: an AI-assisted PR pipeline** (e.g. `/code-review ultra` as a review gate + PR-based flow). We are well-positioned to claim all three badges once that lands.

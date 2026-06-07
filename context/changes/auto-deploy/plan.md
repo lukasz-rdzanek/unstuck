@@ -133,18 +133,18 @@ DB migrations are NOT part of CD. For a change that adds a migration: run `supab
 
 #### Automated
 
-- [x] 1.1 Workflow has a `deploy` job: `needs: [ci]` + master-push `if` guard + leak-check + `wrangler deploy`
-- [x] 1.2 `npm run build` still succeeds locally
+- [x] 1.1 Workflow has a `deploy` job: `needs: [ci]` + master-push `if` guard + leak-check + `wrangler deploy` — 4f38a3c
+- [x] 1.2 `npm run build` still succeeds locally — 4f38a3c
 
 #### Manual
 
-- [ ] 1.3 On merge to master: `ci` → `deploy` both green; new Worker version published
-- [ ] 1.4 Leak-check passes (prod ref present, zero localhost); prod `/` + `/courses` → 200
-- [ ] 1.5 PRs run `ci` only — `deploy` skipped (no PR deploy)
+- [x] 1.3 On merge to master: `ci` → `deploy` both green; new Worker version published — 4f38a3c
+- [x] 1.4 Leak-check passes (prod ref present, zero localhost); prod `/` + `/courses` → 200 — 4f38a3c
+- [x] 1.5 PRs run `ci` only — `deploy` skipped (no PR deploy) — 4f38a3c
 
 ### Phase 2: Docs + closeout
 
 #### Manual
 
-- [ ] 2.1 certification.md updated (CD gap → done; remaining = AI-PR-pipeline)
-- [ ] 2.2 memory unstuck-production updated (CD primary; manual ritual fallback; manual migrations)
+- [x] 2.1 certification.md updated (CD gap → done; remaining = AI-PR-pipeline)
+- [x] 2.2 memory unstuck-production updated (CD primary; manual ritual fallback; manual migrations)
