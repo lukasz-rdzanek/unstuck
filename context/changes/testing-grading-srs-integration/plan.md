@@ -324,21 +324,21 @@ No DB migrations. Fixtures runtime-created + cleaned up; never `supabase db rese
 
 #### Automated
 
-- [x] 4.1 R5(b) test passes: `npm run test:integration -- embedding-immutability`
-- [x] 4.2 Full integration suite green: `npm run test:integration`
-- [x] 4.3 Type check + lint pass
+- [x] 4.1 R5(b) test passes: `npm run test:integration -- embedding-immutability` — 6c50d63
+- [x] 4.2 Full integration suite green: `npm run test:integration` — 6c50d63
+- [x] 4.3 Type check + lint pass — 6c50d63
 
 #### Manual
 
-- [x] 4.4 Prove-it-fails: expecting an overwrite flips red; revert restores green
+- [x] 4.4 Prove-it-fails: expecting an overwrite flips red; revert restores green — 6c50d63
 
 ### Phase 5: Cookbook & close-out
 
 #### Automated
 
-- [ ] 5.1 Full integration suite green: `npm run test:integration`
-- [ ] 5.2 Unit run + lint green: `npm run test` && `npm run lint`
+- [x] 5.1 Full integration suite green: `npm run test:integration`
+- [x] 5.2 Unit run + lint green: `npm run test` && `npm run lint`
 
 #### Manual
 
-- [ ] 5.3 §6 cookbook entry is concrete enough for Phase 3 to reuse the patterns
+- [x] 5.3 §6 cookbook entry is concrete enough for Phase 3 to reuse the patterns
