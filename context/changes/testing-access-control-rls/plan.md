@@ -341,26 +341,26 @@ No DB migrations. Fixtures are runtime-created and cleaned up; nothing is commit
 
 #### Automated
 
-- [x] 1.1 Unit run unchanged and green: `npm run test`
-- [x] 1.2 Integration project discovered and smoke test passes: `npm run test:integration`
-- [x] 1.3 Type checking passes: `npx tsc --noEmit`
-- [x] 1.4 Linting passes: `npm run lint`
+- [x] 1.1 Unit run unchanged and green: `npm run test` — e4611fb
+- [x] 1.2 Integration project discovered and smoke test passes: `npm run test:integration` — e4611fb
+- [x] 1.3 Type checking passes: `npx tsc --noEmit` — e4611fb
+- [x] 1.4 Linting passes: `npm run lint` — e4611fb
 
 #### Manual
 
-- [x] 1.5 With stack down, `npm run test:integration` fails fast with the readable message
-- [x] 1.6 `npm run test` does not start Docker / hit `:54321`
+- [x] 1.5 With stack down, `npm run test:integration` fails fast with the readable message — e4611fb
+- [x] 1.6 `npm run test` does not start Docker / hit `:54321` — e4611fb
 
 ### Phase 2: R1 — answer-key never readable
 
 #### Automated
 
-- [ ] 2.1 R1 test passes: `npm run test:integration -- answer-key`
-- [ ] 2.2 Type check + lint pass
+- [x] 2.1 R1 test passes: `npm run test:integration -- answer-key`
+- [x] 2.2 Type check + lint pass
 
 #### Manual
 
-- [ ] 2.3 Prove-it-fails: temporary authenticated SELECT policy on `question_options` makes the raw-table assertion fail; revert restores green
+- [x] 2.3 Prove-it-fails: temporary authenticated SELECT policy on `question_options` makes the raw-table assertion fail; revert restores green
 
 ### Phase 3: R2 — cross-user IDOR denial
 
