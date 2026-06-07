@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { TakingQuestion } from "@/lib/services/tests";
 
@@ -112,19 +113,32 @@ export default function TestQuiz({ testId, questions, passThreshold }: Props) {
             {q.multi && !result && (
               <p className="text-muted-foreground mb-2 text-xs tracking-wide uppercase">Select all that apply</p>
             )}
-            <div className="space-y-2">
+            <div className="space-y-2.5">
               {q.options.map((o) => {
                 const picked = (answers[q.id] ?? []).includes(o.id);
                 const isCorrectOpt = fb?.correctOptionIds.includes(o.id);
+                // Visual tone drives both the row and the custom indicator.
+                const tone = !result
+                  ? picked
+                    ? "primary"
+                    : "idle"
+                  : isCorrectOpt
+                    ? "correct"
+                    : picked
+                      ? "wrong"
+                      : "idle";
+                const filled = tone !== "idle";
                 return (
                   <label
                     key={o.id}
                     className={cn(
-                      "flex cursor-pointer items-center gap-3 rounded-xl border px-4 py-3 text-sm transition-colors",
-                      !result && "border-border hover:bg-card/60",
-                      result && isCorrectOpt && "border-success/40 bg-success/10 text-success",
-                      result && picked && !isCorrectOpt && "border-destructive/40 bg-destructive/10 text-destructive",
-                      result && !picked && !isCorrectOpt && "border-border opacity-70",
+                      "flex items-center gap-3 rounded-xl border px-4 py-3.5 text-sm transition-colors",
+                      result ? "cursor-default" : "cursor-pointer",
+                      tone === "idle" && "border-border hover:border-primary/40 hover:bg-card/60",
+                      tone === "idle" && !!result && "hover:border-border opacity-70 hover:bg-transparent",
+                      tone === "primary" && "border-primary/50 bg-primary/10 text-foreground",
+                      tone === "correct" && "border-success/40 bg-success/10 text-success",
+                      tone === "wrong" && "border-destructive/40 bg-destructive/10 text-destructive",
                     )}
                   >
                     <input
@@ -135,9 +149,37 @@ export default function TestQuiz({ testId, questions, passThreshold }: Props) {
                       onChange={() => {
                         toggle(q, o.id);
                       }}
-                      className="accent-primary"
+                      className="peer sr-only"
                     />
-                    <span>{o.body}</span>
+                    <span
+                      className={cn(
+                        "flex h-5 w-5 shrink-0 items-center justify-center border-2 transition-colors",
+                        "peer-focus-visible:ring-primary/50 peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-transparent",
+                        q.multi ? "rounded-md" : "rounded-full",
+                        tone === "idle" && "border-muted-foreground/40",
+                        tone === "primary" && "border-primary",
+                        tone === "correct" && "border-success",
+                        tone === "wrong" && "border-destructive",
+                        // checkbox = solid fill when selected; radio stays a ring + inner dot
+                        q.multi && filled && tone === "primary" && "bg-primary",
+                        q.multi && filled && tone === "correct" && "bg-success",
+                        q.multi && filled && tone === "wrong" && "bg-destructive",
+                      )}
+                    >
+                      {q.multi
+                        ? filled && <Check className="h-3.5 w-3.5 text-white" strokeWidth={3} />
+                        : filled && (
+                            <span
+                              className={cn(
+                                "h-2.5 w-2.5 rounded-full",
+                                tone === "primary" && "bg-primary",
+                                tone === "correct" && "bg-success",
+                                tone === "wrong" && "bg-destructive",
+                              )}
+                            />
+                          )}
+                    </span>
+                    <span className="leading-snug">{o.body}</span>
                   </label>
                 );
               })}
