@@ -373,25 +373,25 @@ No DB migrations. The only non-test edits are an `export` keyword (middleware) a
 
 #### Automated
 
-- [x] 3.1 R7 tests pass: `npm run test -- signin middleware`
-- [x] 3.2 Full unit run green: `npm run test`
-- [x] 3.3 Type check + lint pass
+- [x] 3.1 R7 tests pass: `npm run test -- signin middleware` — d03a5be
+- [x] 3.2 Full unit run green: `npm run test` — d03a5be
+- [x] 3.3 Type check + lint pass — d03a5be
 
 #### Manual
 
-- [x] 3.4 Prove-it-fails: signin open-redirect sink flips red when inverted; revert restores green
+- [x] 3.4 Prove-it-fails: signin open-redirect sink flips red when inverted; revert restores green — d03a5be
 
 ### Phase 4: SRS enrol branches
 
 #### Automated
 
-- [ ] 4.1 SRS tests pass: `npm run test -- submit grade rate`
-- [ ] 4.2 Full unit run green: `npm run test`
-- [ ] 4.3 Type check + lint pass
+- [x] 4.1 SRS tests pass: `npm run test -- submit grade rate`
+- [x] 4.2 Full unit run green: `npm run test`
+- [x] 4.3 Type check + lint pass
 
 #### Manual
 
-- [ ] 4.4 Prove-it-fails: submit correct-first-timer skip flips red when an upsert is expected; revert restores green
+- [x] 4.4 Prove-it-fails: submit correct-first-timer skip flips red when an upsert is expected; revert restores green
 
 ### Phase 5: Cookbook, doc fix & close-out
 
