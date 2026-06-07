@@ -79,6 +79,11 @@ as $$
     and (p_exclude_author is null or m.author_id is distinct from p_exclude_author)
     and char_length(m.body) >= 40
     and (1 - (m.embedding <=> p_query_embedding)) >= p_match_threshold
+  -- NOTE: ordering by the soft-boost expression (not the raw `<=>` operator)
+  -- means the HNSW index can't satisfy the ORDER BY — this is a seq-scan + sort
+  -- over the course's embedded messages. Deliberate: the seed-boost must be
+  -- applied before ranking. Negligible at MVP corpus size; revisit (e.g. two-pass
+  -- ANN-then-rerank) if a single course's message volume grows large.
   order by
     ((1 - (m.embedding <=> p_query_embedding)) + (case when m.is_seeded then 0.05 else 0 end)) desc
   limit least(greatest(p_match_count, 1), 5);

@@ -6,7 +6,11 @@ import { embedText, toVectorLiteral } from "@/lib/embeddings";
 
 export const prerender = false;
 
-function jsonResponse(body: unknown, status: number): Response {
+interface JsonResponseInit {
+  status: number;
+}
+
+function jsonResponse(body: unknown, { status }: JsonResponseInit): Response {
   return new Response(JSON.stringify(body), {
     status,
     headers: { "Content-Type": "application/json" },
@@ -30,9 +34,9 @@ const bodySchema = z.object({ batchSize: z.number().int().min(1).max(200).option
  */
 export const POST: APIRoute = async (context) => {
   const userId = context.locals.user?.id;
-  if (!userId) return jsonResponse({ error: "unauthenticated" }, 401);
-  if (!OPERATOR_USER_ID) return jsonResponse({ error: "backfill_disabled" }, 503);
-  if (userId !== OPERATOR_USER_ID) return jsonResponse({ error: "forbidden" }, 403);
+  if (!userId) return jsonResponse({ error: "unauthenticated" }, { status: 401 });
+  if (!OPERATOR_USER_ID) return jsonResponse({ error: "backfill_disabled" }, { status: 503 });
+  if (userId !== OPERATOR_USER_ID) return jsonResponse({ error: "forbidden" }, { status: 403 });
 
   let raw: unknown = {};
   try {
@@ -44,14 +48,14 @@ export const POST: APIRoute = async (context) => {
   const batchSize = parsed.success ? (parsed.data.batchSize ?? 50) : 50;
 
   const supabase = createClient(context.request.headers, context.cookies);
-  if (!supabase) return jsonResponse({ error: "supabase_not_configured" }, 500);
+  if (!supabase) return jsonResponse({ error: "supabase_not_configured" }, { status: 500 });
 
   const { data: pending, error: listError } = await supabase.rpc("list_unembedded_messages", {
     p_limit: batchSize,
   });
   if (listError) {
     console.error("[embeddings] list failed:", listError.message);
-    return jsonResponse({ error: "list_failed" }, 500);
+    return jsonResponse({ error: "list_failed" }, { status: 500 });
   }
 
   let embedded = 0;
@@ -79,5 +83,5 @@ export const POST: APIRoute = async (context) => {
   const { data: rest } = await supabase.rpc("list_unembedded_messages", { p_limit: 200 });
   const remaining = (rest ?? []).length;
 
-  return jsonResponse({ ok: true, embedded, failed, remaining }, 200);
+  return jsonResponse({ ok: true, embedded, failed, remaining }, { status: 200 });
 };
