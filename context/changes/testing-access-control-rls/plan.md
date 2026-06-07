@@ -366,24 +366,24 @@ No DB migrations. Fixtures are runtime-created and cleaned up; nothing is commit
 
 #### Automated
 
-- [x] 3.1 R2 test passes: `npm run test:integration -- idor`
-- [x] 3.2 Type check + lint pass
+- [x] 3.1 R2 test passes: `npm run test:integration -- idor` — 61db98e
+- [x] 3.2 Type check + lint pass — 61db98e
 
 #### Manual
 
-- [x] 3.3 Prove-it-fails: inverting a cross-user read assertion flips red; correct version passes
+- [x] 3.3 Prove-it-fails: inverting a cross-user read assertion flips red; correct version passes — 61db98e
 
 ### Phase 4: R4 — course-access gate
 
 #### Automated
 
-- [ ] 4.1 R4 test passes: `npm run test:integration -- course-access`
-- [ ] 4.2 Full integration suite green: `npm run test:integration`
-- [ ] 4.3 Type check + lint pass
+- [x] 4.1 R4 test passes: `npm run test:integration -- course-access`
+- [x] 4.2 Full integration suite green: `npm run test:integration`
+- [x] 4.3 Type check + lint pass
 
 #### Manual
 
-- [ ] 4.4 Prove-it-fails: enrolling the non-enrolled user flips denials to allowed; un-enrolling restores denial
+- [x] 4.4 Prove-it-fails: enrolling the non-enrolled user flips denials to allowed; un-enrolling restores denial
 
 ### Phase 5: Cookbook & close-out
 
