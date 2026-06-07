@@ -1,7 +1,7 @@
 ---
 change_id: ai-pr-pipeline
 title: AI-assisted PR pipeline + team workflow (final 10xChampion piece)
-status: implementing
+status: implemented
 created: 2026-06-07
 updated: 2026-06-07
 archived_at: null

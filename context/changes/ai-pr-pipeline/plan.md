@@ -101,10 +101,10 @@ Add the PR template + CONTRIBUTING.md, update certification.md.
 
 #### Automated
 
-- [x] 1.1 Three files present: PR template, CONTRIBUTING.md, certification.md (updated)
-- [ ] 1.2 CI green on push (lint+test+build) and CD redeploys
+- [x] 1.1 Three files present: PR template, CONTRIBUTING.md, certification.md (updated) — efb3e2b
+- [x] 1.2 CI green on push (lint+test+build) and CD redeploys — efb3e2b
 
 #### Manual
 
-- [x] 1.3 PR template + CONTRIBUTING accurately describe the pipeline (CI-on-PR, CD-on-merge, /code-review ultra gate, manual migrations, leak-check)
-- [x] 1.4 certification.md Champion section reads correctly (3/3 addressed; document-only caveat clear)
+- [x] 1.3 PR template + CONTRIBUTING accurately describe the pipeline (CI-on-PR, CD-on-merge, /code-review ultra gate, manual migrations, leak-check) — efb3e2b
+- [x] 1.4 certification.md Champion section reads correctly (3/3 addressed; document-only caveat clear) — efb3e2b
