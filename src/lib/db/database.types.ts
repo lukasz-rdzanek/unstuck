@@ -284,6 +284,7 @@ export type Database = {
           author_id: string | null
           body: string
           created_at: string
+          embedding: string | null
           id: string
           is_seeded: boolean
           lesson_id: string
@@ -292,6 +293,7 @@ export type Database = {
           author_id?: string | null
           body: string
           created_at?: string
+          embedding?: string | null
           id?: string
           is_seeded?: boolean
           lesson_id: string
@@ -300,6 +302,7 @@ export type Database = {
           author_id?: string | null
           body?: string
           created_at?: string
+          embedding?: string | null
           id?: string
           is_seeded?: boolean
           lesson_id?: string
@@ -616,6 +619,36 @@ export type Database = {
         Returns: Json
       }
       has_course_access: { Args: { p_course_id: string }; Returns: boolean }
+      list_unembedded_messages: {
+        Args: { p_limit: number }
+        Returns: {
+          body: string
+          id: string
+        }[]
+      }
+      match_lesson_answers: {
+        Args: {
+          p_course_id: string
+          p_exclude_author: string
+          p_exclude_message_id: string
+          p_match_count: number
+          p_match_threshold: number
+          p_query_embedding: string
+        }
+        Returns: {
+          body: string
+          is_seeded: boolean
+          lesson_id: string
+          lesson_slug: string
+          lesson_title: string
+          message_id: string
+          similarity: number
+        }[]
+      }
+      set_message_embedding: {
+        Args: { p_embedding: string; p_message_id: string }
+        Returns: undefined
+      }
       submit_test_attempt: {
         Args: { p_answers: Json; p_test_id: string }
         Returns: Json

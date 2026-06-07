@@ -6,7 +6,10 @@ import { createClientBrowser } from "@/lib/supabase-browser";
 import { listInitialMessages, listOlderPeers, insertMessage } from "@/lib/services/messages";
 
 const PEER_LIMIT = 50;
-const EMBED_AUTHOR = "*, author:profiles!messages_author_id_fkey(id, display_name)";
+// Explicit columns (NOT `*`) so the 768-dim `embedding` vector is never pulled
+// into the chat client — it's backend-only matching data, useless to the UI.
+const EMBED_AUTHOR =
+  "id, lesson_id, author_id, body, is_seeded, created_at, author:profiles!messages_author_id_fkey(id, display_name)";
 
 // Window inside which a Realtime INSERT echo is dedup-matched against a
 // pending optimistic bubble (same author_id + body + |Δ created_at| < this).

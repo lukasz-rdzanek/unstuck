@@ -74,6 +74,6 @@ export type NewMessage = Pick<Tables["messages"]["Insert"], "lesson_id" | "body"
  * Surfaced as `order by is_seeded desc, created_at asc` so operator-seeded
  * threads pin to the top and peer messages fall through chronologically.
  */
-export type LessonChatMessage = Message & {
+export type LessonChatMessage = Omit<Message, "embedding"> & {
   author: Pick<Profile, "id" | "display_name"> | null;
 };

@@ -13,7 +13,11 @@ import type { LessonChatMessage, NewMessage } from "@/types";
 
 type ChatSupabaseClient = SupabaseClient<Database>;
 
-const EMBED_AUTHOR = "*, author:profiles!messages_author_id_fkey(id, display_name)";
+// Explicit columns (NOT `*`) so the 768-dim `embedding` vector added in
+// ai-answer-matching is never pulled into the chat client — it's backend-only
+// matching data, useless to the UI and large on the wire.
+const EMBED_AUTHOR =
+  "id, lesson_id, author_id, body, is_seeded, created_at, author:profiles!messages_author_id_fkey(id, display_name)";
 
 const DEFAULT_PEER_LIMIT = 50;
 
