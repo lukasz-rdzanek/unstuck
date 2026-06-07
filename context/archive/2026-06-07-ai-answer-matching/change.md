@@ -1,10 +1,10 @@
 ---
 change_id: ai-answer-matching
 title: AI answer-matching — auto-surface the best historical answer to a learner's question
-status: impl_reviewed
+status: archived
 created: 2026-06-07
 updated: 2026-06-07
-archived_at: null
+archived_at: 2026-06-07T10:10:28Z
 ---
 
 ## Notes
