@@ -313,24 +313,24 @@ No DB migrations. Fixtures runtime-created + cleaned up; never `supabase db rese
 
 #### Automated
 
-- [x] 3.1 R5(a) test passes: `npm run test:integration -- match-isolation`
-- [x] 3.2 Type check + lint pass
+- [x] 3.1 R5(a) test passes: `npm run test:integration -- match-isolation` — 3506ba9
+- [x] 3.2 Type check + lint pass — 3506ba9
 
 #### Manual
 
-- [x] 3.3 Prove-it-fails: cross-course leak assertion flips red when inverted; revert restores green
+- [x] 3.3 Prove-it-fails: cross-course leak assertion flips red when inverted; revert restores green — 3506ba9
 
 ### Phase 4: R5(b) — embedding immutability
 
 #### Automated
 
-- [ ] 4.1 R5(b) test passes: `npm run test:integration -- embedding-immutability`
-- [ ] 4.2 Full integration suite green: `npm run test:integration`
-- [ ] 4.3 Type check + lint pass
+- [x] 4.1 R5(b) test passes: `npm run test:integration -- embedding-immutability`
+- [x] 4.2 Full integration suite green: `npm run test:integration`
+- [x] 4.3 Type check + lint pass
 
 #### Manual
 
-- [ ] 4.4 Prove-it-fails: expecting an overwrite flips red; revert restores green
+- [x] 4.4 Prove-it-fails: expecting an overwrite flips red; revert restores green
 
 ### Phase 5: Cookbook & close-out
 
