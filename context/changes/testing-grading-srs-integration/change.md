@@ -1,7 +1,7 @@
 ---
 change_id: testing-grading-srs-integration
 title: Grading & SRS integration tests (test-plan Phase 2)
-status: implementing
+status: implemented
 created: 2026-06-07
 updated: 2026-06-07
 archived_at: null

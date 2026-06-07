@@ -336,9 +336,9 @@ No DB migrations. Fixtures runtime-created + cleaned up; never `supabase db rese
 
 #### Automated
 
-- [x] 5.1 Full integration suite green: `npm run test:integration`
-- [x] 5.2 Unit run + lint green: `npm run test` && `npm run lint`
+- [x] 5.1 Full integration suite green: `npm run test:integration` — 471af0c
+- [x] 5.2 Unit run + lint green: `npm run test` && `npm run lint` — 471af0c
 
 #### Manual
 
-- [x] 5.3 §6 cookbook entry is concrete enough for Phase 3 to reuse the patterns
+- [x] 5.3 §6 cookbook entry is concrete enough for Phase 3 to reuse the patterns — 471af0c
