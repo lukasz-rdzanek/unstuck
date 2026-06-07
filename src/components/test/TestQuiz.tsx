@@ -81,6 +81,7 @@ export default function TestQuiz({ testId, questions, passThreshold }: Props) {
     <div className="space-y-6">
       {result && (
         <div
+          data-testid="quiz-result"
           className={cn(
             "rounded-2xl border p-6 text-center backdrop-blur-xl",
             result.passed
@@ -131,6 +132,7 @@ export default function TestQuiz({ testId, questions, passThreshold }: Props) {
                 return (
                   <label
                     key={o.id}
+                    data-testid="quiz-option"
                     className={cn(
                       "flex items-center gap-3 rounded-xl border px-4 py-3.5 text-sm transition-colors",
                       result ? "cursor-default" : "cursor-pointer",
@@ -201,6 +203,7 @@ export default function TestQuiz({ testId, questions, passThreshold }: Props) {
       ) : (
         <button
           type="button"
+          data-testid="quiz-submit"
           onClick={() => {
             void submit();
           }}

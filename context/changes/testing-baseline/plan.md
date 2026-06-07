@@ -222,24 +222,24 @@ Vitest units are pure + sub-second; no external deps → fast CI. Playwright is 
 
 #### Automated
 
-- [x] 1.1 Unit tests pass: `npm run test`
-- [x] 1.2 Type check passes: `npx astro check`
-- [x] 1.3 Lint passes: `npm run lint`
-- [x] 1.4 Build succeeds: `npm run build`
+- [x] 1.1 Unit tests pass: `npm run test` — b786585
+- [x] 1.2 Type check passes: `npx astro check` — b786585
+- [x] 1.3 Lint passes: `npm run lint` — b786585
+- [x] 1.4 Build succeeds: `npm run build` — b786585
 
 #### Manual
 
-- [x] 1.5 Four suites green; signin open-redirect guard unchanged after extraction
+- [x] 1.5 Four suites green; signin open-redirect guard unchanged after extraction — b786585
 
 ### Phase 2: Playwright e2e — take a test → see the score (local)
 
 #### Automated
 
-- [ ] 2.1 E2E passes locally: `npm run test:e2e` (local stack up)
+- [x] 2.1 E2E passes locally: `npm run test:e2e` (local stack up)
 
 #### Manual
 
-- [ ] 2.2 Spec drives sign-in → take test → submit → score panel asserts; stable on re-run
+- [x] 2.2 Spec drives sign-in → take test → submit → score panel asserts; stable on re-run
 
 ### Phase 3: CI test stage
 
