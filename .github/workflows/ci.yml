@@ -9,13 +9,6 @@ on:
 jobs:
   ci:
     runs-on: ubuntu-latest
-    # The remote-only AI binding (ai-answer-matching) makes the Cloudflare vite
-    # plugin open a remote proxy session during `astro sync` + `build`; CI must
-    # authenticate non-interactively via these tokens or those steps fail with
-    # "must be logged in to use wrangler dev in remote mode".
-    env:
-      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -23,10 +16,20 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      # The remote-only AI binding (ai-answer-matching) makes the Cloudflare vite
+      # plugin open a remote proxy session during `astro sync` + `build`; CI must
+      # authenticate non-interactively via these tokens or those steps fail with
+      # "must be logged in to use wrangler dev in remote mode". Scoped per-step
+      # (not job-level) so they stay out of `npm ci`'s postinstall environment.
       - run: npx astro sync
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       - run: npm run lint
       - run: npm run test
       - run: npm run build
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

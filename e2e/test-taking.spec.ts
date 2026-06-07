@@ -17,7 +17,7 @@ test("learner signs in, takes a test, and sees a graded result", async ({ page }
   await page.locator("#email").fill(EMAIL);
   await page.locator("#password").fill(PASSWORD);
   await page.getByRole("button", { name: "Sign in" }).click();
-  await page.waitForURL("http://localhost:4321/");
+  await page.waitForURL("/"); // relative — inherits baseURL
 
   // Open the test, answer a question, submit.
   await page.goto(TEST_PATH);
