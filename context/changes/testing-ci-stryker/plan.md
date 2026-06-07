@@ -247,26 +247,26 @@ No DB migrations. CI changes take effect only once pushed to GitHub. The one pro
 
 #### Manual
 
-- [ ] 2.3 Mutation report reviewed; survivors triaged (killed or consciously ignored); score recorded
+- [x] 2.3 Mutation report reviewed; survivors triaged (killed or consciously ignored); score recorded — 121ae7c
 
 ### Phase 3: F4 backfill null-guard
 
 #### Automated
 
-- [x] 3.1 Backfill tests pass: `npm run test -- backfill`
-- [x] 3.2 Full unit run green + lint + type check
+- [x] 3.1 Backfill tests pass: `npm run test -- backfill` — bfbc23e
+- [x] 3.2 Full unit run green + lint + type check — bfbc23e
 
 #### Manual
 
-- [ ] 3.3 Prove-it-fails: removing the `?? []` guard reds the new test; restoring greens
+- [x] 3.3 Prove-it-fails: removing the `?? []` guard reds the new test; restoring greens — bfbc23e
 
 ### Phase 4: Cookbook & close-out
 
 #### Automated
 
-- [ ] 4.1 Full unit run + lint + type check green
-- [ ] 4.2 §3 Phase 4 = complete; §6 has no remaining Phase-4 TBD
+- [x] 4.1 Full unit run + lint + type check green
+- [x] 4.2 §3 Phase 4 = complete; §6 has no remaining Phase-4 TBD
 
 #### Manual
 
-- [ ] 4.3 §6 entry reproduces the CI job + a Stryker run from the doc alone
+- [x] 4.3 §6 entry reproduces the CI job + a Stryker run from the doc alone
