@@ -1,7 +1,7 @@
 ---
 change_id: testing-baseline
 title: Testing baseline — runner + first user-perspective tests + CI test stage
-status: implementing
+status: implemented
 created: 2026-06-07
 updated: 2026-06-07
 archived_at: null

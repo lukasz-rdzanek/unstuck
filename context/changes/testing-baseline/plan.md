@@ -245,9 +245,9 @@ Vitest units are pure + sub-second; no external deps → fast CI. Playwright is 
 
 #### Automated
 
-- [x] 3.1 ci.yml valid + includes `npm run test` step
-- [ ] 3.2 CI run executes lint + test + build and passes
+- [x] 3.1 ci.yml valid + includes `npm run test` step — e9b1b51
+- [x] 3.2 CI run executes lint + test + build and passes — ad8df5c
 
 #### Manual
 
-- [ ] 3.3 GitHub Actions run shows the test step green
+- [x] 3.3 GitHub Actions run shows the test step green — ad8df5c
