@@ -264,9 +264,9 @@ No DB migrations. CI changes take effect only once pushed to GitHub. The one pro
 
 #### Automated
 
-- [x] 4.1 Full unit run + lint + type check green
-- [x] 4.2 §3 Phase 4 = complete; §6 has no remaining Phase-4 TBD
+- [x] 4.1 Full unit run + lint + type check green — c631b28
+- [x] 4.2 §3 Phase 4 = complete; §6 has no remaining Phase-4 TBD — c631b28
 
 #### Manual
 
-- [x] 4.3 §6 entry reproduces the CI job + a Stryker run from the doc alone
+- [x] 4.3 §6 entry reproduces the CI job + a Stryker run from the doc alone — c631b28

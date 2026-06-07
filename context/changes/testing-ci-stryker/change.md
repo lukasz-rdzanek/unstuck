@@ -1,7 +1,7 @@
 ---
 change_id: testing-ci-stryker
 title: CI integration + Stryker mutation testing (test-plan Phase 4)
-status: implementing
+status: implemented
 created: 2026-06-07
 updated: 2026-06-07
 archived_at: null
