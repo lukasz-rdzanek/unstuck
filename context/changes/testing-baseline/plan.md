@@ -235,17 +235,17 @@ Vitest units are pure + sub-second; no external deps → fast CI. Playwright is 
 
 #### Automated
 
-- [x] 2.1 E2E passes locally: `npm run test:e2e` (local stack up)
+- [x] 2.1 E2E passes locally: `npm run test:e2e` (local stack up) — 85d7db9
 
 #### Manual
 
-- [x] 2.2 Spec drives sign-in → take test → submit → score panel asserts; stable on re-run
+- [x] 2.2 Spec drives sign-in → take test → submit → score panel asserts; stable on re-run — 85d7db9
 
 ### Phase 3: CI test stage
 
 #### Automated
 
-- [ ] 3.1 ci.yml valid + includes `npm run test` step
+- [x] 3.1 ci.yml valid + includes `npm run test` step
 - [ ] 3.2 CI run executes lint + test + build and passes
 
 #### Manual
