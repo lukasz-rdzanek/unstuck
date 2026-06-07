@@ -389,11 +389,11 @@ No DB migrations. Fixtures are runtime-created and cleaned up; nothing is commit
 
 #### Automated
 
-- [x] 5.1 Full integration suite still green: `npm run test:integration`
-- [x] 5.2 Unit run + lint still green: `npm run test` && `npm run lint`
-- [x] 5.3 `supabase/tests/rls_matrix.sql` removed: `test ! -f supabase/tests/rls_matrix.sql`
+- [x] 5.1 Full integration suite still green: `npm run test:integration` — bc78a20
+- [x] 5.2 Unit run + lint still green: `npm run test` && `npm run lint` — bc78a20
+- [x] 5.3 `supabase/tests/rls_matrix.sql` removed: `test ! -f supabase/tests/rls_matrix.sql` — bc78a20
 
 #### Manual
 
-- [x] 5.4 §6 cookbook entry is concrete enough for Phase 2 to reuse without reading test source
-- [x] 5.5 Every former `rls_matrix.sql` cell has a confirmed home in the Vitest suite
+- [x] 5.4 §6 cookbook entry is concrete enough for Phase 2 to reuse without reading test source — bc78a20
+- [x] 5.5 Every former `rls_matrix.sql` cell has a confirmed home in the Vitest suite — bc78a20
