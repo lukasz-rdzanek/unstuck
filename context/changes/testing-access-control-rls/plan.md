@@ -355,23 +355,23 @@ No DB migrations. Fixtures are runtime-created and cleaned up; nothing is commit
 
 #### Automated
 
-- [x] 2.1 R1 test passes: `npm run test:integration -- answer-key`
-- [x] 2.2 Type check + lint pass
+- [x] 2.1 R1 test passes: `npm run test:integration -- answer-key` — a773d3b
+- [x] 2.2 Type check + lint pass — a773d3b
 
 #### Manual
 
-- [x] 2.3 Prove-it-fails: temporary authenticated SELECT policy on `question_options` makes the raw-table assertion fail; revert restores green
+- [x] 2.3 Prove-it-fails: temporary authenticated SELECT policy on `question_options` makes the raw-table assertion fail; revert restores green — a773d3b
 
 ### Phase 3: R2 — cross-user IDOR denial
 
 #### Automated
 
-- [ ] 3.1 R2 test passes: `npm run test:integration -- idor`
-- [ ] 3.2 Type check + lint pass
+- [x] 3.1 R2 test passes: `npm run test:integration -- idor`
+- [x] 3.2 Type check + lint pass
 
 #### Manual
 
-- [ ] 3.3 Prove-it-fails: inverting a cross-user read assertion flips red; correct version passes
+- [x] 3.3 Prove-it-fails: inverting a cross-user read assertion flips red; correct version passes
 
 ### Phase 4: R4 — course-access gate
 
