@@ -12,7 +12,7 @@ const theme = Astro.locals.theme;
 ---
 
 <!doctype html>
-<html lang="en" class={theme === "dark" ? "dark" : undefined}>
+<html lang="en" class:list={theme === "dark" ? "dark" : undefined}>
   <head>
     <meta charset="UTF-8" />
     {
