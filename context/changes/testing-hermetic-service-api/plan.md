@@ -349,25 +349,25 @@ No DB migrations. The only non-test edits are an `export` keyword (middleware) a
 
 #### Automated
 
-- [x] 1.1 Smoke/harness test passes: `npm run test -- harness`
-- [x] 1.2 Full unit run green: `npm run test`
-- [x] 1.3 Type check + lint pass
+- [x] 1.1 Smoke/harness test passes: `npm run test -- harness` — 7bd7673
+- [x] 1.2 Full unit run green: `npm run test` — 7bd7673
+- [x] 1.3 Type check + lint pass — 7bd7673
 
 #### Manual
 
-- [x] 1.4 astro:env approach confirmed (vi.mock vs alias) + tripwire preserved for non-route unit tests
+- [x] 1.4 astro:env approach confirmed (vi.mock vs alias) + tripwire preserved for non-route unit tests — 7bd7673
 
 ### Phase 2: R6 — service/API contracts
 
 #### Automated
 
-- [ ] 2.1 R6 tests pass: `npm run test -- match-answer backfill resend` (+ cross-cutting)
-- [ ] 2.2 Full unit run green: `npm run test`
-- [ ] 2.3 Type check + lint pass
+- [x] 2.1 R6 tests pass: `npm run test -- match-answer backfill resend` (+ cross-cutting)
+- [x] 2.2 Full unit run green: `npm run test`
+- [x] 2.3 Type check + lint pass
 
 #### Manual
 
-- [ ] 2.4 Prove-it-fails: match-answer degrade contract flips red when inverted; revert restores green
+- [x] 2.4 Prove-it-fails: match-answer degrade contract flips red when inverted; revert restores green
 
 ### Phase 3: R7 — auth redirect / route-gating
 
