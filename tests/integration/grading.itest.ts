@@ -108,6 +108,7 @@ describe("R3 — quiz grading matches an independent oracle", () => {
       .select("id, score, passed")
       .eq("test_id", SEED_TEST_ID)
       .order("created_at", { ascending: false })
+      .order("id", { ascending: false }) // deterministic tiebreaker if two attempts share created_at
       .limit(1)
       .maybeSingle();
     expect(attempt.error).toBeNull();

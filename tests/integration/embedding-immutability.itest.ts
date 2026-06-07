@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { authedClientFor, serviceClient, type DbClient } from "./setup/clients";
-import { createRunFixture, cleanup, type RunFixture } from "./setup/fixtures";
+import { createRunFixture, cleanup, vec768, type RunFixture } from "./setup/fixtures";
 
 // R5(b) — set_message_embedding must change ONLY the embedding column, ONLY when
 // it was NULL, and ONLY the target row. (Per the F1 caveat, the SQL does NOT
@@ -9,12 +9,8 @@ import { createRunFixture, cleanup, type RunFixture } from "./setup/fixtures";
 
 const RUN_ID = "embedding-immutability";
 
-/** A 768-dim pgvector literal with component 0 set to `v0`. */
-function vec(v0: number): string {
-  const arr = new Array<number>(768).fill(0);
-  arr[0] = v0;
-  return `[${arr.join(",")}]`;
-}
+/** A distinct 768-dim pgvector literal (component 0 = v0), reusing the fixture helper. */
+const vec = (v0: number): string => vec768(v0);
 
 describe("R5(b) — set_message_embedding immutability", () => {
   let fx: RunFixture;

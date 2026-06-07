@@ -98,7 +98,7 @@ function uniqueEmail(runId: string, who: string): string {
  * cosine similarity, so near-axis vectors give controlled, easy-to-reason cosines
  * (e.g. q=[1,0,…] vs [1,0.75,0,…] → cosine 1/√1.5625 = 0.8). No Workers AI needed.
  */
-function vec768(...components: number[]): string {
+export function vec768(...components: number[]): string {
   const arr = new Array<number>(768).fill(0);
   components.forEach((v, i) => {
     if (i < 768) arr[i] = v;
@@ -252,6 +252,8 @@ export async function createRunFixture(runId: string): Promise<RunFixture> {
   // ---- R5(a): two free courses with embedded messages ----------------------
   // courseA message: cosine ≈ 0.8 to the query. trap message (other course):
   // cosine 1.0 — higher-ranked, must never leak into a courseA match.
+  // NOTE: every embedded `body` here MUST be ≥ 40 chars — match_lesson_answers
+  // filters on `char_length(m.body) >= 40` and silently drops shorter messages.
   await insertFreeCourseWithMessage(svc, runId, {
     courseId: fx.matchCourseAId,
     lessonId: fx.matchLessonAId,
