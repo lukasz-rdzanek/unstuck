@@ -69,12 +69,16 @@ describe("RLS role matrix (ported from rls_matrix.sql)", () => {
       })
       .select("id")
       .single();
-    expect(ins.error).toBeNull();
-    expect(ins.data?.id).toBeTruthy();
-
-    // Clean up the message we just posted (it's on the shared seed lesson).
-    if (ins.data !== null) {
-      await serviceClient().from("messages").delete().eq("id", ins.data.id);
+    // The message is on the SHARED seed lesson and messages.author_id is
+    // ON DELETE SET NULL (not cascade), so user-teardown won't remove it —
+    // clean it up in a finally so a failed assertion can't leak an orphan.
+    try {
+      expect(ins.error).toBeNull();
+      expect(ins.data?.id).toBeTruthy();
+    } finally {
+      if (ins.data !== null) {
+        await serviceClient().from("messages").delete().eq("id", ins.data.id);
+      }
     }
   });
 

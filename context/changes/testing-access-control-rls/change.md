@@ -1,7 +1,7 @@
 ---
 change_id: testing-access-control-rls
 title: Access-control & answer-key integration tests (test-plan Phase 1)
-status: implemented
+status: impl_reviewed
 created: 2026-06-07
 updated: 2026-06-07
 archived_at: null

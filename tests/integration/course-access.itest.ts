@@ -83,6 +83,7 @@ describe("R4 — non-enrolled user is denied gated-course content", () => {
 
     const inn = await enrolled.rpc("submit_test_attempt", { p_test_id: fx.testId, p_answers: answers });
     expect(inn.error).toBeNull();
+    expect(inn.data).not.toBeNull(); // the RPC actually graded + returned a result
   });
 
   it("grade_question: outsider gets no_access, enrolled succeeds", async () => {
@@ -98,6 +99,7 @@ describe("R4 — non-enrolled user is denied gated-course content", () => {
       p_selected: [fx.correctOptionId],
     });
     expect(inn.error).toBeNull();
+    expect(inn.data).not.toBeNull(); // the RPC actually graded + returned a verdict
   });
 
   it("get_due_practice_questions: outsider gets [] (no access)", async () => {

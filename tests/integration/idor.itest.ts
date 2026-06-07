@@ -50,9 +50,16 @@ describe("R2 — cross-user IDOR is denied", () => {
     if (submit.error !== null) {
       throw new Error(`A submit_test_attempt: ${submit.error.message}`);
     }
-    const attempt = await A.from("test_attempts").select("id").eq("test_id", SEED_TEST_ID).single();
-    if (attempt.error !== null) {
-      throw new Error(`read A attempt: ${attempt.error.message}`);
+    // No unique (user_id, test_id) on test_attempts — take the newest to stay
+    // robust to retries / a future second submit.
+    const attempt = await A.from("test_attempts")
+      .select("id")
+      .eq("test_id", SEED_TEST_ID)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (attempt.error !== null || attempt.data === null) {
+      throw new Error(`read A attempt: ${attempt.error?.message ?? "no attempt row"}`);
     }
     attemptId = attempt.data.id;
 
@@ -82,6 +89,7 @@ describe("R2 — cross-user IDOR is denied", () => {
     expect(asB.data).toEqual([]);
 
     const asA = await A.from("test_attempts").select("id").eq("id", attemptId);
+    expect(asA.error).toBeNull();
     expect(asA.data?.length).toBe(1);
   });
 
@@ -91,6 +99,7 @@ describe("R2 — cross-user IDOR is denied", () => {
     expect(asB.data).toEqual([]);
 
     const asA = await A.from("attempt_answers").select("question_id").eq("attempt_id", attemptId);
+    expect(asA.error).toBeNull();
     expect(asA.data?.length).toBeGreaterThan(0);
   });
 
@@ -105,6 +114,7 @@ describe("R2 — cross-user IDOR is denied", () => {
       .select("reps")
       .eq("user_id", fx.enrolled.id)
       .eq("lesson_id", SEED_LESSON_ID);
+    expect(asA.error).toBeNull();
     expect(asA.data?.length).toBe(1);
   });
 
@@ -119,6 +129,7 @@ describe("R2 — cross-user IDOR is denied", () => {
       .select("reps")
       .eq("user_id", fx.enrolled.id)
       .eq("question_id", SEED_QUESTION_ID);
+    expect(asA.error).toBeNull();
     expect(asA.data?.length).toBe(1);
   });
 
@@ -133,6 +144,7 @@ describe("R2 — cross-user IDOR is denied", () => {
       .select("lesson_id")
       .eq("user_id", fx.enrolled.id)
       .eq("lesson_id", SEED_LESSON_ID);
+    expect(asA.error).toBeNull();
     expect(asA.data?.length).toBe(1);
   });
 
@@ -141,6 +153,7 @@ describe("R2 — cross-user IDOR is denied", () => {
     expect(asB.data).toEqual([]);
 
     const asA = await A.from("enrollments").select("id").eq("course_id", fx.gatedCourseId);
+    expect(asA.error).toBeNull();
     expect(asA.data?.length).toBe(1);
   });
 

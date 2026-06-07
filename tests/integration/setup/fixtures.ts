@@ -12,7 +12,11 @@ import { serviceClient } from "./clients";
 // Most teardown rides ON DELETE CASCADE — deleting the gated course cascades its
 // chapters/lessons/messages/tests/questions/options/enrollments/attempts, and
 // deleting a user cascades that user's profile + own-only rows (attempts, SRS,
-// completions) on ANY course.
+// completions) on ANY course. CAVEAT: messages.author_id → profiles is
+// ON DELETE SET NULL, NOT cascade — a message a fixture user posts on a
+// NON-fixture lesson (e.g. the shared seed lesson) survives user-teardown with
+// author_id = NULL. Tests that post to a shared lesson must delete that message
+// themselves (see role-matrix Cell 2's finally block).
 //
 // Data-row ids are DETERMINISTIC per runId so the start-cleanup removes a prior
 // run's rows by id (via the course cascade). User EMAILS are unique per
