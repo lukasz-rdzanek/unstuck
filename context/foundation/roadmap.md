@@ -1,15 +1,27 @@
 ---
 project: "Unstuck"
 version: 1
-status: draft
+status: beta-complete
+phase: testing
 created: 2026-05-27
-updated: 2026-06-05
+updated: 2026-06-07
 prd_version: 1
 main_goal: market-feedback
-top_blocker: time
+top_blocker: test-coverage
 ---
 
 # Roadmap: Unstuck
+
+> **🏁 BETA COMPLETE (2026-06-07) — entering the TESTING stage.** The feature-build
+> phase is closed: MVP (F-01 + S-01–S-03), the S-04–S-07 slices, all polish
+> (UNS-13…UNS-23), the learning loop (tests + summary + spaced re-quizzing, UNS-24),
+> the custom video player (UNS-19), and ai-answer-matching are all shipped, reviewed,
+> archived, and deployed to production. No feature work is queued. The project now
+> transitions to a **Testing stage** (Module 3 territory: test strategy + automated
+> quality gates beyond the current lint+build CI). Deferred items that carry forward:
+> the operator prod backfill for ai-answer-matching, and the gated-course `## Blocked`
+> cluster (un-park when a paid course lands). New features resume only after the
+> testing baseline is in place or on an explicit product decision.
 
 > Derived from `context/foundation/prd.md` (v1) + auto-researched codebase baseline.
 > Edit-in-place; archive when superseded.
