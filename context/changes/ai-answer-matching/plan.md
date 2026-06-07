@@ -345,32 +345,32 @@ Deploy the feature to production: pgvector + migrations, the `ai` binding, prod 
 
 #### Automated
 
-- [x] 2.1 Type check passes: `npx astro check`
-- [x] 2.2 Lint passes: `npm run lint`
-- [x] 2.3 Build succeeds: `npm run build`
-- [x] 2.4 No `cloudflare:workers` import inlined into the client bundle
+- [x] 2.1 Type check passes: `npx astro check` — 2ff0230
+- [x] 2.2 Lint passes: `npm run lint` — 2ff0230
+- [x] 2.3 Build succeeds: `npm run build` — 2ff0230
+- [x] 2.4 No `cloudflare:workers` import inlined into the client bundle — 2ff0230
 
 #### Manual
 
-- [x] 2.5 Backfill embeds existing messages; re-run drains `remaining` to 0 (idempotent)
-- [x] 2.6 Operator gate: non-operator → 403, operator → 200 with counts
-- [x] 2.7 `messages.embedding` populated (NULL count → 0)
+- [x] 2.5 Backfill embeds existing messages; re-run drains `remaining` to 0 (idempotent) — 2ff0230
+- [x] 2.6 Operator gate: non-operator → 403, operator → 200 with counts — 2ff0230
+- [x] 2.7 `messages.embedding` populated (NULL count → 0) — 2ff0230
 
 ### Phase 3: Match endpoint + chat suggestion card (API + UI)
 
 #### Automated
 
-- [ ] 3.1 Type check passes: `npx astro check`
-- [ ] 3.2 Lint passes: `npm run lint`
-- [ ] 3.3 Build succeeds: `npm run build`
-- [ ] 3.4 `/api/lessons/<id>/match-answer` gated (unauth → 401)
-- [ ] 3.5 Client bundle has no `cloudflare:workers` import / secret string
+- [x] 3.1 Type check passes: `npx astro check`
+- [x] 3.2 Lint passes: `npm run lint`
+- [x] 3.3 Build succeeds: `npm run build`
+- [x] 3.4 `/api/lessons/<id>/match-answer` gated (unauth → 401)
+- [x] 3.5 Client bundle has no `cloudflare:workers` import / secret string
 
 #### Manual
 
-- [ ] 3.6 Near-duplicate question → one card with correct "from lesson" label; dismiss works; light/dark + responsive
-- [ ] 3.7 Novel/unrelated question → silent (below threshold)
-- [ ] 3.8 No cross-course match leakage; existing chat (optimistic/Realtime/load-older/reconnect) unchanged
+- [x] 3.6 Near-duplicate question → one card with correct "from lesson" label; dismiss works; light/dark + responsive
+- [x] 3.7 Novel/unrelated question → silent (below threshold)
+- [x] 3.8 No cross-course match leakage; existing chat (optimistic/Realtime/load-older/reconnect) unchanged
 
 ### Phase 4: Ship to prod
 

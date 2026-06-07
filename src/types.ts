@@ -77,3 +77,19 @@ export type NewMessage = Pick<Tables["messages"]["Insert"], "lesson_id" | "body"
 export type LessonChatMessage = Omit<Message, "embedding"> & {
   author: Pick<Profile, "id" | "display_name"> | null;
 };
+
+/**
+ * A semantically-matched prior answer surfaced after a learner posts a
+ * question (ai-answer-matching). Shaped from match_lesson_answers — never
+ * includes the embedding. `lessonId`/`lessonSlug`/`lessonTitle` let the UI
+ * label + link a match that came from a different lesson in the same course.
+ */
+export interface AnswerMatch {
+  messageId: string;
+  lessonId: string;
+  lessonSlug: string;
+  lessonTitle: string;
+  body: string;
+  isSeeded: boolean;
+  similarity: number;
+}

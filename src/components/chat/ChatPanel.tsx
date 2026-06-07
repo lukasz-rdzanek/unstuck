@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import MessageBubble from "./MessageBubble";
 import Composer from "./Composer";
+import AnswerSuggestionCard from "./AnswerSuggestionCard";
 import { useChatMessages } from "./useChatMessages";
 
 interface Props {
@@ -51,6 +52,8 @@ export default function ChatPanel({ lessonId, userId, userDisplayName, onMessage
     postMessage,
     retryMessage,
     discardMessage,
+    suggestion,
+    dismissSuggestion,
   } = useChatMessages({
     lessonId,
     userId,
@@ -180,6 +183,9 @@ export default function ChatPanel({ lessonId, userId, userDisplayName, onMessage
                   />
                 );
               })}
+              {suggestion && (
+                <AnswerSuggestionCard match={suggestion} currentLessonId={lessonId} onDismiss={dismissSuggestion} />
+              )}
             </>
           )}
         </div>

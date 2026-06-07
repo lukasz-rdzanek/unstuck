@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { REALTIME_SUBSCRIBE_STATES } from "@supabase/supabase-js";
-import type { LessonChatMessage } from "@/types";
+import type { AnswerMatch, LessonChatMessage } from "@/types";
 import type { Database } from "@/lib/db/database.types";
 import { createClientBrowser } from "@/lib/supabase-browser";
 import { listInitialMessages, listOlderPeers, insertMessage } from "@/lib/services/messages";
@@ -48,6 +48,9 @@ interface UseChatMessagesReturn {
   postMessage: (body: string) => Promise<void>;
   retryMessage: (tempId: string) => Promise<void>;
   discardMessage: (tempId: string) => void;
+  /** Best-effort matched prior answer for the last posted question (or null). */
+  suggestion: AnswerMatch | null;
+  dismissSuggestion: () => void;
 }
 
 /**
@@ -67,6 +70,8 @@ export function useChatMessages({ lessonId, userId, userDisplayName }: UseChatMe
   const [hasOlder, setHasOlder] = useState(false);
   const [isLoadingOlder, setIsLoadingOlder] = useState(false);
   const [isReconnecting, setIsReconnecting] = useState(false);
+  // ai-answer-matching: best-effort matched answer for the last posted question.
+  const [suggestion, setSuggestion] = useState<AnswerMatch | null>(null);
 
   // Lazy ref init — calling createClientBrowser() inline in useRef()
   // would run the factory twice under React 19 Strict Mode (impl-review
@@ -99,6 +104,7 @@ export function useChatMessages({ lessonId, userId, userDisplayName }: UseChatMe
 
     const cancelled = { current: false };
     const wasDisconnected = { current: false };
+    setSuggestion(null); // a fresh lesson has no carried-over suggestion
 
     // Dedupe-aware upsert. Order of checks:
     //   1. Already in state by `id` → ignore (Realtime echoes are idempotent).
@@ -286,6 +292,30 @@ export function useChatMessages({ lessonId, userId, userDisplayName }: UseChatMe
     [lessonId],
   );
 
+  const dismissSuggestion = useCallback(() => {
+    setSuggestion(null);
+  }, []);
+
+  // Best-effort: after a post, ask the server for the most relevant prior
+  // answer. Off the critical path — any failure or empty result is silent.
+  const fetchSuggestion = useCallback(
+    async (question: string) => {
+      try {
+        const res = await fetch(`/api/lessons/${lessonId}/match-answer`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question }),
+        });
+        if (!res.ok) return;
+        const data = (await res.json()) as { ok: boolean; match: AnswerMatch | null };
+        if (data.match) setSuggestion(data.match);
+      } catch {
+        // silent — suggestion is best-effort, never disrupts chat
+      }
+    },
+    [lessonId],
+  );
+
   const postMessage = useCallback(
     async (body: string) => {
       const trimmed = body.trim();
@@ -306,10 +336,13 @@ export function useChatMessages({ lessonId, userId, userDisplayName }: UseChatMe
         status: "sending",
       };
       setMessages((prev) => [...prev, optimistic]);
+      // Clear any prior suggestion, then look up a match for the new question.
+      setSuggestion(null);
+      void fetchSuggestion(trimmed);
 
       await submitInsert(tempId, trimmed);
     },
-    [lessonId, submitInsert],
+    [lessonId, submitInsert, fetchSuggestion],
   );
 
   const retryMessage = useCallback(
@@ -345,5 +378,7 @@ export function useChatMessages({ lessonId, userId, userDisplayName }: UseChatMe
     postMessage,
     retryMessage,
     discardMessage,
+    suggestion,
+    dismissSuggestion,
   };
 }
