@@ -397,9 +397,9 @@ No DB migrations. The only non-test edits are an `export` keyword (middleware) a
 
 #### Automated
 
-- [x] 5.1 Full unit run green: `npm run test`
-- [x] 5.2 Lint + type check pass
+- [x] 5.1 Full unit run green: `npm run test` — 0bc5fce
+- [x] 5.2 Lint + type check pass — 0bc5fce
 
 #### Manual
 
-- [x] 5.3 §6 cookbook entry is concrete enough for Phase 4 + contributors to reuse the harness
+- [x] 5.3 §6 cookbook entry is concrete enough for Phase 4 + contributors to reuse the harness — 0bc5fce
