@@ -1,7 +1,7 @@
 ---
 change_id: auto-deploy
 title: Automated deploy (CD) to Cloudflare Workers on merge to master
-status: implemented
+status: impl_reviewed
 created: 2026-06-07
 updated: 2026-06-07
 archived_at: null
