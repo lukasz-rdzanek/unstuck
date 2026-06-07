@@ -1,19 +1,9 @@
 import type { APIRoute } from "astro";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase";
+import { isSafeNext } from "@/lib/safe-next";
 
 export const prerender = false;
-
-/**
- * Same-origin path guard for `?next=`: accepts a single leading `/`
- * followed by neither `/` nor `\`. Rejecting `\` matters because browsers
- * normalize backslash → forward-slash in Location, so `/\evil.com` would
- * otherwise survive a `startsWith("//")` check and resolve to
- * `https://evil.com/`. See: `new URL("/\\evil.com", "https://x").origin`.
- */
-function isSafeNext(next: unknown): next is string {
-  return typeof next === "string" && /^\/(?![/\\])/.test(next);
-}
 
 const signinSchema = z.object({
   email: z.email("Enter a valid email address"),
