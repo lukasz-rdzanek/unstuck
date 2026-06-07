@@ -6,7 +6,7 @@ const LESSON_ROUTE_RE = /^\/courses\/[^/]+\/lessons\//;
 const COURSE_TEST_RE = /^\/courses\/[^/]+\/tests\//;
 const COURSE_PRACTICE_RE = /^\/courses\/[^/]+\/practice\/?$/;
 
-function isProtectedRoute(pathname: string): boolean {
+export function isProtectedRoute(pathname: string): boolean {
   if (pathname.startsWith("/dashboard")) return true;
   if (COURSE_TEST_RE.test(pathname)) return true;
   if (COURSE_PRACTICE_RE.test(pathname)) return true;

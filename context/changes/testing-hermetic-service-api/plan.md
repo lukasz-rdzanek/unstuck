@@ -361,25 +361,25 @@ No DB migrations. The only non-test edits are an `export` keyword (middleware) a
 
 #### Automated
 
-- [x] 2.1 R6 tests pass: `npm run test -- match-answer backfill resend` (+ cross-cutting)
-- [x] 2.2 Full unit run green: `npm run test`
-- [x] 2.3 Type check + lint pass
+- [x] 2.1 R6 tests pass: `npm run test -- match-answer backfill resend` (+ cross-cutting) — baaee79
+- [x] 2.2 Full unit run green: `npm run test` — baaee79
+- [x] 2.3 Type check + lint pass — baaee79
 
 #### Manual
 
-- [x] 2.4 Prove-it-fails: match-answer degrade contract flips red when inverted; revert restores green
+- [x] 2.4 Prove-it-fails: match-answer degrade contract flips red when inverted; revert restores green — baaee79
 
 ### Phase 3: R7 — auth redirect / route-gating
 
 #### Automated
 
-- [ ] 3.1 R7 tests pass: `npm run test -- signin middleware`
-- [ ] 3.2 Full unit run green: `npm run test`
-- [ ] 3.3 Type check + lint pass
+- [x] 3.1 R7 tests pass: `npm run test -- signin middleware`
+- [x] 3.2 Full unit run green: `npm run test`
+- [x] 3.3 Type check + lint pass
 
 #### Manual
 
-- [ ] 3.4 Prove-it-fails: signin open-redirect sink flips red when inverted; revert restores green
+- [x] 3.4 Prove-it-fails: signin open-redirect sink flips red when inverted; revert restores green
 
 ### Phase 4: SRS enrol branches
 
