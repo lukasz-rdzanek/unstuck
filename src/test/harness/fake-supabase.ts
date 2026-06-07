@@ -104,6 +104,11 @@ class FakeQuery implements PromiseLike<QueryResult> {
     return Promise.resolve(this.result()).then(onfulfilled, onrejected);
   }
 
+  // LOAD-BEARING: after a write op (upsert/insert/delete) the builder switches to
+  // write-mode, so a DIRECT await of `.upsert(...)` (no .single()) resolves the
+  // configured `write` result via then(). The submit/grade SWALLOW tests depend
+  // on this to inject an upsert error; don't change result()/then() so that a
+  // post-write await silently returns the read result, or those tests go vacuous.
   private result(): QueryResult {
     if (this.mode === "write") return this.cfg.write ?? OK;
     return this.cfg.read ?? OK;
@@ -127,7 +132,7 @@ export function makeFakeSupabase(options: FakeSupabaseOptions = {}): FakeSupabas
 
   const client = {
     auth: {
-      signOut: () => Promise.resolve(OK),
+      signOut: () => Promise.resolve({ error: null }), // real supabase-js returns { error } only
       getUser: () => Promise.resolve({ data: { user: null }, error: null }),
       ...options.auth,
     },

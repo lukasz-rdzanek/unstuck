@@ -168,4 +168,11 @@ describe("R6 — degradation posture (swallow vs fatal)", () => {
     expect((await completePost(makeApiContext({ user: USER, params: { lessonId: "l-1" } }))).status).toBe(200);
     expect((await completeDelete(makeApiContext({ user: USER, params: { lessonId: "l-1" } }))).status).toBe(200);
   });
+
+  it("complete DELETE is FATAL on a delete error → 500 delete_failed", async () => {
+    setClient({ tables: { lesson_completions: { write: { data: null, error: { message: "delete boom" } } } } });
+    const res = await completeDelete(makeApiContext({ user: USER, params: { lessonId: "l-1" } }));
+    expect(res.status).toBe(500);
+    expect((await body(res)).error).toBe("delete_failed");
+  });
 });
