@@ -290,24 +290,24 @@ No DB migrations. Fixtures runtime-created + cleaned up; never `supabase db rese
 
 #### Automated
 
-- [x] 1.1 Unit run unchanged: `npm run test`
-- [x] 1.2 Existing integration suite green with extended fixtures: `npm run test:integration`
-- [x] 1.3 Type check + lint pass
+- [x] 1.1 Unit run unchanged: `npm run test` — c7ddedb
+- [x] 1.2 Existing integration suite green with extended fixtures: `npm run test:integration` — c7ddedb
+- [x] 1.3 Type check + lint pass — c7ddedb
 
 #### Manual
 
-- [x] 1.4 Extended createRunFixture leaves no residue after a run
+- [x] 1.4 Extended createRunFixture leaves no residue after a run — c7ddedb
 
 ### Phase 2: R3 — grading correctness
 
 #### Automated
 
-- [ ] 2.1 R3 test passes: `npm run test:integration -- grading`
-- [ ] 2.2 Type check + lint pass
+- [x] 2.1 R3 test passes: `npm run test:integration -- grading`
+- [x] 2.2 Type check + lint pass
 
 #### Manual
 
-- [ ] 2.3 Prove-it-fails: inverting a truth-table expectation flips red; revert restores green
+- [x] 2.3 Prove-it-fails: inverting a truth-table expectation flips red; revert restores green
 
 ### Phase 3: R5(a) — answer-match cross-course isolation
 
