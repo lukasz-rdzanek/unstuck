@@ -11,10 +11,10 @@
 #
 # A failing related test exits 2 with the output on stdout so the agent reacts
 # next turn. Files outside the risk areas, or with no related tests, are a fast
-# no-op (exit 0). Path parsed from stdin JSON with node — no jq dependency.
+# no-op (exit 0). $FILE comes from the shared, jq-free stdin parser.
 set -uo pipefail
 
-FILE=$(node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{try{console.log(JSON.parse(s).tool_input?.file_path||"")}catch{console.log("")}})')
+source "$(dirname "$0")/_filepath.sh"
 [ -z "$FILE" ] && exit 0
 
 case "$FILE" in

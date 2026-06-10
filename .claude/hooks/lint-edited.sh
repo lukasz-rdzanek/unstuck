@@ -7,11 +7,10 @@
 # agent via exit code 2 + the message on stdout, so it can self-correct on the
 # next turn (see CLAUDE.md "Exit codes and the feedback loop").
 #
-# Path comes from the hook's stdin JSON (tool_input.file_path), parsed with node
-# — no jq dependency.
+# $FILE (tool_input.file_path) comes from the shared, jq-free stdin parser.
 set -uo pipefail
 
-FILE=$(node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{try{console.log(JSON.parse(s).tool_input?.file_path||"")}catch{console.log("")}})')
+source "$(dirname "$0")/_filepath.sh"
 [ -z "$FILE" ] && exit 0
 
 case "$FILE" in
