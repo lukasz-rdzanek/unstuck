@@ -1,5 +1,9 @@
 {
   "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": ["@playwright/mcp@latest", "--caps=vision,network,storage"]
+    },
     "linear-server": {
       "type": "http",
       "url": "https://mcp.linear.app/mcp"
