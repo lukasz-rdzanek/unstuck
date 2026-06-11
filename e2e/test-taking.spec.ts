@@ -7,6 +7,10 @@ import { test, expect } from "@playwright/test";
 // Prereqs (local): `npx supabase start` + seeded data; the dev server is started
 // by playwright.config.ts. Uses the local diagtest account + the seeded
 // "streaming-basics-test" in the react-architecture-deep-dive course.
+// This spec drives the login UI itself, so it must start anonymous — override
+// the project-level authenticated storageState with an empty session.
+test.use({ storageState: { cookies: [], origins: [] } });
+
 const EMAIL = "diagtest@local.dev";
 const PASSWORD = "password123";
 const TEST_PATH = "/courses/react-architecture-deep-dive/tests/streaming-basics-test";

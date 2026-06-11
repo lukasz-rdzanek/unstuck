@@ -13,7 +13,15 @@ export default defineConfig({
     baseURL: "http://localhost:4321",
     trace: "on-first-retry",
   },
-  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
+  projects: [
+    // Logs in once, writes playwright/.auth/user.json (testing-e2e storageState).
+    { name: "setup", testMatch: /auth\.setup\.ts/ },
+    {
+      name: "chromium",
+      use: { ...devices["Desktop Chrome"], storageState: "playwright/.auth/user.json" },
+      dependencies: ["setup"],
+    },
+  ],
   webServer: {
     command: "npm run dev",
     url: "http://localhost:4321",
