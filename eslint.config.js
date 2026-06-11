@@ -76,7 +76,12 @@ export default tseslint.config(
   // rules. Linting the generated file would either churn on every regen or force
   // us to fork the generator's style.
   {
-    ignores: ["src/lib/db/database.types.ts"],
+    ignores: [
+      "src/lib/db/database.types.ts",
+      // Node CI helper scripts (e.g. the e2e login-user seeder), not app code —
+      // out of scope for the browser/worker-oriented strictTypeChecked rules.
+      "e2e/setup/**",
+    ],
   },
   baseConfig,
   reactConfig,
