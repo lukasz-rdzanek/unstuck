@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Bash|apply_patch",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .codex/hooks/post-tool-use.sh",
+            "statusMessage": "Running unit tests after edit"
+          }
+        ]
+      }
+    ]
+  }
+}
