@@ -31,6 +31,7 @@ pnpm-debug.log*
 test-results/
 playwright-report/
 playwright/.auth/
+.playwright-cli/
 
 # Stryker mutation testing (selective local gate; reports/temp not committed)
 .stryker-tmp/
