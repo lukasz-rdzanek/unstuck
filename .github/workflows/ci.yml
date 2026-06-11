@@ -110,3 +110,49 @@ jobs:
       - name: Supabase status on failure
         if: failure()
         run: supabase status || true
+
+  # Browser-level E2E (Playwright) against the real app + local Supabase (m3l4).
+  # Same isolation contract as `integration`: PR-triggered + manual dispatch only,
+  # NOT in `deploy.needs`. Boots the local stack (seed.sql has the course/lesson/
+  # test), mints the login-capable e2e user via the admin API (empty-password
+  # seed users can't log in), writes the local Supabase keys to .dev.vars so the
+  # dev server reads them, and runs the suite. Needs the CF tokens because the
+  # dev server opens a remote AI-binding session on boot (same reason as `ci`).
+  e2e:
+    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - uses: supabase/setup-cli@v2
+        with:
+          version: 2.98.2 # keep in sync with the `supabase` devDep (see `integration`)
+      - run: supabase start
+      - name: Seed the e2e login user
+        run: node e2e/setup/seed-e2e-user.mjs
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Point the dev server at the local stack
+        run: |
+          STATUS=$(supabase status -o json)
+          {
+            echo "SUPABASE_URL=$(echo "$STATUS" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>console.log(JSON.parse(s).API_URL))')"
+            echo "SUPABASE_KEY=$(echo "$STATUS" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>console.log(JSON.parse(s).ANON_KEY))')"
+          } >> .dev.vars
+      - name: Run E2E
+        run: npm run test:e2e
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: Upload E2E traces on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-traces
+          path: test-results/
+          if-no-files-found: ignore
+          retention-days: 7
