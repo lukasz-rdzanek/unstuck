@@ -1,35 +1,26 @@
 ## Project rules
 
-@AGENTS.md — project-specific conventions, tripwires, and pointers. Critical rules (RLS, no Next.js directives, `prerender = false` for API routes) live there. Read alongside the lesson sentinel above.
+@AGENTS.md — project-specific conventions, tripwires, and pointers. Critical rules (RLS, no Next.js directives, `prerender = false` for API routes) live there. Read alongside the lesson sentinel below.
 
 <!-- BEGIN @przeprogramowani/10x-cli -->
 
-## 10xDevs AI Toolkit - Module 3, Lesson 4 (E2E Tests)
+## 10xDevs AI Toolkit — Module 4, Lesson 1 (Scaling context)
 
-**For E2E tests, use the `/10x-e2e` skill.** It is the single source of truth
-for the workflow — risk → seed test + rules → generate → review against the five
-anti-patterns → re-prompt → verify. The skill's `references/` carry the full
-rules, anti-patterns, seed pattern, and prompt-template.
+This root is a **table of contents, not an encyclopedia.** The project is
+deliberately on **rung 1** of the context-maturity ladder: one root pair
+(`CLAUDE.md` and `AGENTS.md`) plus a single centralized `context/`. The
+decision, the escalation signals, and the maintenance cadence live in
+@context/foundation/context-architecture.md.
 
-A few hard rules that hold even before you invoke the skill:
+Hard rules while the project stays on rung 1:
 
-- **Locators:** `getByRole` / `getByLabel` / `getByText` first; `getByTestId`
-  only when accessibility attributes are ambiguous. Never CSS selectors, XPath,
-  or DOM structure.
-- **Never `page.waitForTimeout()`.** Wait for state: `toBeVisible()`,
-  `waitForURL()`, `waitForResponse()`.
-- **Test independence + cleanup.** Each test runs standalone — its own setup,
-  action, assertion, and cleanup; unique ids (timestamp suffix) so parallel runs
-  and re-runs don't collide.
-
-Two boundaries to keep straight:
-
-- **DOM (snapshot) is the default.** Vision (`--caps=vision`) is a supplement for
-  visual-only risks (layout, z-index, animation); for pixel regression prefer
-  deterministic tools (`toMatchSnapshot`, Argos, Lost Pixel). VLM model
-  selection/cost is a debugging topic (Lesson 5), not testing.
-- **Healer helps on selectors, harms on logic.** A changed selector → healer
-  re-finds it (route through PR review). A changed business behavior → healer
-  masks the bug; that failing-test-to-fix case is Lesson 5.
+- **Keep the roots lean.** Conventions → `AGENTS.md`; deep docs (PRD, roadmap,
+  research, plans, decisions) → `context/`, read just-in-time. Don't grow
+  either root past ~200 lines.
+- **No premature nesting.** Add a per-module `AGENTS.md` or `context/` only on a
+  real signal (an agent repeatedly losing a module's context, or the module
+  gaining its own owner/deploy) — never "just in case".
+- **Periodic hygiene.** Re-run `/10x-rule-review` ~monthly and cut any rule not
+  tied to a recurring agent failure mode.
 
 <!-- END @przeprogramowani/10x-cli -->
