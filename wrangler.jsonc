@@ -1,7 +1,9 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "unstuck",
-  "main": "@astrojs/cloudflare/entrypoints/server",
+  // Custom entry point: wraps @astrojs/cloudflare/entrypoints/server with Sentry
+  // (sentry.server.config.ts). No-op until the SENTRY_DSN secret is set.
+  "main": "./sentry.server.config.ts",
   "compatibility_date": "2026-05-08",
   "compatibility_flags": ["nodejs_compat"],
   "ai": {
