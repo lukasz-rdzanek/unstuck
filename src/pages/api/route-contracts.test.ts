@@ -128,7 +128,12 @@ describe("R6 — degradation posture (swallow vs fatal)", () => {
     expect((await body(res)).error).toBe("grade_failed");
   });
 
-  it("grade SWALLOWS a reschedule upsert failure → still 200", async () => {
+  // M3L5 fix: grade is FATAL on a reschedule failure (was swallowed → 200). The
+  // reschedule IS the point of grading a due card, so a failed schedule write
+  // must surface (like rate), not return a false success that leaves the card
+  // stuck in the due queue. submit (above) stays best-effort because its requiz
+  // enrolment is a SECONDARY effect — the graded attempt is the contract.
+  it("grade is FATAL on a reschedule upsert failure → 500 reschedule_failed", async () => {
     setClient({
       rpc: () => ({ data: { isCorrect: true, correctOptionIds: [] }, error: null }),
       tables: {
@@ -139,8 +144,8 @@ describe("R6 — degradation posture (swallow vs fatal)", () => {
       },
     });
     const res = await grade(makeApiContext({ user: USER, params: { questionId: "q-1" }, body: { selected: [] } }));
-    expect(res.status).toBe(200);
-    expect((await body(res)).isCorrect).toBe(true);
+    expect(res.status).toBe(500);
+    expect((await body(res)).error).toBe("reschedule_failed");
   });
 
   it("rate is FATAL on a load error → 500 load_failed", async () => {

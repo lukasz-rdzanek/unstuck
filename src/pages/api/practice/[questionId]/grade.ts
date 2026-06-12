@@ -64,7 +64,11 @@ export const POST: APIRoute = async (context) => {
   }
   const result = data as { isCorrect: boolean; correctOptionIds: string[] };
 
-  // Reschedule the card from correctness (best-effort/non-fatal).
+  // Reschedule the card from correctness. This IS the point of grading a due
+  // practice card: if the persisted schedule write fails, the card's `due` never
+  // moves and the same question keeps coming back. Propagate the failure (a 500,
+  // consistent with reviews/rate's `save_failed`) instead of swallowing it and
+  // returning a false 200 (a swallowed error — OWASP A10:2025).
   try {
     const now = new Date();
     const { data: existing } = await supabase
@@ -82,9 +86,11 @@ export const POST: APIRoute = async (context) => {
       );
     if (upsertError) {
       console.error("[reviews] practice reschedule failed:", upsertError.message);
+      return jsonResponse({ error: "reschedule_failed" }, { status: 500 });
     }
   } catch (rescheduleError) {
     console.error("[reviews] practice reschedule error:", rescheduleError);
+    return jsonResponse({ error: "reschedule_failed" }, { status: 500 });
   }
 
   return jsonResponse(result, { status: 200 });

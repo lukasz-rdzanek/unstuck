@@ -58,4 +58,22 @@ describe("R2/SRS — practice grade rescheduling", () => {
     expect(row?.user_id).toBe(USER.id);
     expect(row?.question_id).toBe(QUESTION);
   });
+
+  // M3L5 (test-driven bugfixing): the reschedule IS the point of grading a due
+  // practice card. If the persisted schedule write fails, the card's `due` never
+  // moves and the SAME question keeps coming back — but the handler used to log
+  // and return 200, hiding it (a swallowed error, OWASP A10:2025). The reschedule
+  // failure must surface, consistent with reviews/rate's `save_failed` → 500.
+  it("surfaces a failed reschedule as 500 — never a swallowed 200", async () => {
+    const fake = makeFakeSupabase({
+      rpc: () => ({ data: { isCorrect: true, correctOptionIds: [] }, error: null }),
+      tables: {
+        srs_question_state: { read: { data: null, error: null }, write: { data: null, error: { message: "db down" } } },
+      },
+    });
+    vi.mocked(createClient).mockReturnValue(fake.client);
+    const res = await run();
+    expect(res.status).toBe(500);
+    expect((await (res.json() as Promise<{ error: string }>)).error).toBe("reschedule_failed");
+  });
 });
