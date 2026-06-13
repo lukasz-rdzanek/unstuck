@@ -1,6 +1,28 @@
 import { describe, it, expect } from "vitest";
 import { emptyCardFields, applyRating } from "@/lib/srs";
 
+// Characterization (refactor-opportunities / M4L4): pin the SRS card column
+// contract BEFORE consolidating the CARD_COLUMNS literals duplicated across the
+// grade/rate/submit routes. The persisted card shape IS the 9 FSRS columns.
+const EXPECTED_CARD_COLUMNS = [
+  "due",
+  "stability",
+  "difficulty",
+  "scheduled_days",
+  "learning_steps",
+  "reps",
+  "lapses",
+  "state",
+  "last_review",
+];
+
+describe("srs card column contract", () => {
+  it("emptyCardFields exposes exactly the persisted SRS card columns", () => {
+    const now = new Date("2026-01-01T00:00:00.000Z");
+    expect(Object.keys(emptyCardFields(now)).sort()).toEqual([...EXPECTED_CARD_COLUMNS].sort());
+  });
+});
+
 describe("srs (FSRS scheduling)", () => {
   const now = new Date("2026-01-01T00:00:00.000Z");
 
