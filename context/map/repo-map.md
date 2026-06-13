@@ -89,7 +89,9 @@ evidence is a **custom import scan** — dependency-cruiser could not resolve th
 ## 4. Risk zones (handle with care)
 
 1. **`src/lib/supabase.ts`** — afferent 22; the one module the whole app depends
-   on. Any change to the client/session shape ripples everywhere.
+   on. Any change to the client/session shape ripples everywhere. Rendered:
+   [`supabase-blast-radius.svg`](supabase-blast-radius.svg) (11 API routes + 5
+   SSR pages + middleware import the value; 5 services are type-only DI).
 2. **DB schema (`supabase/migrations` + RLS)** — a migration regenerates
    `database.types.ts` and hand-ripples into services/`types.ts`; **RLS policies
    are invisible to every tool here** yet gate all data access. Highest "surprise"
