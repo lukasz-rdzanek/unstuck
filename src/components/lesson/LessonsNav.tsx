@@ -8,6 +8,8 @@ export interface NavTest {
   chapterId: string | null;
   slug: string;
   title: string;
+  /** True when the user has a passing attempt (>= pass_threshold) — shows the green check. */
+  passed: boolean;
 }
 
 interface Props {
@@ -141,7 +143,11 @@ export default function LessonsNav({ courseSlug, chapters, completedLessonIds, c
                       href={`/courses/${courseSlug}/tests/${chapterTest.slug}`}
                       className="border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 flex items-center gap-2 rounded-lg border p-2 text-sm font-semibold backdrop-blur-xl transition-colors"
                     >
-                      <Target className="size-4 shrink-0" aria-hidden="true" />
+                      {chapterTest.passed ? (
+                        <CheckCircle2 className="text-success size-4 shrink-0" aria-label="Passed" />
+                      ) : (
+                        <Target className="size-4 shrink-0" aria-hidden="true" />
+                      )}
                       <span className="min-w-0 flex-1 truncate">{chapterTest.title}</span>
                       <span className="shrink-0 text-[10px] tracking-wide uppercase">Test</span>
                     </a>
@@ -157,7 +163,11 @@ export default function LessonsNav({ courseSlug, chapters, completedLessonIds, c
           href={`/courses/${courseSlug}/tests/${courseTest.slug}`}
           className="border-primary/50 bg-primary/15 text-primary hover:bg-primary/25 flex items-center gap-2 rounded-lg border p-2 text-sm font-bold backdrop-blur-xl transition-colors"
         >
-          <Target className="size-4 shrink-0" aria-hidden="true" />
+          {courseTest.passed ? (
+            <CheckCircle2 className="text-success size-4 shrink-0" aria-label="Passed" />
+          ) : (
+            <Target className="size-4 shrink-0" aria-hidden="true" />
+          )}
           <span className="min-w-0 flex-1 truncate">Final test: {courseTest.title}</span>
           <span className="shrink-0 text-[10px] tracking-wide uppercase">Course</span>
         </a>

@@ -3,7 +3,7 @@ import AppLayout from "@/layouts/AppLayout.astro";
 import { createClient } from "@/lib/supabase";
 import { getCourseBySlug, listChaptersWithLessonsForCourse } from "@/lib/services/courses";
 import { getCompletedLessonIdsForCourse } from "@/lib/services/completions";
-import { listTestsForCourse, getDuePracticeCount } from "@/lib/services/tests";
+import { listTestsForCourse, getDuePracticeCount, getPassedTestIdsForCourse } from "@/lib/services/tests";
 
 const { slug } = Astro.params;
 const supabase = createClient(Astro.request.headers, Astro.cookies);
@@ -18,7 +18,7 @@ const isSignedIn = userId !== null;
 // Run both queries in parallel — they share no data dependency, both
 // only need course.id and (for completions) userId. Saves one Worker→
 // Supabase round-trip on every course detail render.
-const [chapters, completedLessonIds, duePracticeCount, tests] = await Promise.all([
+const [chapters, completedLessonIds, duePracticeCount, tests, passedTestIds] = await Promise.all([
   course && supabase ? listChaptersWithLessonsForCourse(supabase, course.id) : Promise.resolve([]),
   isSignedIn && supabase && course && userId
     ? getCompletedLessonIdsForCourse(supabase, course.id, userId)
@@ -27,6 +27,9 @@ const [chapters, completedLessonIds, duePracticeCount, tests] = await Promise.al
     ? getDuePracticeCount(supabase, userId, course.id, new Date())
     : Promise.resolve(0),
   isSignedIn && supabase && course ? listTestsForCourse(supabase, course.id) : Promise.resolve([]),
+  isSignedIn && supabase && course && userId
+    ? getPassedTestIdsForCourse(supabase, course.id, userId)
+    : Promise.resolve(new Set<string>()),
 ]);
 // Course-level test = no chapter; chapter-level tests are matched per chapter below.
 const courseTest = tests.find((t) => t.chapter_id === null) ?? null;
@@ -127,21 +130,38 @@ const pageTitle = course ? `${course.title} — Unstuck` : "Course not found —
                                 href={`/courses/${course.slug}/tests/${chapterTest.slug}`}
                                 class="border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 shadow-cosmic-glow flex items-center gap-4 rounded-xl border p-4 font-semibold backdrop-blur-xl transition-colors"
                               >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  stroke-width="2"
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  class="size-4 shrink-0"
-                                  aria-hidden="true"
-                                >
-                                  <circle cx="12" cy="12" r="10" />
-                                  <circle cx="12" cy="12" r="6" />
-                                  <circle cx="12" cy="12" r="2" />
-                                </svg>
+                                {passedTestIds.has(chapterTest.id) ? (
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    class="text-success size-4 shrink-0"
+                                    aria-label="Passed"
+                                  >
+                                    <circle cx="12" cy="12" r="10" />
+                                    <path d="m9 12 2 2 4-4" />
+                                  </svg>
+                                ) : (
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    class="size-4 shrink-0"
+                                    aria-hidden="true"
+                                  >
+                                    <circle cx="12" cy="12" r="10" />
+                                    <circle cx="12" cy="12" r="6" />
+                                    <circle cx="12" cy="12" r="2" />
+                                  </svg>
+                                )}
                                 <span>{chapterTest.title}</span>
                                 <span class="border-primary/40 ml-auto rounded-full border px-2 py-0.5 text-xs tracking-wide uppercase">
                                   Test
@@ -161,21 +181,38 @@ const pageTitle = course ? `${course.title} — Unstuck` : "Course not found —
                   href={`/courses/${course.slug}/tests/${courseTest.slug}`}
                   class="border-primary/50 bg-primary/15 text-primary hover:bg-primary/25 shadow-cosmic-glow flex items-center gap-4 rounded-2xl border p-5 text-base font-bold backdrop-blur-xl transition-colors"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="size-5 shrink-0"
-                    aria-hidden="true"
-                  >
-                    <circle cx="12" cy="12" r="10" />
-                    <circle cx="12" cy="12" r="6" />
-                    <circle cx="12" cy="12" r="2" />
-                  </svg>
+                  {passedTestIds.has(courseTest.id) ? (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="text-success size-5 shrink-0"
+                      aria-label="Passed"
+                    >
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="m9 12 2 2 4-4" />
+                    </svg>
+                  ) : (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="size-5 shrink-0"
+                      aria-hidden="true"
+                    >
+                      <circle cx="12" cy="12" r="10" />
+                      <circle cx="12" cy="12" r="6" />
+                      <circle cx="12" cy="12" r="2" />
+                    </svg>
+                  )}
                   <span>Final test: {courseTest.title}</span>
                   <span class="border-primary/50 ml-auto rounded-full border px-2.5 py-1 text-xs tracking-wide uppercase">
                     Course test

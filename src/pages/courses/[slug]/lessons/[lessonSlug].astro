@@ -2,7 +2,7 @@
 import AppLayout from "@/layouts/AppLayout.astro";
 import { createClient } from "@/lib/supabase";
 import { getLessonBySlugs, listChaptersWithLessonsForCourse } from "@/lib/services/courses";
-import { listTestsForCourse } from "@/lib/services/tests";
+import { listTestsForCourse, getPassedTestIdsForCourse } from "@/lib/services/tests";
 import { getCompletedLessonIdsForCourse, isLessonCompletedByUser } from "@/lib/services/completions";
 import { getCourseLastSeenAt, getCourseLatestUpdatedAt, upsertCourseView } from "@/lib/services/course-views";
 import { renderMarkdown } from "@/lib/markdown";
@@ -40,7 +40,7 @@ const userDisplayName = Astro.locals.displayName;
 // Run all three Supabase queries in parallel — they share no data
 // dependency (all need course.id and userId only). Saves two
 // Worker→Supabase round-trips on every lesson render vs sequential.
-const [isCompleted, chapters, completedLessonIds, lastSeenAt, courseUpdatedAt, courseTests] =
+const [isCompleted, chapters, completedLessonIds, lastSeenAt, courseUpdatedAt, courseTests, passedTestIds] =
   supabase && userId && lesson && course
     ? await Promise.all([
         isLessonCompletedByUser(supabase, lesson.id, userId),
@@ -49,11 +49,18 @@ const [isCompleted, chapters, completedLessonIds, lastSeenAt, courseUpdatedAt, c
         getCourseLastSeenAt(supabase, course.id, userId),
         getCourseLatestUpdatedAt(supabase, course.id),
         listTestsForCourse(supabase, course.id),
+        getPassedTestIdsForCourse(supabase, course.id, userId),
       ])
-    : [false, [], new Set<string>(), null, null, []];
+    : [false, [], new Set<string>(), null, null, [], new Set<string>()];
 
 // Slim test shape for the lesson-nav (chapter "boss" rows + final test).
-const navTests = courseTests.map((t) => ({ chapterId: t.chapter_id, slug: t.slug, title: t.title }));
+// `passed` drives the green completion check, mirroring lesson completions.
+const navTests = courseTests.map((t) => ({
+  chapterId: t.chapter_id,
+  slug: t.slug,
+  title: t.title,
+  passed: passedTestIds.has(t.id),
+}));
 
 // UNS-14 (c): record this visit so the next render's lastSeenAt
 // reflects today. Awaited (~50ms) so the upsert lands before the

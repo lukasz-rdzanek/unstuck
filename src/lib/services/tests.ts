@@ -33,6 +33,31 @@ export async function listTestsForCourse(supabase: SupabaseClient, courseId: str
   return data;
 }
 
+/**
+ * Test IDs the user has PASSED (any attempt with `passed = true`) in one course.
+ * Drives the green completion check on test rows in the course nav, mirroring
+ * `getCompletedLessonIdsForCourse` for lessons. `test_attempts` is own-only RLS,
+ * so this returns only the caller's attempts. Returns a Set for O(1) lookup;
+ * empty Set on error.
+ */
+export async function getPassedTestIdsForCourse(
+  supabase: SupabaseClient,
+  courseId: string,
+  userId: string,
+): Promise<Set<string>> {
+  const { data, error } = await supabase
+    .from("test_attempts")
+    .select("test_id, tests!inner(course_id)")
+    .eq("user_id", userId)
+    .eq("passed", true)
+    .eq("tests.course_id", courseId);
+  if (error) {
+    console.error("[tests] getPassedTestIdsForCourse failed:", error.message);
+    return new Set();
+  }
+  return new Set(data.map((row) => row.test_id));
+}
+
 /** A single test by course + slug (the test page). Null on miss/error. */
 export async function getTestBySlug(supabase: SupabaseClient, courseId: string, slug: string): Promise<Test | null> {
   const { data, error } = await supabase
