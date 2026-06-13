@@ -1,7 +1,7 @@
 ---
 change_id: refactor-opportunities
 title: Refactor opportunities — rank & decide what to fix from the practice/SRS Deep Focus
-status: plan_reviewed
+status: implemented
 created: 2026-06-13
 updated: 2026-06-13
 archived_at: null

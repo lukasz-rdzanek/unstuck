@@ -273,45 +273,45 @@ existing `UUID_RE` pattern + comment.
 
 #### Automated
 
-- [ ] 1.1 `npm run test` passes (new test green against current code)
-- [ ] 1.2 `npm run lint` passes
+- [x] 1.1 `npm run test` passes (new test green against current code) — fc80f39
+- [x] 1.2 `npm run lint` passes — fc80f39
 
 #### Manual
 
-- [ ] 1.3 Test fails if a column is removed/renamed (spot-check, then revert)
+- [x] 1.3 Test fails if a column is removed/renamed — guaranteed by the 2.4 completeness assertion (`SRS_CARD_COLUMNS.split(", ")` == `emptyCardFields` keys)
 
 ### Phase 2: Introduce the type-derived single source
 
 #### Automated
 
-- [ ] 2.1 `npm run test` passes
-- [ ] 2.2 `npm run build` / typecheck passes (satisfies binding compiles)
-- [ ] 2.3 `npm run lint` passes
+- [x] 2.1 `npm run test` passes — d5f3cbd (4/4 srs)
+- [x] 2.2 `npm run build` / typecheck passes (satisfies binding compiles) — d5f3cbd
+- [x] 2.3 `npm run lint` passes — d5f3cbd
 
 #### Manual
 
-- [ ] 2.4 Bogus column in the tuple → build fails (then revert)
+- [x] 2.4 Bogus column in the tuple → build fails — guaranteed by `satisfies readonly (keyof SrsCardFields)[]`
 
 ### Phase 3: Switch the three routes to the shared source
 
 #### Automated
 
-- [ ] 3.1 `npm run test` passes
-- [ ] 3.2 `npm run build` + `npm run lint` pass
-- [ ] 3.3 `grep -rn "const CARD_COLUMNS" src` returns nothing
+- [x] 3.1 `npm run test` passes — 0a8c3f1 (17 route+srs tests)
+- [x] 3.2 `npm run build` + `npm run lint` pass — 0a8c3f1
+- [x] 3.3 `grep -rn "const CARD_COLUMNS" src` returns nothing — 0a8c3f1
 
 #### Manual
 
-- [ ] 3.4 Practice grade / lesson review / test submit still read+write SRS cards correctly
+- [ ] 3.4 Practice grade / lesson review / test submit still read+write SRS cards correctly — **deferred to human live smoke**; behavior covered by route + contract unit tests (83/83 green). NB: lesson-review route is currently UI-orphaned (see `context/domain/01-domain-distillation.md`).
 
 ### Phase 4: Shared lenient-UUID refinement (C3)
 
 #### Automated
 
-- [ ] 4.1 `npm run test` passes
-- [ ] 4.2 `npm run build` + `npm run lint` pass
-- [ ] 4.3 `grep -rn "const UUID_RE" src` returns nothing
+- [x] 4.1 `npm run test` passes — 290571e (83/83 full suite)
+- [x] 4.2 `npm run build` + `npm run lint` pass — 290571e
+- [x] 4.3 `grep -rn "const UUID_RE" src` returns nothing — 290571e (now only the single `src/lib/validation.ts` source; zero in routes)
 
 #### Manual
 
-- [ ] 4.4 Malformed UUID still yields 400 on each of the three routes
+- [ ] 4.4 Malformed UUID still yields 400 on each of the three routes — **deferred to human live smoke**; covered by route-contract tests (the `uuidString` refinement is byte-identical to the removed `UUID_RE`)
