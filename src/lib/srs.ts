@@ -24,6 +24,28 @@ export type SrsCardFields = Pick<
   "due" | "stability" | "difficulty" | "scheduled_days" | "learning_steps" | "reps" | "lapses" | "state" | "last_review"
 >;
 
+/**
+ * Single source of truth for the SRS card `.select()` column list. The
+ * `satisfies` clause makes every entry a compile-checked `SrsCardFields` key,
+ * so a renamed/removed column is a build error — not a silent runtime
+ * `.select()` failure. Completeness (no column dropped) is guarded by
+ * `srs.test.ts`. Tables that carry extra discriminators (e.g. `srs_question_state`
+ * adds `question_id`) compose `` `question_id, ${SRS_CARD_COLUMNS}` ``.
+ */
+const SRS_CARD_COLUMN_ORDER = [
+  "due",
+  "stability",
+  "difficulty",
+  "scheduled_days",
+  "learning_steps",
+  "reps",
+  "lapses",
+  "state",
+  "last_review",
+] as const satisfies readonly (keyof SrsCardFields)[];
+
+export const SRS_CARD_COLUMNS = SRS_CARD_COLUMN_ORDER.join(", ");
+
 /** Learner grade: 1 Again · 2 Hard · 3 Good · 4 Easy (ts-fsrs Rating values). */
 export type ReviewRating = 1 | 2 | 3 | 4;
 

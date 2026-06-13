@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { emptyCardFields, applyRating } from "@/lib/srs";
+import { emptyCardFields, applyRating, SRS_CARD_COLUMNS } from "@/lib/srs";
 
 // Characterization (refactor-opportunities / M4L4): pin the SRS card column
 // contract BEFORE consolidating the CARD_COLUMNS literals duplicated across the
@@ -20,6 +20,13 @@ describe("srs card column contract", () => {
   it("emptyCardFields exposes exactly the persisted SRS card columns", () => {
     const now = new Date("2026-01-01T00:00:00.000Z");
     expect(Object.keys(emptyCardFields(now)).sort()).toEqual([...EXPECTED_CARD_COLUMNS].sort());
+  });
+
+  it("SRS_CARD_COLUMNS is the single source, complete and in order", () => {
+    expect(SRS_CARD_COLUMNS).toBe(EXPECTED_CARD_COLUMNS.join(", "));
+    // completeness guard: the select-string covers every persisted card column
+    const now = new Date("2026-01-01T00:00:00.000Z");
+    expect(SRS_CARD_COLUMNS.split(", ").sort()).toEqual(Object.keys(emptyCardFields(now)).sort());
   });
 });
 
