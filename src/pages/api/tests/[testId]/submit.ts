@@ -2,6 +2,7 @@ import type { APIRoute } from "astro";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase";
 import { applyRating, emptyCardFields, SRS_CARD_COLUMNS } from "@/lib/srs";
+import { uuidString } from "@/lib/validation";
 
 export const prerender = false;
 
@@ -16,13 +17,11 @@ function jsonResponse(body: unknown, { status }: JsonResponseInit): Response {
   });
 }
 
-// answers: { [questionId]: optionId[] }. Option ids are validated for uuid
-// SYNTAX (Postgres-lenient — accepts any 8-4-4-4-12 hex, unlike strict RFC
-// z.uuid() which rejects non-v4 ids like operator-authored/seed ids) so the SQL
-// ::uuid casts inside submit_test_attempt can't throw on bad input.
-const UUID_RE = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+// answers: { [questionId]: optionId[] }. Option ids use the shared lenient
+// `uuidString` (see @/lib/validation) so the SQL ::uuid casts inside
+// submit_test_attempt can't throw on bad input.
 const submitSchema = z.object({
-  answers: z.record(z.string(), z.array(z.string().regex(UUID_RE))),
+  answers: z.record(z.string(), z.array(uuidString)),
 });
 
 /**

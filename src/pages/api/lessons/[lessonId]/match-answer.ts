@@ -3,6 +3,7 @@ import { z } from "zod";
 import { createClient } from "@/lib/supabase";
 import { embedText, toVectorLiteral } from "@/lib/embeddings";
 import { getCourseIdForLesson, matchAnswer } from "@/lib/services/answer-match";
+import { uuidString } from "@/lib/validation";
 
 export const prerender = false;
 
@@ -17,10 +18,9 @@ function jsonResponse(body: unknown, { status }: JsonResponseInit): Response {
   });
 }
 
-const UUID_RE = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
 const bodySchema = z.object({
   question: z.string().min(1).max(4000),
-  excludeMessageId: z.string().regex(UUID_RE).optional(),
+  excludeMessageId: uuidString.optional(),
 });
 
 /**

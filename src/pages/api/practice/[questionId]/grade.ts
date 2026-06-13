@@ -2,6 +2,7 @@ import type { APIRoute } from "astro";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase";
 import { applyRating, emptyCardFields, SRS_CARD_COLUMNS } from "@/lib/srs";
+import { uuidString } from "@/lib/validation";
 
 export const prerender = false;
 
@@ -16,9 +17,7 @@ function jsonResponse(body: unknown, { status }: JsonResponseInit): Response {
   });
 }
 
-// uuid SYNTAX check (Postgres-lenient; strict RFC z.uuid() rejects non-v4 ids).
-const UUID_RE = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
-const gradeSchema = z.object({ selected: z.array(z.string().regex(UUID_RE)) });
+const gradeSchema = z.object({ selected: z.array(uuidString) });
 
 /**
  * POST = grade ONE practice (re-quiz) question and reschedule its FSRS card.
