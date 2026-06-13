@@ -1,7 +1,7 @@
 import type { APIRoute } from "astro";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase";
-import { applyRating, emptyCardFields, type ReviewRating, type SrsCardFields } from "@/lib/srs";
+import { applyRating, emptyCardFields, SRS_CARD_COLUMNS, type ReviewRating, type SrsCardFields } from "@/lib/srs";
 
 export const prerender = false;
 
@@ -19,9 +19,6 @@ function jsonResponse(body: unknown, { status }: JsonResponseInit): Response {
 const ratingSchema = z.object({
   rating: z.number().int().gte(1).lte(4),
 });
-
-// The card columns selected from / persisted to srs_review_state (== SrsCardFields).
-const CARD_COLUMNS = "due, stability, difficulty, scheduled_days, learning_steps, reps, lapses, state, last_review";
 
 /**
  * POST = grade this lesson's review card. Computes the next FSRS-6 state
@@ -63,7 +60,7 @@ export const POST: APIRoute = async (context) => {
 
   const { data: row, error: loadError } = await supabase
     .from("srs_review_state")
-    .select(CARD_COLUMNS)
+    .select(SRS_CARD_COLUMNS)
     .eq("user_id", userId)
     .eq("lesson_id", lessonId)
     .maybeSingle();

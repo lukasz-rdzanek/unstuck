@@ -1,10 +1,7 @@
 import type { APIRoute } from "astro";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase";
-import { applyRating, emptyCardFields } from "@/lib/srs";
-
-const CARD_COLUMNS =
-  "question_id, due, stability, difficulty, scheduled_days, learning_steps, reps, lapses, state, last_review";
+import { applyRating, emptyCardFields, SRS_CARD_COLUMNS } from "@/lib/srs";
 
 export const prerender = false;
 
@@ -84,7 +81,7 @@ export const POST: APIRoute = async (context) => {
     const questionIds = result.perQuestion.map((p) => p.questionId);
     const { data: existing } = await supabase
       .from("srs_question_state")
-      .select(CARD_COLUMNS)
+      .select(`question_id, ${SRS_CARD_COLUMNS}`)
       .eq("user_id", userId)
       .in("question_id", questionIds);
     const byQuestion = new Map((existing ?? []).map((row) => [row.question_id, row]));

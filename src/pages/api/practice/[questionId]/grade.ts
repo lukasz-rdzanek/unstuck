@@ -1,11 +1,9 @@
 import type { APIRoute } from "astro";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase";
-import { applyRating, emptyCardFields } from "@/lib/srs";
+import { applyRating, emptyCardFields, SRS_CARD_COLUMNS } from "@/lib/srs";
 
 export const prerender = false;
-
-const CARD_COLUMNS = "due, stability, difficulty, scheduled_days, learning_steps, reps, lapses, state, last_review";
 
 interface JsonResponseInit {
   status: number;
@@ -73,7 +71,7 @@ export const POST: APIRoute = async (context) => {
     const now = new Date();
     const { data: existing } = await supabase
       .from("srs_question_state")
-      .select(CARD_COLUMNS)
+      .select(SRS_CARD_COLUMNS)
       .eq("user_id", userId)
       .eq("question_id", questionId)
       .maybeSingle();
