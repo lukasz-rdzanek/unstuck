@@ -32,7 +32,7 @@ export type SrsCardFields = Pick<
  * `srs.test.ts`. Tables that carry extra discriminators (e.g. `srs_question_state`
  * adds `question_id`) compose `` `question_id, ${SRS_CARD_COLUMNS}` ``.
  */
-const SRS_CARD_COLUMN_ORDER = [
+export const SRS_CARD_COLUMN_ORDER = [
   "due",
   "stability",
   "difficulty",
@@ -44,7 +44,12 @@ const SRS_CARD_COLUMN_ORDER = [
   "last_review",
 ] as const satisfies readonly (keyof SrsCardFields)[];
 
-export const SRS_CARD_COLUMNS = SRS_CARD_COLUMN_ORDER.join(", ");
+// A string LITERAL, not `SRS_CARD_COLUMN_ORDER.join(", ")` — `.join()` widens to
+// `string`, which collapses Supabase's `.select()` row-type inference (the
+// PostgREST type parser needs a literal). The literal stays in sync with the
+// compile-checked tuple above; `srs.test.ts` asserts they never diverge.
+export const SRS_CARD_COLUMNS =
+  "due, stability, difficulty, scheduled_days, learning_steps, reps, lapses, state, last_review";
 
 /** Learner grade: 1 Again · 2 Hard · 3 Good · 4 Easy (ts-fsrs Rating values). */
 export type ReviewRating = 1 | 2 | 3 | 4;
