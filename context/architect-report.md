@@ -29,7 +29,7 @@ MVP, so no cross-repo split to report):
   - `grade_question` return consumed via an `as` cast over an opaque `Json` (Supabase codegen artifact) — silent runtime failure if the SQL shape drifts.
   - `srs.ts` is a shared FSRS hub feeding 3 routes / 2 tables, but git co-change _under-reports_ it (a reviewer trusting history misses the blast radius).
 
-## 4. Refactor plan (L4 — `context/changes/refactor-opportunities/plan.md`, reviewed SOUND)
+## 4. Refactor plan (L4 — `context/archive/2026-06-13-refactor-opportunities/plan.md`, reviewed SOUND, **implemented**)
 
 - **Chosen:** consolidate `CARD_COLUMNS` into one **type-derived single source** in `srs.ts` (compiler-bound to `keyof SrsCardFields`), + a shared lenient-UUID zod refinement (C3). History flipped the ranking: C1 is accidental drift (fixable); C2 (the RPC `as` cast) turned out to be a _forced, repo-wide Supabase-codegen convention_ → deferred.
 - **Explicitly NOT doing:** C2 (RPC return validation — separate repo-wide change), C4 (`jsonResponse` helper), no FSRS/DB/RLS/RPC change.
@@ -55,4 +55,4 @@ MVP, so no cross-repo split to report):
 
 ---
 
-**Backlog handed forward (value × risk):** wire-or-cut lesson review → SRS aggregate + atomic `advance_srs_card` (close the race) → `@supabase` ACL → C2 RPC-return validation → C4 `jsonResponse` helper. Sources: `context/domain/0{1,2,3,4}*.md`, `context/changes/refactor-opportunities/research.md`.
+**Backlog handed forward (value × risk):** wire-or-cut lesson review → SRS aggregate + atomic `advance_srs_card` (close the race) → `@supabase` ACL → C2 RPC-return validation → C4 `jsonResponse` helper. Sources: `context/domain/0{1,2,3,4}*.md`, `context/archive/2026-06-13-refactor-opportunities/research.md`. (The `CARD_COLUMNS`/`UUID` consolidation from L4 is now implemented + archived; the passed-test completion check shipped in `context/archive/2026-06-13-test-pass-completion-check/`.)
