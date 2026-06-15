@@ -62,9 +62,12 @@ jobs:
           gh-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Gate
+        env:
+          VERDICT: ${{ steps.review.outputs.verdict }}
+          SCORE: ${{ steps.review.outputs.score }}
         run: |
-          echo "Verdict: ${{ steps.review.outputs.verdict }} (score ${{ steps.review.outputs.score }})"
-          if [ "${{ steps.review.outputs.verdict }}" = "fail" ]; then
+          echo "Verdict: $VERDICT (score $SCORE)"
+          if [ "$VERDICT" = "fail" ]; then
             echo "::warning::AI review verdict = fail. Human reviewer should look closely."
             exit 1
           fi
