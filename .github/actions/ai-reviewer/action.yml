@@ -52,7 +52,9 @@ runs:
     - name: Install agent deps
       shell: bash
       working-directory: tools/code-review-agent
-      run: npm ci
+      # --omit=dev skips local-only tooling (promptfoo ≈ 700 pkgs); CI needs only
+      # the runtime deps + tsx (now a dependency).
+      run: npm ci --omit=dev
 
     - name: Run agent
       id: agent

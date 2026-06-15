@@ -30,6 +30,9 @@ export interface ReviewOutput {
 }
 
 const MODEL = process.env.REVIEW_MODEL ?? "claude-sonnet-4-6";
+// 2 turns suffices for a small diff; larger PRs need room to read + emit the
+// structured output (else: error_max_turns). Bounded so a runaway can't spend.
+const MAX_TURNS = Number(process.env.REVIEW_MAX_TURNS ?? "6");
 
 function buildPrompt({ diff, prTitle, prBody }: ReviewInput): string {
   const header: string[] = [];
@@ -46,7 +49,7 @@ export async function runReview(input: ReviewInput): Promise<ReviewOutput> {
       systemPrompt: buildSystemPrompt(SYSTEM_PROMPT), // rola recenzenta + tripwire'y repo (FS-2)
       model: MODEL, // dobrany do roli; nadpisywalny przez REVIEW_MODEL
       allowedTools: [], // wąsko i przewidywalnie — bez narzędzi
-      maxTurns: 2, // tura 1: ocena; tura 2: structured JSON
+      maxTurns: MAX_TURNS, // dość tur na odczyt dużego diffa + emisję structured JSON
       outputFormat: { type: "json_schema", schema: REVIEW_JSON_SCHEMA },
     },
   });
