@@ -9,8 +9,8 @@ inputs:
   api-key:
     description: LLM provider API key (Anthropic). Passed as ANTHROPIC_API_KEY to the agent.
     required: true
-  diff:
-    description: The git diff to review.
+  diff-file:
+    description: Path to a file containing the git diff (preferred — large diffs blow the env limit).
     required: true
   pr-title:
     description: Pull request title (context for the reviewer).
@@ -63,7 +63,7 @@ runs:
         # Reguła ograniczonego zaufania: inputs traktujemy jak nieufny tekst —
         # przekazujemy je wyłącznie przez env (bez interpolacji do `run:`).
         ANTHROPIC_API_KEY: ${{ inputs.api-key }}
-        DIFF: ${{ inputs.diff }}
+        DIFF_FILE: ${{ inputs.diff-file }}
         PR_TITLE: ${{ inputs.pr-title }}
         PR_BODY: ${{ inputs.pr-body }}
         PR_NUMBER: ${{ inputs.pr-number }}

@@ -40,11 +40,14 @@ jobs:
           else
             RANGE="HEAD~1...HEAD" # workflow_dispatch on a branch tip
           fi
-          {
-            echo "value<<__DIFF_EOF__"
-            git diff "$RANGE" -- . ':(exclude)package-lock.json' ':(exclude)**/package-lock.json'
-            echo "__DIFF_EOF__"
-          } >> "$GITHUB_OUTPUT"
+          # Write to a FILE (not env/step-output) — large diffs blow the process
+          # env limit ("Argument list too long"). Drop generated/vendored noise.
+          git diff "$RANGE" -- . \
+            ':(exclude)**/package-lock.json' \
+            ':(exclude).agents/**' \
+            ':(exclude)**/*.lock' > "$RUNNER_TEMP/pr.diff"
+          echo "path=$RUNNER_TEMP/pr.diff" >> "$GITHUB_OUTPUT"
+          echo "bytes=$(wc -c < "$RUNNER_TEMP/pr.diff")" >> "$GITHUB_OUTPUT"
 
       - name: AI review
         id: review
@@ -52,7 +55,7 @@ jobs:
         uses: ./.github/actions/ai-reviewer
         with:
           api-key: ${{ secrets.ANTHROPIC_API_KEY }}
-          diff: ${{ steps.diff.outputs.value }}
+          diff-file: ${{ steps.diff.outputs.path }}
           pr-title: ${{ github.event.pull_request.title }}
           pr-body: ${{ github.event.pull_request.body }}
           pr-number: ${{ github.event.pull_request.number }}

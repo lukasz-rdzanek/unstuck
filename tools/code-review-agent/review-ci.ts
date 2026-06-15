@@ -15,7 +15,7 @@
  * Exit code: 0 on verdict=pass, 2 on verdict=fail → the step (and a future required
  * status check) can gate the merge.
  */
-import { appendFileSync } from "node:fs";
+import { appendFileSync, readFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { runReview } from "./common/run-review.ts";
 
@@ -41,9 +41,24 @@ function gh(args: string[]): void {
   }
 }
 
-const diff = process.env.DIFF ?? "";
+// Diff arrives as a FILE path (DIFF_FILE), not env content — large diffs blow the
+// process env limit ("Argument list too long"). Fall back to DIFF env for local use.
+function loadDiff(): string {
+  const file = process.env.DIFF_FILE;
+  if (file) {
+    try {
+      return readFileSync(file, "utf8");
+    } catch (err) {
+      console.error(`Nie udało się wczytać DIFF_FILE (${file}): ${(err as Error).message}`);
+      process.exit(1);
+    }
+  }
+  return process.env.DIFF ?? "";
+}
+
+const diff = loadDiff();
 if (!diff.trim()) {
-  console.error("Brak DIFF w env. Czy workflow policzył `git diff` z fetch-depth: 0?");
+  console.error("Brak diffa (DIFF_FILE/DIFF). Czy workflow policzył `git diff` z fetch-depth: 0?");
   process.exit(1);
 }
 
