@@ -108,8 +108,15 @@ tasks done: (1) `criteria.md` (6 criteria + anchors); (2) schema extended to 6 s
 overall `score`, verified (`score:2`, `verdict:fail`); (3) promptfoo evals comparing 3 models
 on 2 fixtures (SQL-injection, React16→19) — config validated; (4) optional agency ladder
 (`review-agentic.ts` + `common/tools.ts`: readPlan/readReviewCriteria/postPrComment, step-capped).
-Repo labels `ai-cr:passed|failed|review` created. **Credential-gated live run** (the only
-remaining step for screenshots): add `ANTHROPIC_API_KEY` repo secret + push a branch/open a PR.
+Repo labels `ai-cr:passed|failed|review` created.
+
+**LIVE RUN DONE (2026-06-16) — Champion proof #1 captured.** `ANTHROPIC_API_KEY` secret set;
+PR [#1](https://github.com/lukasz-rdzanek/unstuck/pull/1) (`ci/ai-code-review-pipeline → master`)
+ran the pipeline green. The agent posted a full review comment (per-criterion table + verdict),
+set label `ai-cr:passed`, model `claude-sonnet-4-6`, cost ~$0.42/run. **Dogfood win:** the
+reviewer caught a real bug in its own PR (SYSTEM_PROMPT said "5 criteria" after the schema went
+to 6); fixed it → re-review score 7/10 → 8/10. Evidence on the PR: Actions run view + job logs +
+the LLM comment + the label. Champion proof project #1 is complete (live, not just documented).
 
 ---
 

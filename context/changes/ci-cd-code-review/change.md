@@ -1,9 +1,9 @@
 ---
 change_id: ci-cd-code-review
 title: AI code-review pipeline on GitHub Actions (M5L3 — Champion proof #1)
-status: in-progress
+status: done
 created: 2026-06-15
-updated: 2026-06-15
+updated: 2026-06-16
 ---
 
 ## Notes
@@ -30,6 +30,14 @@ the CI tier. This is 10xChampion proof project #1; evidence = pipeline view + jo
 logs + the LLM review comment on a real PR.
 
 Requirements brainstorm: `requirements.md` (this folder).
-Credential-gated step (only the repo owner can do): add an `ANTHROPIC_API_KEY`
-(or `OPENROUTER_API_KEY`) repo secret, then push a branch + open a PR to capture
-the Champion screenshots.
+
+## Live run (2026-06-16) — DONE
+
+`ANTHROPIC_API_KEY` secret set; PR #1 (`ci/ai-code-review-pipeline → master`) ran the
+pipeline green. The agent posted a review comment (per-criterion table + verdict),
+applied `ai-cr:passed`, cost ~$0.42/run (Sonnet 4.6). CI debugging that was needed and
+fixed along the way (good lessons): diff passed as a **file** not env (E2BIG on large
+PRs), `maxTurns` 2→6 (large diff needs room for structured output), lockfile regenerated
+with **npm 10** to match the runner's `.nvmrc` (npm-11 lock → "Missing gcp-metadata"),
+promptfoo dropped from deps (local-only via `npx`). Dogfood: the reviewer caught a real
+SYSTEM_PROMPT/schema mismatch in its own PR; fixed → score 7→8/10. Champion proof #1 complete.
