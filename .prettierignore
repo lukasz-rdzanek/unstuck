@@ -3,5 +3,5 @@
 # Also ignored in eslint.config.js (eslint-plugin-prettier respects this file).
 src/lib/db/database.types.ts
 
-# npm lockfiles are managed by npm; prettier-formatting them desyncs `npm ci`.
-**/package-lock.json
+# npm lockfiles are managed by npm; keep prettier out of them.
+package-lock.json

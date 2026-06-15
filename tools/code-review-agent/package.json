@@ -11,7 +11,7 @@
     "review:agentic": "tsx review-agentic.ts",
     "review:sample:claude": "tsx review-claude.ts < samples/sample.diff",
     "review:sample:vercel": "tsx review-vercel.ts < samples/sample.diff",
-    "eval": "promptfoo eval -c evals/promptfooconfig.yaml",
+    "eval": "npx -y promptfoo@latest eval -c evals/promptfooconfig.yaml",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -23,7 +23,6 @@
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
-    "promptfoo": "^0.118.0",
     "typescript": "^5.6.0"
   }
 }
