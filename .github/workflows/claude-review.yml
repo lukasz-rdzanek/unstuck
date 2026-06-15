@@ -1,0 +1,41 @@
+# Alternative to review.yml — the lesson's "gotowiec": Anthropic's official
+# Claude Code Action instead of our custom agent. Kept on workflow_dispatch ONLY
+# so it never double-runs (and double-charges) alongside review.yml on every PR.
+# Run it manually to compare the off-the-shelf path against our custom pipeline.
+#
+# Security: the action is pinned to a commit SHA (not the moving @v1 tag) — it is
+# third-party code that runs inside our pipeline with access to secrets.
+name: Claude Code Review (manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr-number:
+        description: PR number to review
+        required: true
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  claude:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Claude review
+        uses: anthropics/claude-code-action@d5726de019ec4498aa667642bc3a80fca83aa102 # v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          prompt: |
+            Zrób review PR-a #${{ github.event.inputs.pr-number }} według naszej
+            Definition of Done z tools/code-review-agent/criteria.md oraz tripwire'ów
+            z AGENTS.md i context/foundation/lessons.md. Dla każdego zmienionego pliku
+            podaj konkretne uwagi (poprawność, bezpieczeństwo/RLS, idiomatyczność,
+            testy, dokumentacja) i zakończ jednoznacznym werdyktem pass/fail.

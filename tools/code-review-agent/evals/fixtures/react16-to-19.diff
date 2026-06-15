@@ -1,0 +1,61 @@
+diff --git a/src/components/LessonNotes.tsx b/src/components/LessonNotes.tsx
+index 1111111..2222222 100644
+--- a/src/components/LessonNotes.tsx
++++ b/src/components/LessonNotes.tsx
+@@ -1,34 +1,29 @@
+-import React from "react";
++import { useState, useEffect } from "react";
+
+-class LessonNotes extends React.Component {
+-  constructor(props) {
+-    super(props);
+-    this.state = { notes: "", saved: false };
+-  }
+-
+-  componentDidMount() {
+-    fetch(`/api/notes/${this.props.lessonId}`)
+-      .then((r) => r.json())
+-      .then((d) => this.setState({ notes: d.notes }));
+-  }
+-
+-  save = () => {
+-    fetch(`/api/notes/${this.props.lessonId}`, { method: "PUT", body: this.state.notes });
+-    this.setState({ saved: true });
+-  };
+-
+-  render() {
+-    return (
+-      <div>
+-        <textarea value={this.state.notes} onChange={(e) => this.setState({ notes: e.target.value })} />
+-        <button onClick={this.save}>{this.state.saved ? "Saved" : "Save"}</button>
+-      </div>
+-    );
+-  }
+-}
+-
+-export default LessonNotes;
++export function LessonNotes({ lessonId }) {
++  const [notes, setNotes] = useState("");
++  const [saved, setSaved] = useState(false);
++
++  // FLAW 1: effect refetches on every render — missing dependency array.
++  useEffect(() => {
++    fetch(`/api/notes/${lessonId}`)
++      .then((r) => r.json())
++      .then((d) => setNotes(d.notes));
++  });
++
++  // FLAW 2: fire-and-forget PUT, no await/error handling; marks saved even on failure.
++  function save() {
++    fetch(`/api/notes/${lessonId}`, { method: "PUT", body: notes });
++    setSaved(true);
++  }
++
++  return (
++    <div>
++      {/* FLAW 3: stale closure — onChange reads `notes` but never updates it. */}
++      <textarea value={notes} onChange={(e) => e.target.value} />
++      <button onClick={save}>{saved ? "Saved" : "Save"}</button>
++    </div>
++  );
++}

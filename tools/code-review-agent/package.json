@@ -1,0 +1,29 @@
+{
+  "name": "@unstuck/code-review-agent",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Standalone, scripted AI code-review agent for Unstuck (M5L2). Reads a git diff, returns a structured 5-criteria review as JSON. Implements the FS-2 'PR Risk Triage' helper from context/foundation/opportunity-map.md.",
+  "scripts": {
+    "review:claude": "tsx review-claude.ts",
+    "review:vercel": "tsx review-vercel.ts",
+    "review:ci": "tsx review-ci.ts",
+    "review:agentic": "tsx review-agentic.ts",
+    "review:sample:claude": "tsx review-claude.ts < samples/sample.diff",
+    "review:sample:vercel": "tsx review-vercel.ts < samples/sample.diff",
+    "eval": "promptfoo eval -c evals/promptfooconfig.yaml",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@anthropic-ai/claude-agent-sdk": "^0.3.177",
+    "@openrouter/ai-sdk-provider": "^2.9.1",
+    "ai": "^6.0.0",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "promptfoo": "^0.118.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  }
+}

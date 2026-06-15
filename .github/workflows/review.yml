@@ -1,0 +1,67 @@
+name: AI Code Review
+
+on:
+  pull_request:
+    branches: [master]
+    types: [opened, synchronize, reopened, labeled]
+  workflow_dispatch:
+
+# Re-running a PR's review supersedes the in-flight one.
+concurrency:
+  group: ai-review-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write # post the review comment + ai-cr:* labels
+  issues: write
+
+jobs:
+  review:
+    # On `labeled` events only run for the on-demand retry label, else every label
+    # edit would re-trigger a (paid) review.
+    if: >-
+      github.event.action != 'labeled' ||
+      github.event.label.name == 'ai-cr:review'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # full history — else `git diff` has no base to compare against
+
+      - name: Compute diff vs base
+        id: diff
+        run: |
+          BASE="${{ github.base_ref }}"
+          if [ -n "$BASE" ]; then
+            git fetch --no-tags --depth=1 origin "$BASE" || true
+            RANGE="origin/${BASE}...HEAD"
+          else
+            RANGE="HEAD~1...HEAD" # workflow_dispatch on a branch tip
+          fi
+          {
+            echo "value<<__DIFF_EOF__"
+            git diff "$RANGE" -- . ':(exclude)package-lock.json' ':(exclude)**/package-lock.json'
+            echo "__DIFF_EOF__"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: AI review
+        id: review
+        continue-on-error: true # advisory gate — never blocks; the Gate step decides red/green
+        uses: ./.github/actions/ai-reviewer
+        with:
+          api-key: ${{ secrets.ANTHROPIC_API_KEY }}
+          diff: ${{ steps.diff.outputs.value }}
+          pr-title: ${{ github.event.pull_request.title }}
+          pr-body: ${{ github.event.pull_request.body }}
+          pr-number: ${{ github.event.pull_request.number }}
+          gh-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Gate
+        run: |
+          echo "Verdict: ${{ steps.review.outputs.verdict }} (score ${{ steps.review.outputs.score }})"
+          if [ "${{ steps.review.outputs.verdict }}" = "fail" ]; then
+            echo "::warning::AI review verdict = fail. Human reviewer should look closely."
+            exit 1
+          fi

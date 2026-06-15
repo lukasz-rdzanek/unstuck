@@ -81,6 +81,9 @@ export default tseslint.config(
       // Node CI helper scripts (e.g. the e2e login-user seeder), not app code —
       // out of scope for the browser/worker-oriented strictTypeChecked rules.
       "e2e/setup/**",
+      // Standalone code-review-agent package (its own tsconfig/toolchain, Node
+      // runtime, ESM .ts imports) — linted independently, not by the app config.
+      "tools/**",
     ],
   },
   baseConfig,
