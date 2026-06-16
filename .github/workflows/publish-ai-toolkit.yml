@@ -1,0 +1,75 @@
+name: Publish AI Toolkit
+
+# Source-of-truth publishing for tools/ai-toolkit (M5L4, Model 1: GitHub Packages).
+# Validates on PRs; publishes to GitHub Packages on merge to master when the toolkit
+# changes. Uses the ephemeral GITHUB_TOKEN (packages: write) — no long-lived secret.
+on:
+  push:
+    branches: [master]
+    paths: ["tools/ai-toolkit/**", ".github/workflows/publish-ai-toolkit.yml"]
+  pull_request:
+    branches: [master]
+    paths: ["tools/ai-toolkit/**", ".github/workflows/publish-ai-toolkit.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+defaults:
+  run:
+    working-directory: tools/ai-toolkit
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          registry-url: https://npm.pkg.github.com
+          scope: "@lukasz-rdzanek"
+      - run: npm ci
+      - name: Skill present
+        run: test -f skills/code-review/SKILL.md
+      - name: install/uninstall round-trip is clean
+        run: |
+          tmp="$(mktemp -d)"
+          PROJECT_ROOT="$tmp" node install.js
+          test -f "$tmp/.claude/skills/code-review/SKILL.md"
+          test -f "$tmp/CLAUDE.md"
+          PROJECT_ROOT="$tmp" node uninstall.js
+          test ! -f "$tmp/.claude/skills/code-review/SKILL.md"
+      - run: npm pack --dry-run
+
+  publish:
+    needs: validate
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          registry-url: https://npm.pkg.github.com
+          scope: "@lukasz-rdzanek"
+      - run: npm ci
+      - name: Skip if this version is already published (avoid 409)
+        id: check
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          NAME=$(node -p "require('./package.json').name")
+          VERSION=$(node -p "require('./package.json').version")
+          if npm view "$NAME@$VERSION" version >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::$NAME@$VERSION already published — skipping."
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Publish
+        if: steps.check.outputs.exists == 'false'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm publish
