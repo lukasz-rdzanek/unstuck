@@ -1,9 +1,10 @@
 ---
 change_id: ci-cd-code-review
 title: AI code-review pipeline on GitHub Actions (M5L3 — Champion proof #1)
-status: done
+status: archived
 created: 2026-06-15
 updated: 2026-06-16
+archived_at: 2026-06-16T07:58:21Z
 ---
 
 ## Notes
