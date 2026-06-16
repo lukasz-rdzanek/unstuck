@@ -1,0 +1,54 @@
+# promptfoo eval config (M5L3, Task 3).
+# Compares the SAME review prompt across 3 models on the same diffs, so
+# "cheaper or pricier model?" is settled by a results matrix, not a hunch.
+# Also a regression gate: run before changing the prompt to catch silent quality drops.
+#
+# Run:  export OPENROUTER_API_KEY=...   &&   npx promptfoo eval -c evals/promptfooconfig.yaml
+#       (or: npm run eval)
+# One OpenRouter key gives access to every vendor below.
+$schema: https://promptfoo.dev/config-schema.json
+description: Unstuck code-review agent — model comparison + regression gate
+
+prompts:
+  - file://prompts/review.md
+
+providers:
+  # cheaper candidate
+  - id: openrouter:anthropic/claude-haiku-4.5
+  # stronger candidate (our default in CI)
+  - id: openrouter:anthropic/claude-sonnet-4.6
+  # cross-vendor candidate, same key
+  - id: openrouter:openai/gpt-5-mini
+
+# Applied to every test below.
+defaultTest:
+  assert:
+    # The verdict/score gate stands on valid JSON, so check it everywhere.
+    - type: is-json
+
+tests:
+  - description: SQL injection via hand-built query + service-role client → must FAIL
+    vars:
+      pr_title: "Add message search endpoint"
+      diff: file://fixtures/sql-injection.diff
+    assert:
+      - type: llm-rubric
+        value: >-
+          Werdykt odrzuca zmianę (fail) i wskazuje podatność SQL injection
+          (interpolacja zapytania) oraz użycie klucza service-role w trasie API.
+      - type: javascript
+        value: JSON.parse(output).verdict === "fail" && JSON.parse(output).score <= 3
+
+  - description: React 16→19 migration with 3 real flaws → must FAIL and name them
+    vars:
+      pr_title: "Migrate LessonNotes to a React 19 function component"
+      diff: file://fixtures/react16-to-19.diff
+    assert:
+      - type: llm-rubric
+        value: >-
+          Review wskazuje co najmniej dwa z trzech błędów: (1) useEffect bez tablicy
+          zależności (pętla refetchów), (2) brak await/obsługi błędu w zapisie i
+          ustawianie "saved" nawet przy porażce, (3) onChange nie aktualizuje stanu
+          (textarea bez setNotes).
+      - type: javascript
+        value: JSON.parse(output).verdict === "fail" && JSON.parse(output).testRiskCoverage <= 5

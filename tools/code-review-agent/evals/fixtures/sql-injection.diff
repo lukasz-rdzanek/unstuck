@@ -1,0 +1,21 @@
+diff --git a/src/pages/api/search.ts b/src/pages/api/search.ts
+new file mode 100644
+index 0000000..abcdef1
+--- /dev/null
++++ b/src/pages/api/search.ts
+@@ -0,0 +1,16 @@
++import type { APIRoute } from "astro";
++import { createClient } from "@supabase/supabase-js";
++
++export const prerender = false;
++
++const db = createClient(import.meta.env.SUPABASE_URL, import.meta.env.SUPABASE_SERVICE_ROLE);
++
++export const GET: APIRoute = async ({ url }) => {
++  const q = url.searchParams.get("q") ?? "";
++  // Build the SQL by hand so we can "search everything".
++  const sql = `select id, body from messages where body like '%${q}%'`;
++  const { data, error } = await db.rpc("exec_sql", { query: sql });
++  if (error) return new Response(error.message, { status: 500 });
++  return new Response(JSON.stringify(data), { status: 200 });
++};

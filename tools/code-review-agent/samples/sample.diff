@@ -1,0 +1,64 @@
+diff --git a/supabase/migrations/20260615120000_lesson_bookmarks.sql b/supabase/migrations/20260615120000_lesson_bookmarks.sql
+new file mode 100644
+index 0000000..1a2b3c4
+--- /dev/null
++++ b/supabase/migrations/20260615120000_lesson_bookmarks.sql
+@@ -0,0 +1,9 @@
++-- Add per-user lesson bookmarks
++create table public.lesson_bookmarks (
++  id uuid primary key default gen_random_uuid(),
++  user_id uuid not null references auth.users (id),
++  lesson_id uuid not null references public.lessons (id),
++  created_at timestamptz not null default now()
++);
++
++create index lesson_bookmarks_user_idx on public.lesson_bookmarks (user_id);
+diff --git a/src/pages/api/bookmarks.ts b/src/pages/api/bookmarks.ts
+new file mode 100644
+index 0000000..5d6e7f8
+--- /dev/null
++++ b/src/pages/api/bookmarks.ts
+@@ -0,0 +1,18 @@
++import type { APIRoute } from "astro";
++import { createSupabaseServerClient } from "@/lib/supabase";
++
++export const POST: APIRoute = async ({ request, cookies }) => {
++  const supabase = createSupabaseServerClient({ cookies, headers: request.headers });
++  const body = await request.json();
++
++  const { data, error } = await supabase
++    .from("lesson_bookmarks")
++    .insert({ lesson_id: body.lessonId, user_id: body.userId })
++    .select()
++    .single();
++
++  if (error) return new Response(JSON.stringify({ error: error.message }), { status: 500 });
++  return new Response(JSON.stringify(data), { status: 201 });
++};
+diff --git a/src/components/BookmarkButton.tsx b/src/components/BookmarkButton.tsx
+new file mode 100644
+index 0000000..9a0b1c2
+--- /dev/null
++++ b/src/components/BookmarkButton.tsx
+@@ -0,0 +1,20 @@
++"use client";
++
++import { useState } from "react";
++
++export function BookmarkButton({ lessonId, userId }: { lessonId: string; userId: string }) {
++  const [saved, setSaved] = useState(false);
++
++  async function save() {
++    await fetch("/api/bookmarks", {
++      method: "POST",
++      body: JSON.stringify({ lessonId, userId }),
++    });
++    setSaved(true);
++  }
++
++  return (
++    <button onClick={save} className={"px-2 " + (saved ? "text-green-500" : "text-gray-500")}>
++      {saved ? "Saved" : "Save"}
++    </button>
++  );
++}

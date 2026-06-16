@@ -1,0 +1,73 @@
+name: AI Reviewer
+description: Run Unstuck's code-review agent (FS-2 PR Risk Triage) on a diff and return a verdict.
+
+branding:
+  icon: terminal
+  color: purple
+
+inputs:
+  api-key:
+    description: LLM provider API key (Anthropic). Passed as ANTHROPIC_API_KEY to the agent.
+    required: true
+  diff-file:
+    description: Path to a file containing the git diff (preferred — large diffs blow the env limit).
+    required: true
+  pr-title:
+    description: Pull request title (context for the reviewer).
+    required: false
+    default: ""
+  pr-body:
+    description: Pull request body (context for the reviewer).
+    required: false
+    default: ""
+  pr-number:
+    description: Pull request number (for posting the comment + labels). Side-effects skipped if empty.
+    required: false
+    default: ""
+  gh-token:
+    description: Token for `gh` (PR comment + labels). Side-effects skipped if empty.
+    required: false
+    default: ""
+  model:
+    description: Override the review model (default claude-sonnet-4-6).
+    required: false
+    default: "claude-sonnet-4-6"
+
+outputs:
+  verdict:
+    description: pass | fail
+    value: ${{ steps.agent.outputs.verdict }}
+  score:
+    description: Overall 1-10 score
+    value: ${{ steps.agent.outputs.score }}
+
+runs:
+  using: composite
+  steps:
+    - name: Configure node
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: .nvmrc
+
+    - name: Install agent deps
+      shell: bash
+      working-directory: tools/code-review-agent
+      # --omit=dev skips local-only tooling (promptfoo ≈ 700 pkgs); CI needs only
+      # the runtime deps + tsx (now a dependency).
+      run: npm ci --omit=dev
+
+    - name: Run agent
+      id: agent
+      shell: bash
+      working-directory: tools/code-review-agent
+      run: npm run review:ci
+      env:
+        # Reguła ograniczonego zaufania: inputs traktujemy jak nieufny tekst —
+        # przekazujemy je wyłącznie przez env (bez interpolacji do `run:`).
+        ANTHROPIC_API_KEY: ${{ inputs.api-key }}
+        DIFF_FILE: ${{ inputs.diff-file }}
+        PR_TITLE: ${{ inputs.pr-title }}
+        PR_BODY: ${{ inputs.pr-body }}
+        PR_NUMBER: ${{ inputs.pr-number }}
+        GH_TOKEN: ${{ inputs.gh-token }}
+        REVIEW_MODEL: ${{ inputs.model }}
