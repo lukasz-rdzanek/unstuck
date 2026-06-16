@@ -1,0 +1,8 @@
+# Copy this to a consumer repo's .npmrc (commit it — it holds NO secret).
+# Only the @lukasz-rdzanek scope resolves to GitHub Packages; everything else stays on public npm.
+@lukasz-rdzanek:registry=https://npm.pkg.github.com
+
+# The auth line is NOT committed. It's added at install time from an env var:
+#   //npm.pkg.github.com/:_authToken=${GH_PKG_TOKEN}
+# In CI, inject GH_PKG_TOKEN (a token with read:packages). Locally, `npm login`
+# stores it in ~/.npmrc instead.

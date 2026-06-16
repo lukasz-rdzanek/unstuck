@@ -1,0 +1,27 @@
+{
+  "name": "@lukasz-rdzanek/unstuck-ai-toolkit",
+  "version": "0.1.0",
+  "description": "Unstuck's team AI artifacts (code-review skill + repo conventions) distributed via GitHub Packages",
+  "license": "UNLICENSED",
+  "type": "commonjs",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "files": [
+    "skills/",
+    "rules/",
+    "install.js",
+    "uninstall.js",
+    "README.md"
+  ],
+  "scripts": {
+    "postinstall": "node install.js",
+    "uninstall:toolkit": "node uninstall.js"
+  },
+  "bin": {
+    "unstuck-ai-toolkit": "./install.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
