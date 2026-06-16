@@ -73,6 +73,12 @@ version.
 | **Thin helper**           | One versioned source of truth for AI artifacts (a `skills/` package with a manifest + version list), installed into a repo rather than copy-pasted.                                                                                                                   |
 | **First useful version**  | A git repo holding the artifacts + a manifest, manually installed into one project. (This is the **M5L4 _Shared AI Registry_** project — parked here, qualified for later.)                                                                                           |
 
+> **Status (M5L4, 2026-06-16):** built as **Champion proof #2** —
+> `@lukasz-rdzanek/unstuck-ai-toolkit` published to GitHub Packages v0.1.0
+> (`tools/ai-toolkit/`, decision in `ai-distribution.md`). The original "defer at solo
+> scale" call still holds on pure _utility_ grounds — built for the certification goal,
+> not because the friction yet demanded it; real payoff arrives with a 2nd repo.
+
 ### FS-4 · "What changed since yesterday" is scattered
 
 | Field                     | Answer                                                                                                                                                                                           |

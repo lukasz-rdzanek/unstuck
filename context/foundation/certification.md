@@ -118,6 +118,18 @@ reviewer caught a real bug in its own PR (SYSTEM_PROMPT said "5 criteria" after 
 to 6); fixed it → re-review score 7/10 → 8/10. Evidence on the PR: Actions run view + job logs +
 the LLM comment + the label. Champion proof project #1 is complete (live, not just documented).
 
+M5L4 (_Shared AI Registry_) **done + published** — `change_id`-free, lives in
+[`tools/ai-toolkit/`](../../tools/ai-toolkit/). Chose **Model 1 (GitHub Packages)** for a
+solo-on-GitHub consumer (decision: `context/foundation/ai-distribution.md`). Built
+`@lukasz-rdzanek/unstuck-ai-toolkit` (portable `code-review` skill + team-rules CLAUDE.md,
+idempotent install/uninstall with sentinel markers + manifest + injection/self-install
+guards), a publish workflow (`publish-ai-toolkit.yml`, ephemeral `GITHUB_TOKEN`, 409-guarded),
+and a consumer `.npmrc`. Merged via PR #2; the workflow **published v0.1.0 to GitHub Packages**
+(`+ @lukasz-rdzanek/unstuck-ai-toolkit@0.1.0`). This is **Champion proof project #2** — so both
+M5 proof paths are now live (review pipeline + artifact registry). Evidence: the package page
+(`github.com/lukasz-rdzanek/unstuck/packages`) + the Publish AI Toolkit run + `package.json`.
+Also: PR #2's AI review passed 8/10 — the merged review pipeline works on real new PRs.
+
 ---
 
 ## Path to Champion (recommended order)
