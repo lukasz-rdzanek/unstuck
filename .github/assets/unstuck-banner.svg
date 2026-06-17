@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 300" width="1000" height="300" role="img" aria-label="Unstuck">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#06080f"/>
+      <stop offset="0.5" stop-color="#0f1529"/>
+      <stop offset="1" stop-color="#06080f"/>
+    </linearGradient>
+    <linearGradient id="wm" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#8D53EA"/>
+      <stop offset="1" stop-color="#517DF6"/>
+    </linearGradient>
+    <filter id="glow" x="-30%" y="-60%" width="160%" height="220%">
+      <feGaussianBlur stdDeviation="10" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect x="0" y="0" width="1000" height="300" rx="24" fill="url(#bg)"/>
+
+  <!-- starfield -->
+  <g fill="#ffffff">
+    <circle cx="80"  cy="60"  r="1.6" opacity="0.85"/>
+    <circle cx="180" cy="120" r="1.1" opacity="0.5"/>
+    <circle cx="250" cy="48"  r="1.3" opacity="0.7"/>
+    <circle cx="360" cy="92"  r="1"   opacity="0.45"/>
+    <circle cx="520" cy="40"  r="1.5" opacity="0.8"/>
+    <circle cx="640" cy="84"  r="1"   opacity="0.5"/>
+    <circle cx="760" cy="52"  r="1.4" opacity="0.75"/>
+    <circle cx="860" cy="120" r="1.1" opacity="0.55"/>
+    <circle cx="930" cy="64"  r="1.6" opacity="0.85"/>
+    <circle cx="120" cy="232" r="1.2" opacity="0.6"/>
+    <circle cx="300" cy="258" r="1"   opacity="0.45"/>
+    <circle cx="700" cy="248" r="1.3" opacity="0.65"/>
+    <circle cx="880" cy="236" r="1.1" opacity="0.55"/>
+  </g>
+
+  <g font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" text-anchor="middle">
+    <text x="500" y="170" font-size="128" font-weight="800" letter-spacing="-3" fill="url(#wm)" filter="url(#glow)">Unstuck</text>
+    <text x="500" y="226" font-size="27" font-weight="500" letter-spacing="6" fill="#9fb0d0">LEARN BY DOING · GET UNSTUCK</text>
+  </g>
+</svg>
