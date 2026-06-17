@@ -1,8 +1,6 @@
 <div align="center">
 
-<img src="public/brand/alpaca-prance.webp" width="190" alt="Unstuck mascot" />
-
-<img src=".github/assets/unstuck-banner.svg" width="640" alt="Unstuck — learn by doing, get unstuck" />
+<img src=".github/assets/unstuck-banner.svg" width="760" alt="Unstuck — learn by doing, get unstuck" />
 
 **A cosmic-themed learning platform that turns watching into doing** — lessons, a lesson‑scoped AI study chat, spaced‑repetition practice, and auto‑graded quizzes, all gated per user.
 
