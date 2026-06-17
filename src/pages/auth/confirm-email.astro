@@ -8,7 +8,7 @@ const errorParam = Astro.url.searchParams.get("error");
 const errorCopy: Record<string, string> = {
   invalid_otp: "That code didn't match. Double-check and try again.",
   otp_expired: "Your code expired. Request a new one below.",
-  format_invalid: "The code must be 6 digits — re-enter it.",
+  format_invalid: "The code is digits only — re-enter it exactly as in the email.",
   email_invalid: "Enter a valid email address.",
   supabase_not_configured: "Server is misconfigured — contact the operator.",
 };
@@ -24,7 +24,7 @@ const errorMessage = errorParam ? (errorCopy[errorParam] ?? "Couldn't verify. Tr
       <div class="mb-4 text-5xl">📧</div>
       <h1 class="text-cosmic-gradient mb-3 text-2xl font-bold">Confirm your email</h1>
       <p class="text-muted-foreground mb-5 text-sm">
-        We sent a 6-digit code to your inbox. Enter it below to activate your account.
+        We sent a code to your inbox. Enter it below to activate your account.
       </p>
 
       {
@@ -51,22 +51,23 @@ const errorMessage = errorParam ? (errorCopy[errorParam] ?? "Couldn't verify. Tr
         </div>
 
         <div>
-          <label for="token" class="text-muted-foreground mb-1 block text-xs font-medium">6-digit code</label>
+          <label for="token" class="text-muted-foreground mb-1 block text-xs font-medium">Confirmation code</label>
           {
-            /* pattern + maxlength match Supabase's auth.email.otp_length in supabase/config.toml.
-              Keep in lockstep with the regex on src/pages/api/auth/verify-otp.ts. */
+            /* Accept 6–10 digits: Supabase's auth.email.otp_length is local-only and the
+              cloud project may issue a longer code than the local stack. Keep this range in
+              lockstep with the regex on src/pages/api/auth/verify-otp.ts. */
           }
           <input
             id="token"
             type="text"
             name="token"
             inputmode="numeric"
-            pattern="\d{6}"
-            maxlength="6"
+            pattern="\d{6,10}"
+            maxlength="10"
             autocomplete="one-time-code"
             required
-            class="border-input bg-glass text-foreground placeholder:text-muted-foreground focus:border-ring w-full rounded-md border px-3 py-2 text-center font-mono text-lg tracking-[0.5em] focus:outline-none"
-            placeholder="123456"
+            class="border-input bg-glass text-foreground placeholder:text-muted-foreground focus:border-ring w-full rounded-md border px-3 py-2 text-center font-mono text-lg tracking-[0.4em] focus:outline-none"
+            placeholder="Code from email"
           />
         </div>
 

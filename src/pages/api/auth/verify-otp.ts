@@ -4,12 +4,16 @@ import { createClient } from "@/lib/supabase";
 
 export const prerender = false;
 
-// `\d{6}` matches Supabase's `auth.email.otp_length` in supabase/config.toml.
-// If the operator bumps otp_length, update this regex AND the HTML
-// pattern/maxlength on src/pages/auth/confirm-email.astro in lockstep.
+// Accept any 6–10 digit numeric OTP. Supabase's `auth.email.otp_length`
+// (supabase/config.toml) is LOCAL-only and is NOT synced to the cloud project
+// by `db push` — the prod project can issue a longer code (e.g. 8 digits) than
+// the local stack's 6, so hardcoding `\d{6}` here silently rejected valid prod
+// codes and blocked account confirmation. 6–10 is Supabase's supported range.
+// Keep this range in lockstep with the HTML pattern/maxlength on
+// src/pages/auth/confirm-email.astro.
 const verifySchema = z.object({
   email: z.email("Enter a valid email address"),
-  token: z.string().regex(/^\d{6}$/, "Enter the 6-digit code from your email"),
+  token: z.string().regex(/^\d{6,10}$/, "Enter the code from your email"),
 });
 
 // Always go through context.redirect so any cookies queued by Supabase
