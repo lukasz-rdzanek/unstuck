@@ -16,11 +16,11 @@
 
 ## Status at a glance
 
-| Badge                         | Verdict                                       | Where the proof lives                                                                                              |
-| ----------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| 🚀 **10xBuilder** (mandatory) | Complete                                      | access control, CRUD, business logic, context docs, tests, CI — see below                                          |
-| 🔧 **10xArchitect**           | Strongly demonstrated                         | `context/archive/` (28 changes), `context/architect-report.md`, `context/domain/`, `context/foundation/lessons.md` |
-| 🏆 **10xChampion**            | **Two independent proof projects, both live** | (1) AI code-review CI/CD pipeline; (2) shared AI registry published to GitHub Packages                             |
+| Badge                         | Verdict                                       | Where the proof lives                                                                                                                 |
+| ----------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| 🚀 **10xBuilder** (mandatory) | Complete                                      | access control, CRUD, business logic, context docs, tests, CI — see below                                                             |
+| 🔧 **10xArchitect**           | Strongly demonstrated                         | `context/archive/` (28 changes), `context/evidence/architect/architect-report.md`, `context/domain/`, `context/foundation/lessons.md` |
+| 🏆 **10xChampion**            | **Two independent proof projects, both live** | (1) AI code-review CI/CD pipeline; (2) shared AI registry published to GitHub Packages                                                |
 
 ---
 
@@ -33,10 +33,10 @@
 | **Domain modeling (DDD)**                            | Domain distillation, invariant/aggregate refactor, anti-corruption layer, event storming                                                            | `context/domain/01..04*.md`                                                                               |
 | **AI at scale**                                      | pgvector + Cloudflare Workers AI embeddings for semantic search over chat; FSRS-6 scheduling                                                        | `src/lib/embeddings.ts`, `src/lib/srs.ts`, the `match_lesson_answers` migration in `supabase/migrations/` |
 | **Load-bearing invariants captured as rules**        | Answer-key protection (enable-not-force RLS + definer-owned fns); the `SRS_CARD_COLUMNS` string-literal gotcha                                      | `context/foundation/lessons.md`                                                                           |
-| **Deliberate tech selection + research**             | Stack chosen against agent-friendliness gates; SRS library chosen via research                                                                      | `context/foundation/tech-stack.md`; `context/architect-report.md` (synthesis)                             |
-| **Module-4 architecture analysis**                   | Repo map, blast-radius, feature research, refactor backlog                                                                                          | `context/architect-report.md`, `context/map/`, `context/changes/` analyses                                |
+| **Deliberate tech selection + research**             | Stack chosen against agent-friendliness gates; SRS library chosen via research                                                                      | `context/foundation/tech-stack.md`; `context/evidence/architect/architect-report.md` (synthesis)          |
+| **Module-4 architecture analysis**                   | Repo map, blast-radius, feature research, refactor backlog                                                                                          | `context/evidence/architect/architect-report.md`, `context/map/`, `context/changes/` analyses             |
 
-**To verify Architect:** open `context/architect-report.md` (the synthesis), then sample
+**To verify Architect:** open `context/evidence/architect/architect-report.md` (the synthesis), then sample
 2–3 folders in `context/archive/` to see the plan → impl-review → archive loop, and skim
 `context/domain/`. No screenshots required — it's all in-repo.
 
