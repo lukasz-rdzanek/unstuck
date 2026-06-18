@@ -55,14 +55,17 @@ const errorMessage = errorParam ? (errorCopy[errorParam] ?? "Couldn't verify. Tr
           {
             /* Accept 6–10 digits: Supabase's auth.email.otp_length is local-only and the
               cloud project may issue a longer code than the local stack. Keep this range in
-              lockstep with the regex on src/pages/api/auth/verify-otp.ts. */
+              lockstep with the regex on src/pages/api/auth/verify-otp.ts.
+              Use [0-9], NOT \d: Astro strips the backslash from a "\d" attribute value when
+              it renders the .astro template, leaving a literal "d{6,10}" that rejects every
+              numeric code. [0-9] has no backslash, so it survives rendering intact. */
           }
           <input
             id="token"
             type="text"
             name="token"
             inputmode="numeric"
-            pattern="\d{6,10}"
+            pattern="[0-9]{6,10}"
             maxlength="10"
             autocomplete="one-time-code"
             required
