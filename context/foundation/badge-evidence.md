@@ -9,7 +9,8 @@
 > screenshots — the 10xChampion rules accept screenshots; no public company repo needed).
 >
 > **Privacy.** No secrets, keys, tokens, project refs, worker IDs, dashboards, or
-> production credentials are listed here, and none are needed to follow it. A read-only
+> production credentials are listed here — the sole exception is the throwaway
+> **reviewer test account** below, created only for evaluation. A read-only
 > audit confirms the repo carries no leaked secrets (see
 > [`async-delegation.md`](./async-delegation.md), Task 4). Internal/sensitive assessment
 > notes live in [`certification.md`](./certification.md) (not needed for review).
@@ -21,6 +22,30 @@
 | 🚀 **10xBuilder** (mandatory) | Complete                                      | access control, CRUD, business logic, context docs, tests, CI — see below                                                             |
 | 🔧 **10xArchitect**           | Strongly demonstrated                         | `context/archive/` (28 changes), `context/evidence/architect/architect-report.md`, `context/domain/`, `context/foundation/lessons.md` |
 | 🏆 **10xChampion**            | **Two independent proof projects, both live** | (1) AI code-review CI/CD pipeline; (2) shared AI registry published to GitHub Packages                                                |
+
+---
+
+## 🔓 Reviewer access — Unstuck live app
+
+The app is live at **<https://unstuck.lukasz-rdzanek.workers.dev>**. The catalog and
+the sign-in / sign-up screens are public; course content and the learning flow are
+gated per user.
+
+**A ready-made, pre-confirmed reviewer account is provided so you can sign in directly:**
+
+| Field    | Value                                                    |
+| -------- | -------------------------------------------------------- |
+| Sign in  | <https://unstuck.lukasz-rdzanek.workers.dev/auth/signin> |
+| Email    | `reviewer@unstuck.app`                                   |
+| Password | `TestTest`                                               |
+
+> **Known bottleneck — email delivery.** Sign-up uses Supabase's built-in mailer,
+> which is heavily rate-limited (a few messages/hour) and slow, so a fresh sign-up's
+> confirmation code (a valid **6–10 digit** OTP) can arrive late. This is an infra
+> limit of the free mailer, **not an app bug** — the confirm flow itself is fixed and
+> tested. **If you want to test sign-up and the email doesn't arrive, just sign in
+> with the reviewer account above instead.** Post-certification this moves to a
+> dedicated SMTP provider (Resend / SES).
 
 ---
 
